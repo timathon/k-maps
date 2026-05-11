@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五单元：图形的运动（三） - 五年级下册数学</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .transform-demo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        .transform-canvas {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .transform-canvas .grid-line {
+            position: absolute;
+            background: rgba(255,255,255,0.06);
+        }
+        .transform-canvas .grid-line.h {
+            width: 100%;
+            height: 1px;
+        }
+        .transform-canvas .grid-line.v {
+            width: 1px;
+            height: 100%;
+        }
+        .transform-canvas .axis {
+            position: absolute;
+            background: rgba(255,255,255,0.2);
+        }
+        .transform-canvas .axis.h {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+        }
+        .transform-canvas .axis.v {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+        }
+        .shape-original, .shape-transformed {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .shape-original {
+            background: rgba(59, 130, 246, 0.5);
+            border: 2px solid var(--accent-blue);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+        .shape-transformed {
+            background: rgba(236, 72, 153, 0.5);
+            border: 2px solid var(--accent-pink);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+        .transform-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+        .transform-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        .transform-btn:hover, .transform-btn.active-btn {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+        .transform-info {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.15);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            min-height: 60px;
+            line-height: 1.8;
+        }
+        .clock-demo {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .formula-box {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b.html" class="nav-back">← 返回学习地图</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">第五单元</div>
+            <h1 class="title text-gradient">图形的运动（三）</h1>
+            <p>探索旋转的奥秘，发现生活中的对称之美！</p>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧠 核心知识点</h2>
+            <ul>
+                <li><strong>旋转三要素：</strong>
+                    <ul>
+                        <li><span style="color:var(--accent-blue)">旋转中心</span> — 围绕哪个点旋转</li>
+                        <li><span style="color:var(--accent-green)">旋转方向</span> — 顺时针 or 逆时针</li>
+                        <li><span style="color:var(--accent-pink)">旋转角度</span> — 转了多少度</li>
+                    </ul>
+                </li>
+                <li><strong>旋转的特征：</strong>
+                    <ul>
+                        <li>旋转前后，图形的<strong>形状和大小不变</strong>。</li>
+                        <li>图形上的每个点都绕旋转中心转过<strong>相同的角度</strong>。</li>
+                        <li>对应点到旋转中心的<strong>距离相等</strong>。</li>
+                    </ul>
+                </li>
+                <li><strong>画旋转图形的步骤：</strong>
+                    <ol>
+                        <li>找到旋转中心</li>
+                        <li>确定关键点</li>
+                        <li>将关键点分别旋转指定角度</li>
+                        <li>按顺序连接新的点</li>
+                    </ol>
+                </li>
+                <li><strong>旋转对称图形：</strong>一个图形绕某个点旋转一定角度后能与自身完全重合。如正方形旋转90°、等边三角形旋转120°。</li>
+            </ul>
+
+            <div class="guidance-box">
+                <strong style="color: var(--accent-orange);">💡 解题秘籍 (How to solve):</strong><br>
+                1. <strong>找对应点：</strong>图形旋转后，每个点到旋转中心的距离是不变的。<br>
+                2. <strong>方向判定：</strong>顺时针是往右绕，逆时针是往左绕。
+            </div>
+            <div class="chant-box" style="margin-top: 1rem; background: rgba(0,0,0,0.1);">
+                <div class="chant-marquee">
+                    <div class="chant-track">
+                        <span>旋转中心<b class="highlight-blue">定位置</b>，顺逆方向<b class="highlight-pink">看钟表</b>。对应点距<b class="highlight-orange">中心等</b>，角度量准<b class="highlight-green">画得精</b>。</span>
+                        <span>旋转中心<b class="highlight-blue">定位置</b>，顺逆方向<b class="highlight-pink">看钟表</b>。对应点距<b class="highlight-orange">中心等</b>，角度量准<b class="highlight-green">画得精</b>。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🖼️ 互动旋转演示（钟表指针）</h2>
+            <p>点击按钮，观察指针绕点 <span style="color:var(--accent-pink)">O</span> 按<strong>顺时针</strong>方向旋转不同的角度！</p>
+            
+            <div class="transform-controls">
+                <button class="transform-btn active-btn" onclick="setClock('12', this)">指向 12</button>
+                <button class="transform-btn" onclick="setClock('1', this)">12 → 1（30°）</button>
+                <button class="transform-btn" onclick="setClock('3', this)">1 → 3（60°）</button>
+                <button class="transform-btn" onclick="setClock('6', this)">3 → 6（90°）</button>
+                <button class="transform-btn" onclick="setClock('9', this)">6 → 9（90°）</button>
+                <button class="transform-btn" onclick="setClock('12b', this)">6 → 12（180°）</button>
+            </div>
+
+            <div class="clock-demo">
+                <svg id="ch5-clock" width="260" height="260" viewBox="0 0 260 260">
+                    <!-- Clock face background -->
+                    <circle cx="130" cy="130" r="120" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                    
+                    <!-- Tick marks and numbers -->
+                    <g id="ch5-ticks"></g>
+                    
+                    <!-- Rotation arc (drawn by JS) -->
+                    <path id="ch5-arc" d="" fill="none" stroke="var(--accent-green)" stroke-width="2" stroke-dasharray="5,3" opacity="0.8"/>
+                    <!-- Arc arrow -->
+                    <polygon id="ch5-arc-arrow" points="" fill="var(--accent-green)" opacity="0.8"/>
+                    
+                    <!-- Ghost hand (start position) -->
+                    <line id="ch5-ghost" x1="130" y1="130" x2="130" y2="30" stroke="rgba(255,255,255,0.15)" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Active hand -->
+                    <line id="ch5-hand" x1="130" y1="130" x2="130" y2="30" stroke="var(--accent-blue)" stroke-width="5" stroke-linecap="round" style="transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 130px 130px;"/>
+                    
+                    <!-- Center dot O -->
+                    <circle cx="130" cy="130" r="5" fill="var(--accent-pink)"/>
+                    <text x="142" y="145" fill="var(--accent-pink)" font-size="16" font-weight="bold" font-style="italic">O</text>
+                    
+                    <!-- Angle label -->
+                    <text id="ch5-angle-label" x="130" y="100" fill="var(--accent-green)" font-size="14" font-weight="bold" text-anchor="middle" opacity="0"></text>
+                </svg>
+            </div>
+
+            <div class="transform-info" id="ch5-info">
+                指针指向 <strong>12</strong>，这是起始位置。<br>点击上方按钮，观察指针绕中心点 <span style="color:var(--accent-pink)">O</span> 顺时针旋转！
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🎯 随堂小测</h2>
+            <p>检验一下你学得怎么样吧！</p>
+            <button class="btn btn-quiz" onclick="openModal('quiz-modal-5')">
+                开始测试：旋转与对称
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-5" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('quiz-modal-5')">×</button>
+            <h3 class="text-gradient-pink">小测验：旋转变换</h3>
+            <div id="quiz-content-5">
+                <!-- content populated by JS -->
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="./assets/script.js"></script>
+</body>
+</html>

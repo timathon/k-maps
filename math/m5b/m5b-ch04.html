@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四单元：分数的意义和性质 - 五年级下册数学</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .fraction-visual {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        .fraction-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .fraction-bar {
+            display: flex;
+            width: 240px;
+            height: 40px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .fraction-part {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .fraction-part:last-child { border-right: none; }
+        .fraction-part.filled {
+            background: var(--accent-blue);
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+        }
+        .fraction-part.empty {
+            background: rgba(255,255,255,0.05);
+        }
+        .fraction-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .fraction-text .frac-top { color: var(--accent-blue); }
+        .fraction-text .frac-line { color: var(--text-secondary); margin: 0 0.2rem; }
+        .fraction-text .frac-bottom { color: var(--accent-purple); }
+        .slider-row {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        input[type="range"] { width: 120px; }
+        .formula-box {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .equiv-display {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.15);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b.html" class="nav-back">← 返回学习地图</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">第四单元</div>
+            <h1 class="title text-gradient">分数的意义和性质</h1>
+            <p>认识分数，学会约分与通分，掌握分数的大小比较！</p>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧠 核心知识点</h2>
+            <ul>
+                <li><strong>分数的意义：</strong>把单位"1"平均分成若干份，表示其中一份或几份的数叫分数。分母表示平均分成几份，分子表示取了几份。</li>
+                <li><strong>真分数与假分数：</strong>
+                    <ul>
+                        <li>分子 < 分母 → <span style="color:var(--accent-green)">真分数</span>（小于1）</li>
+                        <li>分子 ≥ 分母 → <span style="color:var(--accent-pink)">假分数</span>（大于或等于1）</li>
+                        <li>假分数可以化成<strong>带分数</strong>或整数。</li>
+                    </ul>
+                </li>
+                <li><strong>分数的基本性质：</strong>分数的分子和分母同时乘以或除以相同的数（0除外），分数的大小不变。
+                    <div class="formula-box">a/b = (a×n)/(b×n) = (a÷n)/(b÷n)　（n ≠ 0）</div>
+                </li>
+                <li><strong>约分：</strong>把一个分数的分子和分母同时除以它们的<strong>最大公因数</strong>，化成最简分数。</li>
+                <li><strong>通分：</strong>把异分母分数化成同分母分数（找<strong>最小公倍数</strong>作为公分母）。</li>
+                <li><strong>分数与小数的互化：</strong>分数化小数用分子÷分母；小数化分数看位数定分母。</li>
+            </ul>
+
+            <div class="guidance-box">
+                <strong style="color: var(--accent-orange);">💡 解题秘籍 (How to solve):</strong><br>
+                1. <strong>约分到最简：</strong>分子和分母只有公因数1时，就是最简分数。<br>
+                2. <strong>分数比大小：</strong>分母不同先通分，分子大的分数大。
+            </div>
+            <div class="chant-box" style="margin-top: 1rem; background: rgba(0,0,0,0.1);">
+                <div class="chant-marquee">
+                    <div class="chant-track">
+                        <span>约分约到<b class="highlight-blue">互质止</b>，通分先找<b class="highlight-pink">公倍数</b>。分子分母<b class="highlight-orange">同乘除</b>，性质不变<b class="highlight-green">比大小</b>。</span>
+                        <span>约分约到<b class="highlight-blue">互质止</b>，通分先找<b class="highlight-pink">公倍数</b>。分子分母<b class="highlight-orange">同乘除</b>，性质不变<b class="highlight-green">比大小</b>。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🖼️ 互动分数可视化</h2>
+            <p>调整分子和分母，直观感受分数的意义！</p>
+            
+            <div class="slider-row">
+                <div class="slider-group">
+                    <label>分子: <span id="val-numer">2</span></label>
+                    <input type="range" id="ch4-numer" min="1" max="12" value="2" oninput="updateFraction()">
+                </div>
+                <div class="slider-group">
+                    <label>分母: <span id="val-denom">5</span></label>
+                    <input type="range" id="ch4-denom" min="1" max="12" value="5" oninput="updateFraction()">
+                </div>
+            </div>
+
+            <div class="fraction-visual">
+                <div class="fraction-bar-container">
+                    <div class="fraction-bar" id="ch4-bar">
+                        <!-- Generated by JS -->
+                    </div>
+                    <div class="fraction-text" id="ch4-fraction-text">
+                        <span class="frac-top">2</span><span class="frac-line">/</span><span class="frac-bottom">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equiv-display" id="ch4-equiv">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🎯 随堂小测</h2>
+            <p>检验一下你学得怎么样吧！</p>
+            <button class="btn btn-quiz" onclick="openModal('quiz-modal-4')">
+                开始测试：约分与通分
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-4" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('quiz-modal-4')">×</button>
+            <h3 class="text-gradient-pink">小测验：最简分数</h3>
+            <div id="quiz-content-4">
+                <!-- content populated by JS -->
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="./assets/script.js"></script>
+    <script>
+        window.onload = function() { updateFraction(); };
+    </script>
+</body>
+</html>

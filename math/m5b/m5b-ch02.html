@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二单元：因数与倍数 - 五年级下册数学</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .number-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .num-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        .num-box:hover, .num-box.active-num {
+            transform: scale(1.1);
+            background: var(--accent-purple);
+            border-color: #fff;
+            box-shadow: 0 0 15px var(--accent-purple);
+            z-index: 2;
+        }
+        .num-box.factor-num {
+            background: rgba(59, 130, 246, 0.4);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+            z-index: 1;
+        }
+        .factor-display-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent-purple);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .factor-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b.html" class="nav-back">← 返回学习地图</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge badge-ch02">第二单元</div>
+            <h1 class="title text-gradient">因数与倍数</h1>
+            <p>探索数字之间的奇妙关系，寻找数字家族的秘密！</p>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧠 核心知识点</h2>
+            <ul>
+                <li><strong>因数与倍数是相互的：</strong>例如 2 × 3 = 6，2 和 3 是 6 的因数，6 是 2 和 3 的倍数。不能单独说谁是因数。</li>
+                <li><strong>找因数的方法：</strong>一对一对地找。一个数的因数的个数是<strong>有限的</strong>，最小的因数是 1，最大的因数是它本身。</li>
+                <li><strong>找倍数的方法：</strong>用这个数依次乘 1, 2, 3... 一个数的倍数的个数是<strong>无限的</strong>。</li>
+                <li><strong>2, 3, 5 的倍数特征：</strong>
+                    <ul>
+                        <li><span style="color:var(--accent-pink)">2的倍数：</span>个位上是 0, 2, 4, 6, 8。</li>
+                        <li><span style="color:var(--accent-green)">5的倍数：</span>个位上是 0 或 5。</li>
+                        <li><span style="color:var(--accent-blue)">3的倍数：</span>各位上数字之和是 3 的倍数。</li>
+                    </ul>
+                </li>
+                <li><strong>质数与合数：</strong>
+                    <ul>
+                        <li>只有 1 和它本身两个因数的数叫<strong>质数（素数）</strong>。</li>
+                        <li>除了 1 和它本身还有其他因数的数叫<strong>合数</strong>。</li>
+                        <li><em>注意：1 既不是质数，也不是合数。</em></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="guidance-box">
+                <strong style="color: var(--accent-orange);">💡 解题秘籍 (How to solve):</strong><br>
+                1. <strong>判断一个大数是不是3的倍数：</strong>不需要直接除以3！把所有位上的数字加起来，看看那个和是不是3的倍数即可。比如 12345：1+2+3+4+5=15，15是3的倍数，所以12345也是3的倍数！<br>
+                2. <strong>区分奇偶数：</strong>是2的倍数的数叫偶数，不是的叫奇数。偶数±偶数=偶数，奇数±奇数=偶数。
+            </div>
+            <div class="chant-box" style="margin-top: 1rem; background: rgba(0,0,0,0.1);">
+                <div class="chant-marquee">
+                    <div class="chant-track">
+                        <span>3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
+                        <span>3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🖼️ 互动找因数</h2>
+            <p>点击下方数字，探索它们的因数和隐藏属性！</p>
+            
+            <div class="number-grid" id="factor-grid" style="cursor: pointer;">
+                <div class="num-box" data-num="1" onclick="showFactors(1)">1</div>
+                <div class="num-box" data-num="2" onclick="showFactors(2)">2</div>
+                <div class="num-box" data-num="3" onclick="showFactors(3)">3</div>
+                <div class="num-box" data-num="4" onclick="showFactors(4)">4</div>
+                <div class="num-box" data-num="5" onclick="showFactors(5)">5</div>
+                <div class="num-box" data-num="6" onclick="showFactors(6)">6</div>
+                <div class="num-box" data-num="7" onclick="showFactors(7)">7</div>
+                <div class="num-box" data-num="8" onclick="showFactors(8)">8</div>
+                <div class="num-box" data-num="9" onclick="showFactors(9)">9</div>
+                <div class="num-box" data-num="10" onclick="showFactors(10)">10</div>
+                <div class="num-box" data-num="11" onclick="showFactors(11)">11</div>
+                <div class="num-box" data-num="12" onclick="showFactors(12)">12</div>
+            </div>
+
+            <div id="factor-display" class="factor-display-box">
+                <div class="factor-placeholder">点击上面的数字查看结果</div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🎯 随堂小测</h2>
+            <p>检验一下你学得怎么样吧！</p>
+            <button class="btn btn-quiz" onclick="openModal('quiz-modal-2')">
+                开始测试：倍数特征
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-2" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('quiz-modal-2')">×</button>
+            <h3 class="text-gradient-pink">小测验：3的倍数</h3>
+            <div id="quiz-content-2">
+                <!-- content populated by JS -->
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="./assets/script.js"></script>
+</body>
+</html>

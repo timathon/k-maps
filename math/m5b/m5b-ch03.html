@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三单元：长方体和正方体 - 五年级下册数学</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .sliders {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 300px;
+            margin: 0 auto 2rem;
+        }
+        .slider-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input[type="range"] {
+            width: 150px;
+        }
+        .visual-box-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 800px;
+        }
+        .cuboid-wrapper {
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(30deg);
+            transition: width 0.3s ease, height 0.3s ease;
+            margin: 0 auto;
+        }
+        .face {
+            position: absolute;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        .face.front, .face.back {
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+            background: rgba(59, 130, 246, 0.7);
+        }
+        .face.right, .face.left {
+            height: 100%;
+            top: 0; left: 50%;
+            background: rgba(16, 185, 129, 0.7);
+        }
+        .face.top, .face.bottom {
+            width: 100%;
+            left: 0; top: 50%;
+            background: rgba(139, 92, 246, 0.7);
+        }
+        .formula-box {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b.html" class="nav-back">← 返回学习地图</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge badge-ch03">第三单元</div>
+            <h1 class="title text-gradient">长方体和正方体</h1>
+            <p>进入三维世界，计算表面积与体积！</p>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧠 核心知识点与公式</h2>
+            <ul>
+                <li><strong>认识长方体与正方体：</strong>长方体有6个面，12条棱，8个顶点。正方体是特殊的长方体（长、宽、高都相等）。</li>
+                <li><strong>表面积：</strong>长方体或正方体6个面的总面积。
+                    <div class="formula-box">长方体表面积 = (长×宽 + 长×高 + 宽×高) × 2 <br> S = 2(ab + ah + bh)</div>
+                    <div class="formula-box" style="color:var(--accent-pink)">正方体表面积 = 棱长×棱长×6 <br> S = 6a²</div>
+                </li>
+                <li><strong>体积与容积：</strong>物体所占空间的大小叫体积。容器所能容纳物体的体积叫容积。
+                    <div class="formula-box" style="color:var(--accent-blue)">长方体体积 = 长 × 宽 × 高 <br> V = abh</div>
+                    <div class="formula-box" style="color:var(--accent-purple)">正方体体积 = 棱长 × 棱长 × 棱长 <br> V = a³</div>
+                </li>
+            </ul>
+
+            <div class="guidance-box">
+                <strong style="color: var(--accent-orange);">💡 解题秘籍 (How to solve):</strong><br>
+                1. <strong>体积与容积的区别：</strong>体积是物体<strong>外部</strong>占空间的大小，容积是容器<strong>内部</strong>装东西的大小。<br>
+                2. <strong>注意单位：</strong>计算时务必统一单位！1L = 1dm³，1mL = 1cm³。
+            </div>
+            <div class="chant-box" style="margin-top: 1rem; background: rgba(0,0,0,0.1);">
+                <div class="chant-marquee">
+                    <div class="chant-track">
+                        <span>表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1分米</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
+                        <span>表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1分米</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🖼️ 动态长方体模拟器</h2>
+            <p>拉动滑动条，改变长、宽、高，观察体积和表面积的变化！</p>
+            
+            <div class="sliders">
+                <div class="slider-group">
+                    <label>长 (a): <span id="val-l">5</span></label>
+                    <input type="range" id="ch3-length" min="1" max="10" value="5" oninput="document.getElementById('val-l').textContent=this.value; updateVolume()">
+                </div>
+                <div class="slider-group">
+                    <label>宽 (b): <span id="val-w">5</span></label>
+                    <input type="range" id="ch3-width" min="1" max="10" value="5" oninput="document.getElementById('val-w').textContent=this.value; updateVolume()">
+                </div>
+                <div class="slider-group">
+                    <label>高 (h): <span id="val-h">5</span></label>
+                    <input type="range" id="ch3-height" min="1" max="10" value="5" oninput="document.getElementById('val-h').textContent=this.value; updateVolume()">
+                </div>
+            </div>
+
+            <div class="visual-box-container">
+                <div class="cuboid-wrapper" id="ch3-box-visual">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face right"></div>
+                    <div class="face left"></div>
+                    <div class="face top"></div>
+                    <div class="face bottom"></div>
+                </div>
+            </div>
+
+            <div style="font-size: 1.2rem; margin-top: 1rem;">
+                <strong>体积 (V) = <span id="ch3-vol-result" style="color:var(--accent-blue)">125</span> </strong> | 
+                <strong>表面积 (S) = <span id="ch3-sa-result" style="color:var(--accent-green)">150</span> </strong>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🎯 随堂小测</h2>
+            <p>检验一下你学得怎么样吧！</p>
+            <button class="btn btn-quiz" onclick="openModal('quiz-modal-3')">
+                开始测试：体积与表面积
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-3" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('quiz-modal-3')">×</button>
+            <h3 class="text-gradient-pink">小测验：无盖木箱</h3>
+            <div id="quiz-content-3">
+                <!-- content populated by JS -->
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="./assets/script.js"></script>
+    <script>
+        // Initialize dynamic simulation
+        window.onload = updateVolume;
+    </script>
+</body>
+</html>

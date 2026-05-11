@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第八单元：数学广角——找次品 - 五年级下册数学</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .balance-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        .balance-svg-container {
+            width: 300px;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+        .item-pool {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        .item-ball {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.05);
+        }
+        .item-ball:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-blue);
+        }
+        .item-ball.on-left {
+            background: rgba(59, 130, 246, 0.4);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        .item-ball.on-right {
+            background: rgba(236, 72, 153, 0.4);
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+        }
+        .item-ball.found-defect {
+            background: rgba(245, 158, 11, 0.6);
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+            animation: pulse 1s infinite;
+        }
+        .weigh-btn {
+            padding: 0.7rem 2rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .weigh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+        .weigh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .balance-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .weigh-log {
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem auto 0;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            min-height: 60px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .weigh-count {
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        .formula-box {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .strategy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .strategy-table th, .strategy-table td {
+            padding: 0.6rem 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .strategy-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+        }
+        .strategy-table tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b.html" class="nav-back">← 返回学习地图</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">第八单元</div>
+            <h1 class="title text-gradient">数学广角 · 找次品</h1>
+            <p>用天平和数学思维，找出那个与众不同的物品！</p>
+        </div>
+
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧠 核心知识点</h2>
+            <ul>
+                <li><strong>什么是次品：</strong>外观完全相同的一堆物品中，有一个重量与其他不同（偏轻或偏重），这个就是"次品"。</li>
+                <li><strong>核心策略：</strong>将物品<strong>尽量平均分成3份</strong>，每次称量可以排除最多的可能性。
+                    <div class="formula-box">最优策略：将待检测物品分成尽量相等的3组</div>
+                </li>
+                <li><strong>称量原理：</strong>
+                    <ul>
+                        <li>天平<span style="color:var(--accent-green)">平衡</span> → 次品在<strong>没有放上去</strong>的那组</li>
+                        <li>天平<span style="color:var(--accent-pink)">不平衡</span> → 次品在<strong>较轻（或较重）</strong>的那一边</li>
+                    </ul>
+                </li>
+                <li><strong>最少称量次数：</strong>
+                    <table class="strategy-table">
+                        <tr><th>物品数量</th><th>最少称量次数</th><th>分组策略</th></tr>
+                        <tr><td>2-3个</td><td>1次</td><td>分成1,1,(1)</td></tr>
+                        <tr><td>4-9个</td><td>2次</td><td>分成3,3,3</td></tr>
+                        <tr><td>10-27个</td><td>3次</td><td>分成9,9,9</td></tr>
+                    </table>
+                </li>
+            </ul>
+
+            <div class="guidance-box">
+                <strong style="color: var(--accent-orange);">💡 解题秘籍:</strong><br>
+                1. <strong>分3份原则：</strong>每次用天平称一次，都能排除三分之二的可能。所以N个物品最少需要的称量次数满足 3ⁿ ≥ N。<br>
+                2. <strong>不能平均分时：</strong>多出来的放在第三组（不上天平的那组）。比如8个分成3,3,2。<br>
+                3. <strong>画树状图：</strong>用树状图列出每次称量的所有可能结果（平衡/左轻/右轻），清晰分析！
+            </div>
+            <div class="chant-box" style="margin-top: 1rem; background: rgba(0,0,0,0.1);">
+                <div class="chant-marquee">
+                    <div class="chant-track">
+                        <span>找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
+                        <span>找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🖼️ 天平找次品模拟器</h2>
+            <p>点击球放到天平左边或右边，然后"称量"，在最少次数内找到次品！<br>
+            <small style="color: var(--text-secondary);">（次品比其他的<strong>轻</strong>）</small></p>
+
+            <div class="balance-demo">
+                <svg class="balance-svg-container" id="ch8-balance-svg" viewBox="0 0 300 160">
+                    <!-- Balance beam -->
+                    <rect x="140" y="100" width="20" height="60" fill="rgba(255,255,255,0.2)" rx="3"/>
+                    <polygon id="ch8-beam" points="30,95 150,95 270,95" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3" style="transition: all 0.5s ease;"/>
+                    <circle cx="150" cy="95" r="5" fill="var(--accent-blue)"/>
+                    <!-- Left pan -->
+                    <rect id="ch8-left-pan" x="10" y="90" width="80" height="6" fill="rgba(59,130,246,0.6)" rx="3" style="transition: all 0.5s ease;"/>
+                    <text x="50" y="85" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-size="11">左盘</text>
+                    <!-- Right pan -->
+                    <rect id="ch8-right-pan" x="210" y="90" width="80" height="6" fill="rgba(236,72,153,0.6)" rx="3" style="transition: all 0.5s ease;"/>
+                    <text x="250" y="85" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-size="11">右盘</text>
+                    <!-- Result text -->
+                    <text id="ch8-result-text" x="150" y="30" fill="var(--text-secondary)" text-anchor="middle" font-size="14">将球分组后点击"称量"</text>
+                </svg>
+            </div>
+            
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">点击球：第1次点 → 放左盘(蓝)，第2次点 → 放右盘(粉)，第3次 → 取下</p>
+            <div class="item-pool" id="ch8-pool">
+                <!-- Generated by JS -->
+            </div>
+
+            <div class="balance-controls">
+                <button class="weigh-btn" id="ch8-weigh-btn" onclick="weighBalls()">⚖️ 称量！</button>
+                <button class="weigh-btn" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));" onclick="resetBalance()">🔄 新游戏</button>
+                <span class="weigh-count">已称 <span id="ch8-count">0</span> 次</span>
+            </div>
+
+            <div class="weigh-log" id="ch8-log">
+                🎯 游戏开始！9个球中有1个次品（比较轻），用天平找出它。试试最少2次找到！
+            </div>
+        </div>
+
+        <div class="section glass glass-card" style="text-align: center;">
+            <h2 class="section-title" style="justify-content: center;">🎯 随堂小测</h2>
+            <p>检验一下你学得怎么样吧！</p>
+            <button class="btn btn-quiz" onclick="openModal('quiz-modal-8')">
+                开始测试：找次品策略
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-8" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('quiz-modal-8')">×</button>
+            <h3 class="text-gradient-pink">小测验：最少称几次</h3>
+            <div id="quiz-content-8">
+                <!-- content populated by JS -->
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="./assets/script.js"></script>
+    <script>
+        window.onload = function() { resetBalance(); };
+    </script>
+</body>
+</html>
