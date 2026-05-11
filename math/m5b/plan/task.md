@@ -15,4 +15,14 @@
 - `[x]` Implement `math/m5b/m5b-ch08.html` (Chapter 8: 找次品).
 - `[x]` Implement dynamic quiz generation logic for Chapters 4-8.
 - `[x]` Update index `m5b.html` to link all 8 chapters.
-- `[ ]` Verify links, responsive design, and Chinese content formatting.
+- `[x]` Implement Logic Training pages for all chapters.
+    - `[x]` Ch 1: Observation logic (Top-View-First).
+    - `[x]` Ch 2: Factors & Multiples logic (Systematic pairing).
+    - `[x]` Ch 3: Cuboids logic (Displacement method).
+    - `[x]` Ch 4: Fractions logic (Common denominators).
+    - `[x]` Ch 5: Motion logic (Rotation elements).
+    - `[x]` Ch 6: Fraction Calculation logic (Common units).
+    - `[x]` Ch 7: Graph logic (Trend analysis).
+    - `[x]` Ch 8: Strategy logic (Group of Three).
+- `[x]` Update all chapter pages (`m5b-ch01.html` to `m5b-ch08.html`) with logic challenge links and standardized button layouts.
+- `[x]` Verify links, responsive design, and Chinese content formatting.

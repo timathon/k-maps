@@ -143,3 +143,5 @@ vite.config.ts.timestamp-*
 .vite/
 
 textbooks/
+workbooks/
+z-exams/

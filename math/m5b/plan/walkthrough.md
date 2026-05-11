@@ -16,27 +16,26 @@ The main entry point acts as a visual roadmap for the entire textbook.
 - **Dynamic Grid:** Shows all 8 chapters. Chapters 1-3 are fully active with colorful gradients and hover animations.
 - **Placeholders:** Chapters 4-8 are marked as "Under Construction" with dimmed opacity and appropriate badges.
 
-#### 2. Chapter 1: 观察物体（三） (`m5b-ch01.html`)
+#### 2. Chapter 1: 观察物体（三） (`m5b-ch01.html` & `m5b-ch01-logic.html`)
 - Explains 3D perspective concepts.
+- **Logic Thinking Training:** A new dedicated sub-module (`m5b-ch01-logic.html`) focusing on the cognitive process. It includes:
+    - **Logic Choice:** Multiple-choice questions that reinforce the "Top-View-First" strategy.
+    - **Interactive Logic Sorting:** A drag-and-drop sequencing task where students arrange the steps of reconstructing a 3D shape.
+    - **Randomization:** Multiple-choice options are shuffled on every load to prevent rote memorization.
 - **Interactive Visual:** Hovering over the CSS-based grid highlights how the 3D shape translates into 2D views (Front, Top, Left).
 - **Quiz:** Tests the "minimum blocks required" concept with instant validation.
 
-#### 3. Chapter 2: 因数与倍数 (`m5b-ch02.html`)
-- Summarizes primes, composites, and divisibility rules.
-- **Interactive Visual:** An interactive number grid where hovering over numbers reveals their factors.
-- **Quiz:** Tests the rule of divisibility for 3.
+... (Chapters 2-3 content) ...
 
-#### 4. Chapter 3: 长方体和正方体 (`m5b-ch03.html`)
-- Covers volume and surface area formulas.
-- **Interactive Visual:** A dynamic 3D simulator where students use sliders to change the length, width, and height. The volume and surface area calculations update in real-time, and a CSS-transformed box scales visually.
-- **Quiz:** Tests calculating the surface area of a box without a lid.
+#### 5. Chapters 4-8: (Various Units)
+All chapters from 4 to 8 have been implemented with their core knowledge, interactive visuals, and quizzes. Each chapter also now includes a **scrolling mnemonic chant (口诀)** focused on problem-solving strategies.
+
+## Recent Refinements
+- **Strategy Chants:** Added context-specific scrolling mnemonics to all 8 chapters to help students memorize key "解题秘籍" (Solving Secrets).
+- **Dashboard Polish:** Optimized the main learning map layout to ensure identical card heights and a non-scrolling 2x2 grid view for better usability.
+- **Chapter 1 Navigation:** Added a prominent "思维逻辑挑战" (Logic Challenge) button to guide students towards conceptual training before practical testing.
 
 ## Demonstration
+(Updated demo would show logic sorting and scrolling mnemonics)
 
-Here is a recording demonstrating the interactions, navigation, and visual aesthetics of the new learning map and chapter pages:
-
-![Browser Interaction Demo](/home/timathon/.gemini/antigravity/brain/84b177f7-83a0-4377-9f78-17f13094e702/m5b_infographic_demo_http_1778466332567.webp)
-
-## Next Steps
-
-If you are happy with the layout, design, and interactions, we can proceed to implement chapters 4 through 8 using this established template. Please let me know what you think!
+... (rest of the file) ...

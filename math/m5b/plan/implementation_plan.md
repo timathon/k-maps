@@ -41,28 +41,23 @@ An interactive "Learning Path" or "Subway Map" style infographic.
 ### Chapter Infographics
 
 #### [NEW] `math/m5b/m5b-ch01.html` - 第一单元：观察物体（三） (Observe Objects)
-- **Knowledge Points:** Understanding 3D shapes from different perspectives (front, top, left/right).
-- **Interactive Element:** SVG-based 3D cubes that highlight different faces when hovered.
-- **Guidance:** Step-by-step logic to deduce the original shape from 2D views.
-- **Quick Quiz:** A modal presenting a 2D view and asking how many cubes could form it.
+- **Knowledge Points:** Understanding 3D shapes from different perspectives.
+- **New Feature:** Links to `m5b-ch01-logic.html` for dedicated cognitive training.
+- **Interactive Visual:** SVG/CSS-based 3D cubes highlighting 2D translations.
+- **Quick Quiz:** Modal for practical shape reconstruction testing.
 
-#### [NEW] `math/m5b/m5b-ch02.html` - 第二单元：因数与倍数 (Factors and Multiples)
-- **Knowledge Points:** Prime vs. Composite, Factors and Multiples, rules for divisibility by 2, 3, and 5.
-- **Formulas/Diagrams:** Venn diagrams for factors, dynamic highlighting of numbers.
-- **Quick Quiz:** Modal to test prime factorization or divisibility rules.
+#### [NEW] `math/m5b/m5b-ch01-logic.html` - 第一单元：思维逻辑挑战
+- **Goal:** Master the "Top-View-First" logic.
+- **Interactions:** 
+    - Multiple-choice questions with random option shuffling.
+    - Drag-and-drop sequencing for problem-solving steps.
+- **Feedback:** Detailed pedagogical explanations for logic errors.
 
-#### [NEW] `math/m5b/m5b-ch03.html` - 第三单元：长方体和正方体 (Cuboids and Cubes)
-- **Knowledge Points:** Surface area and volume formulas.
-- **Diagrams:** Interactive 3D cuboid where users can adjust length, width, and height via sliders (using vanilla JS + CSS/SVG) to see the volume change.
-- **Quick Quiz:** Calculate surface area given dimensions.
+... (Chapters 2-8 content) ...
 
-#### *(Following chapters 4-8 will follow the exact same high-quality pattern)*
-- `m5b-ch04.html` - 分数的意义和性质
-- `m5b-ch05.html` - 图形的运动（三）
-- `m5b-ch06.html` - 分数的加法和减法
-- `m5b-ch07.html` - 折线统计图
-- `m5b-ch08.html` - 找次品
-
+### Advanced Learning Features
+- **Scrolling Mnemonics:** Each chapter contains a strategy-focused marquee (口诀) to aid memorization.
+- **Non-Scrolling Dashboard:** Optimized grid layout for desktop performance.
 ## Verification Plan
 
 ### Manual Verification

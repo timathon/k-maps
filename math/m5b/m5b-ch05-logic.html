@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五单元：逻辑挑战 - 图形的运动</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .logic-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+        }
+        .option-btn.correct {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--accent-green) !important;
+        }
+        .option-btn.wrong {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Sorting Styles */
+        .sort-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .sort-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+        .sort-item:active { cursor: grabbing; }
+        .sort-handle {
+            color: var(--text-secondary);
+            cursor: grab;
+            user-select: none;
+        }
+        .sort-index {
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+        }
+        
+        .check-btn {
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        .check-btn:hover { opacity: 0.9; }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: none;
+        }
+        .feedback.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+        .feedback.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="m5b-ch05.html" class="nav-back">← 返回单元概览</a>
+        
+        <div class="chapter-header glass glass-card">
+            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
+            <h1 class="title text-gradient">图形运动逻辑训练</h1>
+            <p>精准把握旋转三要素，掌握复杂图形变换的思维方法。</p>
+        </div>
+
+        <!-- Multiple Choice Section -->
+        <div class="section">
+            <h2 class="section-title">💡 第一关：思维选择</h2>
+            
+            <div class="logic-card">
+                <div class="question-title">
+                    <span>1.</span> 在描述一个图形的旋转时，除了旋转中心和旋转角度，还必须说明哪一点？
+                </div>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkChoice(this, true)">旋转方向（顺时针或逆时针）</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">图形的颜色</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">图形的大小</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">画图的笔</button>
+                </div>
+            </div>
+
+            <div class="logic-card">
+                <div class="question-title">
+                    <span>2.</span> 图形在旋转过程中，下列哪项属性逻辑上是绝对不会改变的？
+                </div>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkChoice(this, false)">图形的位置</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">图形的形状和大小</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">图形的方向</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">图形所有点的坐标</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorting Section -->
+        <div class="section">
+            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出在方格纸上画出一个图形<b>旋转90度后</b>的步骤：</p>
+            
+            <div class="logic-card">
+                <div class="sort-container" id="sort-list">
+                    <div class="sort-item" draggable="true" data-id="2">
+                        <div class="sort-handle">☰</div>
+                        <div class="sort-index">?</div>
+                        <span>找出图形的关键点（顶点）。</span>
+                    </div>
+                    <div class="sort-item" draggable="true" data-id="1">
+                        <div class="sort-handle">☰</div>
+                        <div class="sort-index">?</div>
+                        <span>确定旋转中心、方向和角度。</span>
+                    </div>
+                    <div class="sort-item" draggable="true" data-id="4">
+                        <div class="sort-handle">☰</div>
+                        <div class="sort-index">?</div>
+                        <span>依次连接这些新对应的点。</span>
+                    </div>
+                    <div class="sort-item" draggable="true" data-id="3">
+                        <div class="sort-handle">☰</div>
+                        <div class="sort-index">?</div>
+                        <span>按要求旋转关键点，使新旧点到中心的距离相等。</span>
+                    </div>
+                </div>
+                
+                <button class="check-btn" onclick="checkSort()">提交排序</button>
+                <div id="sort-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="chant-box">
+            <div class="chant-marquee">
+                <div class="chant-track">
+                    <span>旋转中心<b class="highlight-blue">定位置</b>，顺逆方向<b class="highlight-pink">看钟表</b>。对应点距<b class="highlight-orange">中心等</b>，角度量准<b class="highlight-green">画得精</b>。</span>
+                    <span>旋转中心<b class="highlight-blue">定位置</b>，顺逆方向<b class="highlight-pink">看钟表</b>。对应点距<b class="highlight-orange">中心等</b>，角度量准<b class="highlight-green">画得精</b>。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkChoice(btn, isCorrect) {
+            const options = btn.parentElement.querySelectorAll('.option-btn');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.style.pointerEvents = 'none';
+            });
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        const sortList = document.getElementById('sort-list');
+        let dragItem = null;
+
+        sortList.addEventListener('dragstart', (e) => {
+            dragItem = e.target;
+            e.target.style.opacity = '0.5';
+        });
+
+        sortList.addEventListener('dragend', (e) => {
+            e.target.style.opacity = '1';
+            updateIndices();
+        });
+
+        sortList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(sortList, e.clientY);
+            if (afterElement == null) {
+                sortList.appendChild(dragItem);
+            } else {
+                sortList.insertBefore(dragItem, afterElement);
+            }
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.sort-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateIndices() {
+            const items = sortList.querySelectorAll('.sort-item');
+            items.forEach((item, index) => {
+                item.querySelector('.sort-index').textContent = index + 1;
+            });
+        }
+
+        function checkSort() {
+            const items = sortList.querySelectorAll('.sort-item');
+            const currentOrder = Array.from(items).map(item => item.dataset.id).join('');
+            const correctOrder = "1234";
+            const feedback = document.getElementById('sort-feedback');
+            if (currentOrder === correctOrder) {
+                feedback.textContent = "✨ 画得太准了！找点、转点、连线，这是图形运动的三步曲。";
+                feedback.className = "feedback success";
+            } else {
+                feedback.textContent = "❌ 排序有误。逻辑提示：先明确要求，再找顶点，最后旋转和连线。";
+                feedback.className = "feedback error";
+            }
+        }
+
+        function shuffleOptions() {
+            const grids = document.querySelectorAll('.options-grid');
+            grids.forEach(grid => {
+                const buttons = Array.from(grid.children);
+                for (let i = buttons.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [buttons[i], buttons[j]] = [buttons[j], buttons[i]];
+                }
+                grid.innerHTML = '';
+                buttons.forEach(btn => grid.appendChild(btn));
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateIndices();
+            shuffleOptions();
+        });
+    </script>
+</body>
+</html>
