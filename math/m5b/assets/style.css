@@ -13,12 +13,14 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color-scheme: dark; /* Prevents unwanted color inversion in some browsers */
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -556,11 +558,13 @@ a {
 
 .options-grid {
   display: grid;
+  grid-template-columns: 1fr; /* Force single column on mobile */
   gap: 1rem;
 }
 
 .option-btn {
   background: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05); /* Fallback */
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.1rem;
   border-radius: 0.8rem;
@@ -568,8 +572,10 @@ a {
   text-align: left;
   transition: var(--transition);
   color: var(--text-primary);
-  font-size: 1.08rem; /* Slightly increased, but refined per feedback */
+  font-size: 1.08rem;
   font-family: inherit;
+  -webkit-appearance: none; /* Fix for WeChat/Mobile Safari */
+  appearance: none;
 }
 
 .option-btn:hover {
@@ -622,6 +628,7 @@ a {
   margin-top: 1.5rem;
   padding: 0.8rem 2rem;
   background: var(--accent-purple);
+  background-color: var(--accent-purple);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -629,6 +636,8 @@ a {
   font-weight: 600;
   transition: var(--transition);
   font-size: 1.1rem;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .check-btn:hover {
