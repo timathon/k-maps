@@ -104,6 +104,10 @@ a {
   margin-top: 0.5rem;
 }
 
+.chapter-header .badge {
+  margin-bottom: 0;
+}
+
 .title.text-gradient {
   display: inline-block;
   width: auto;
