@@ -50,7 +50,7 @@ a {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -106,20 +106,39 @@ a {
 
 /* Learning Map (Index) */
 .categories-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.category-row {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 1.5rem;
+  align-items: start;
 }
 
 @media (max-width: 900px) {
-  .categories-container {
+  .category-row {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .map-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .map-grid {
     grid-template-columns: 1fr;
   }
 }
 
 .category-section {
   margin-bottom: 0;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -146,11 +165,9 @@ a {
 
 .map-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
   position: relative;
-  flex: 1;
 }
 
 .chapter-node {

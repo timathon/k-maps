@@ -179,6 +179,24 @@
             </div>
         </div>
 
+        <!-- LCM Section -->
+        <div class="section glass glass-card">
+            <h2 class="section-title">🧮 寻找最小公倍数 (LCM)</h2>
+            <p>在进行异分母分数加减时，我们需要先找分母的<b>最小公倍数</b>来进行通分。</p>
+            <div class="calc-area" style="margin: 1.5rem 0;">
+                <div class="calc-row">
+                    <input type="number" id="lcm-a" placeholder="分母1" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
+                    <span class="calc-op" style="font-size: 1.1rem; color:var(--text-secondary)">和</span>
+                    <input type="number" id="lcm-b" placeholder="分母2" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
+                    <button onclick="calculateLCM()" class="btn btn-ch06" style="margin-left: 0.5rem; padding: 0 1.5rem; height:45px;">计算 LCM</button>
+                </div>
+                <div id="lcm-result-area" class="glass" style="margin-top: 1.5rem; padding: 1rem 2rem; border-radius: 1rem; display: none; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.3rem;">最小公倍数 (LCM)：</div>
+                    <div id="lcm-result-val" style="font-size: 1.8rem; color: var(--accent-blue); font-weight: bold;"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="section glass glass-card" style="text-align: center;">
             <h2 class="section-title" style="justify-content: center;">🖼️ 分数加减计算器</h2>
             <p>输入两个分数，查看详细的通分和计算过程！</p>
@@ -238,6 +256,66 @@
     <script src="./assets/script.js"></script>
     <script>
         window.onload = function() { calcFraction(); };
+
+        function calculateLCM() {
+            const a = parseInt(document.getElementById('lcm-a').value);
+            const b = parseInt(document.getElementById('lcm-b').value);
+            const resultArea = document.getElementById('lcm-result-area');
+            const resultVal = document.getElementById('lcm-result-val');
+            
+            if (isNaN(a) || isNaN(b) || a <= 0 || b <= 0) {
+                alert('请输入正整数');
+                return;
+            }
+            
+            // Short Division Logic
+            let currentA = a;
+            let currentB = b;
+            let divisors = [];
+            let html = `<div style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">手算步骤（短除法）：</div>`;
+            
+            let d = 2;
+            while (d <= Math.min(currentA, currentB)) {
+                if (currentA % d === 0 && currentB % d === 0) {
+                    divisors.push(d);
+                    html += `
+                        <div style="display: flex; align-items: flex-end; margin-bottom: 0.5rem; font-family: monospace; font-size: 1.2rem;">
+                            <div style="border-right: 2px solid var(--accent-blue); padding-right: 0.8rem; margin-right: 0.8rem; color: var(--accent-pink); font-weight: bold;">${d}</div>
+                            <div style="border-top: 2px solid var(--accent-blue); padding: 0.2rem 0.5rem 0;">${currentA} &nbsp;&nbsp; ${currentB}</div>
+                        </div>
+                    `;
+                    currentA /= d;
+                    currentB /= d;
+                } else {
+                    d++;
+                }
+            }
+            
+            // Final row
+            html += `
+                <div style="display: flex; align-items: flex-end; margin-left: 2rem; font-family: monospace; font-size: 1.2rem;">
+                    <div style="padding: 0.2rem 0.5rem;">${currentA} &nbsp;&nbsp; ${currentB}</div>
+                </div>
+            `;
+
+            const lcm = divisors.reduce((acc, val) => acc * val, 1) * currentA * currentB;
+            
+            // Conclusion
+            html += `
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.8rem; border: 1px dashed rgba(59, 130, 246, 0.3);">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">计算公式：</div>
+                    <div style="font-family: monospace; margin-bottom: 0.5rem;">
+                        LCM = ${divisors.length > 0 ? divisors.join(' × ') + ' × ' : ''} ${currentA} × ${currentB}
+                    </div>
+                    <div style="font-size: 1.1rem; color: var(--accent-blue);">
+                        最小公倍数 = <span style="font-size: 1.8rem; font-weight: bold;">${lcm}</span>
+                    </div>
+                </div>
+            `;
+            
+            resultArea.innerHTML = html;
+            resultArea.style.display = 'block';
+        }
     </script>
 </body>
 </html>
