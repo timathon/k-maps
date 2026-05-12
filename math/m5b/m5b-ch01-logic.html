@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第一单元：逻辑挑战 - 观察物体（三）</title>
+    <title class="zh">第一单元：逻辑挑战 - 观察物体（三）</title>
+    <title class="en">Unit 1: Logic Challenge - Observation (3)</title>
     <link rel="stylesheet" href="./assets/style.css">
     <style>
         /* Chapter-specific 3D Scene Styles */
@@ -48,68 +49,127 @@
 
 <body>
     <div class="container">
-        <a href="m5b-ch01.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch01.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
 
         <div class="chapter-header glass glass-card">
-            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
-            <h1 class="title text-gradient">解题思维训练</h1>
-            <p>掌握“观察物体”的核心逻辑：从定到底，从平面到立体。</p>
+            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">解题思维训练</span>
+                <span class="en">Problem-Solving Logic</span>
+            </h1>
+            <p class="zh">掌握“观察物体”的核心逻辑：从定到底，从平面到立体。</p>
+            <p class="en">Master the core logic: from base to height, from 2D to 3D.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 拿到拼搭立体图形的题目时，最先观察哪一个视图通常能最快确定小正方体的位置？
+                    <span>1.</span> 
+                    <span class="zh">拿到拼搭立体图形的题目时，最先观察哪一个视图通常能最快确定小正方体的位置？</span>
+                    <span class="en">When building a 3D shape from views, which view is usually best to observe first to fix positions?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">从上面看到的图形（确定底座位置）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">从正面看到的图形（确定最高层数）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">从左面看到的图形（确定左右深度）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">随便哪一个都可以</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">从上面看到的图形（确定底座位置）</span>
+                        <span class="en">Top View (determines the base positions)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">从正面看到的图形（确定最高层数）</span>
+                        <span class="en">Front View (determines max heights)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">从左面看到的图形（确定左右深度）</span>
+                        <span class="en">Left View (determines depth)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">随便哪一个都可以</span>
+                        <span class="en">Any view is fine</span>
+                    </button>
                 </div>
             </div>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>2.</span> 如果只给出一个方向看到的图形（如正面看是3个横排），最多可以搭出多少种不同的立体图形？
+                    <span>2.</span> 
+                    <span class="zh">如果只给出一个方向看到的图形（如正面看是3个横排），最多可以搭出多少种不同的立体图形？</span>
+                    <span class="en">If only one view is given (e.g., 3 in a row from front), how many different 3D shapes can be made?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, false)">只有1种</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">只有3种</button>
-                    <button class="option-btn" onclick="checkChoice(this, true)">无法确定（深度和背后隐藏的方块不确定）</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">只有1种</span>
+                        <span class="en">Only 1</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">只有3种</span>
+                        <span class="en">Only 3</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">无法确定（深度和背后隐藏的方块不确定）</span>
+                        <span class="en">Uncertain (depth and hidden cubes are unknown)</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请拖动下方步骤，排列出最科学的“还原立体图形”逻辑顺序：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请拖动下方步骤，排列出最科学的“还原立体图形”逻辑顺序：</span>
+                <span class="en">Drag to arrange the steps for reconstructing a 3D model:</span>
+            </p>
 
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>观察<b>左面</b>视图，调整每一行的深度和方块位置。</span>
+                        <span>
+                            <span class="zh">观察<b>左面</b>视图，调整每一行的深度和方块位置。</span>
+                            <span class="en">Observe the <b>Left</b> view, adjust depth and cube positions.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>首先观察<b>上面</b>视图，在地面上画出底座的“占位图”。</span>
+                        <span>
+                            <span class="zh">首先观察<b>上面</b>视图，在地面上画出底座的“占位图”。</span>
+                            <span class="en">First observe the <b>Top</b> view, draw the base positions.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">⣿</div>
-                        <span>最后对比所有视图，确保拼搭出的模型与三视图完全一致。</span>
+                        <span>
+                            <span class="zh">最后对比所有视图，确保拼搭出的模型与三视图完全一致。</span>
+                            <span class="en">Finally, compare all views to ensure consistency.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>参考<b>正面</b>视图，确定底座上每一列小正方体的最高层数。</span>
+                        <span>
+                            <span class="zh">参考<b>正面</b>视图，确定底座上每一列小正方体的最高层数。</span>
+                            <span class="en">Refer to the <b>Front</b> view, determine max heights for each column.</span>
+                        </span>
                     </div>
                 </div>
 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 完美！这是还原三视图最稳健的逻辑链。', '❌ 排序有误。提示：先确定一层，再逐层叠加，最后验证。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', t('✨ 完美！这是还原三视图最稳健的逻辑链。', '✨ Perfect! This is the most robust logic for reconstruction.'), t('❌ 排序有误。提示：先确定一层，再逐层叠加，最后验证。', '❌ Order is wrong. Hint: Start with the base, add layers, then verify.'))">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -117,14 +177,15 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>先看上面<b class="highlight-blue">定底座</b>，再看正左<b class="highlight-pink">定层数</b>。拼完回头<b
-                            class="highlight-orange">验一验</b>，逻辑严密<b class="highlight-green">不出错</b>。</span>
-                    <span>先看上面<b class="highlight-blue">定底座</b>，再看正左<b class="highlight-pink">定层数</b>。拼完回头<b
-                            class="highlight-orange">验一验</b>，逻辑严密<b class="highlight-green">不出错</b>。</span>
+                    <span class="zh">先看上面<b class="highlight-blue">定底座</b>，再看正左<b class="highlight-pink">定层数</b>。拼完回头<b class="highlight-orange">验一验</b>，逻辑严密<b class="highlight-green">不出错</b>。</span>
+                    <span class="en">Check the top for <b class="highlight-blue">the base</b>, front and left for <b class="highlight-pink">heights</b>. Look back and <b class="highlight-orange">verify</b>, clear logic keeps you <b class="highlight-green">correct</b>.</span>
+                    <span class="zh">先看上面<b class="highlight-blue">定底座</b>，再看正左<b class="highlight-pink">定层数</b>。拼完回头<b class="highlight-orange">验一验</b>，逻辑严密<b class="highlight-green">不出错</b>。</span>
+                    <span class="en">Check the top for <b class="highlight-blue">the base</b>, front and left for <b class="highlight-pink">heights</b>. Look back and <b class="highlight-orange">verify</b>, clear logic keeps you <b class="highlight-green">correct</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {

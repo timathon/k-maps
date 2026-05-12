@@ -4,116 +4,202 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第三单元：逻辑挑战 - 长方体和正方体</title>
+    <title class="zh">第三单元：逻辑挑战 - 长方体和正方体</title>
+    <title class="en">Unit 3: Logic Challenge - Cuboids & Cubes</title>
     <link rel="stylesheet" href="./assets/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <a href="m5b-ch03.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch03.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
         
         <div class="chapter-header glass glass-card">
-            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
-            <h1 class="title text-gradient">空间与体积逻辑训练</h1>
-            <p>建立空间观念，理清表面积与体积的本质区别。</p>
+            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">空间与体积逻辑训练</span>
+                <span class="en">Space & Volume Logic</span>
+            </h1>
+            <p class="zh">建立空间观念，理清表面积与体积的本质区别。</p>
+            <p class="en">Build spatial awareness and understand the difference between surface area and volume.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
             
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 在计算一个“无盖长方体鱼缸”所需的玻璃面积时，最核心的逻辑是？
+                    <span>1.</span> 
+                    <span class="zh">在计算一个“无盖长方体鱼缸”所需的玻璃面积时，最核心的逻辑是？</span>
+                    <span class="en">When calculating glass needed for a "lidless aquarium", what is the core logic?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">只计算5个面的面积（减去上面的面）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">计算6个面的总面积</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">计算鱼缸的容积</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">玻璃面积等于长×宽×高</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">只计算5个面的面积（减去上面的面）</span>
+                        <span class="en">Calculate only 5 faces (excluding the top)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">计算6个面的总面积</span>
+                        <span class="en">Calculate all 6 faces</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">计算鱼缸的容积</span>
+                        <span class="en">Calculate the capacity (volume)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">玻璃面积等于长×宽×高</span>
+                        <span class="en">Glass area = L × W × H</span>
+                    </button>
                 </div>
             </div>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>2.</span> 下列关于体积单位和容积单位的换算，逻辑正确的是？
+                    <span>2.</span> 
+                    <span class="zh">下列关于体积单位和容积单位的换算，逻辑正确的是？</span>
+                    <span class="en">Regarding volume and capacity unit conversions, which logic is correct?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, false)">1升 = 100立方厘米</button>
-                    <button class="option-btn" onclick="checkChoice(this, true)">1毫升 = 1立方厘米，1升 = 1立方分米</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">体积单位间的进率都是10</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">容积就是物体的外部体积</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">1升 = 100立方厘米</span>
+                        <span class="en">1 L = 100 cm³</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">1毫升 = 1立方厘米，1升 = 1立方分米</span>
+                        <span class="en">1 mL = 1 cm³, 1 L = 1 dm³</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">体积单位间的进率都是10</span>
+                        <span class="en">Step factor between volume units is always 10</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">容积就是物体的外部体积</span>
+                        <span class="en">Capacity is the external volume</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出使用“排水法”测量不规则物体（如土豆）体积的步骤：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请排列出使用“排水法”测量不规则物体（如土豆）体积的步骤：</span>
+                <span class="en">Arrange steps for "water displacement method" to measure irregular objects:</span>
+            </p>
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>将物体完全浸没在水中。</span>
+                        <span>
+                            <span class="zh">将物体完全浸没在水中。</span>
+                            <span class="en">Completely submerge the object in water.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>在量杯中倒入适量的水，记录此时水的体积 V1。</span>
+                        <span>
+                            <span class="zh">在量杯中倒入适量的水，记录此时水的体积 V1。</span>
+                            <span class="en">Fill container with water, record initial volume V1.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">⣿</div>
-                        <span>计算物体体积：V = V2 - V1。</span>
+                        <span>
+                            <span class="zh">计算物体体积：V = V2 - V1。</span>
+                            <span class="en">Calculate object volume: V = V2 - V1.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>记录物体浸没后水面上升到的总体积 V2。</span>
+                        <span>
+                            <span class="zh">记录物体浸没后水面上升到的总体积 V2。</span>
+                            <span class="en">Record the final total volume V2.</span>
+                        </span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback-1', '✨ 逻辑正确！排水法测量物体体积的关键是计算上升水的体积。', '❌ 排序有误。逻辑提示：先记水，再放物，后记水，最后算差值。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback-1', t('✨ 逻辑正确！排水法测量物体体积的关键是计算上升水的体积。', '✨ Correct! The key is calculating the volume of the displaced water.'), t('❌ 排序有误。逻辑提示：先记水，再放物，后记水，最后算差值。', '❌ Incorrect. Hint: Record initial water, add object, record final volume, find difference.'))">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback-1" class="feedback"></div>
             </div>
         </div>
 
         <!-- Advanced Challenge Section -->
         <div class="section">
-            <h2 class="section-title">🚀 第三关：进阶挑战（组合图形）</h2>
+            <h2 class="section-title">
+                <span class="zh">🚀 第三关：进阶挑战（组合图形）</span>
+                <span class="en">🚀 Round 3: Advanced Challenge (Composites)</span>
+            </h2>
             <div class="logic-card">
                 <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap-reverse;">
                     <div style="flex: 1; min-width: 300px;">
                         <div class="question-title">
-                            <span>*</span> 如图，给一个组合柜（由两个长方体组成）刷上油漆：
+                            <span>*</span> 
+                            <span class="zh">如图，给一个组合柜（由两个长方体组成）刷上油漆：</span>
+                            <span class="en">As shown, painting a combined cabinet (two cuboids):</span>
                         </div>
                         <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                            左柜：0.6m × 0.6m × 0.6m<br>
-                            右柜：0.6m × 0.6m × 0.8m<br>
-                            <b>注意：底面不用刷。</b>
+                            <span class="zh">左柜：0.6m × 0.6m × 0.6m</span><span class="en">Left: 0.6m × 0.6m × 0.6m</span><br>
+                            <span class="zh">右柜：0.6m × 0.6m × 0.8m</span><span class="en">Right: 0.6m × 0.6m × 0.8m</span><br>
+                            <span class="zh"><b>注意：底面不用刷。</b></span><span class="en"><b>Note: Do not paint the base.</b></span>
                         </p>
                         
                         <div style="margin-bottom: 1.5rem;">
-                            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-orange);">任务：排列出求“刷漆面积”的正确逻辑链</p>
+                            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-orange);">
+                                <span class="zh">任务：排列出求“刷漆面积”的正确逻辑链</span>
+                                <span class="en">Task: Arrange the logic chain for "Painted Area"</span>
+                            </p>
                             <div class="sort-container" id="sort-list-adv">
                                 <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="C">
                                     <div class="sort-handle">⣿</div>
-                                    <span>计算两个柜子各自的 5 个面面积之和（排除底面）。</span>
+                                    <span>
+                                        <span class="zh">计算两个柜子各自的 5 个面面积之和（排除底面）。</span>
+                                        <span class="en">Calculate the sum of 5 faces for each cabinet (exclude base).</span>
+                                    </span>
                                 </div>
                                 <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="A">
                                     <div class="sort-handle">⣿</div>
-                                    <span>审题：明确“底面不刷”且“重叠面不刷”。</span>
+                                    <span>
+                                        <span class="zh">审题：明确“底面不刷”且“重叠面不刷”。</span>
+                                        <span class="en">Analyze: "Base not painted" and "Overlapping faces not painted".</span>
+                                    </span>
                                 </div>
                                 <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="B">
                                     <div class="sort-handle">⣿</div>
-                                    <span>找出两个柜子紧贴在一起的重叠面积。</span>
+                                    <span>
+                                        <span class="zh">找出两个柜子紧贴在一起的重叠面积。</span>
+                                        <span class="en">Identify the overlapping area between the two cabinets.</span>
+                                    </span>
                                 </div>
                                 <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="D">
                                     <div class="sort-handle">⣿</div>
-                                    <span>总和减去 2 个重叠面的面积，得出最终刷漆面积。</span>
+                                    <span>
+                                        <span class="zh">总和减去 2 个重叠面的面积，得出最终刷漆面积。</span>
+                                        <span class="en">Subtract the 2 overlapping faces from the total sum.</span>
+                                    </span>
                                 </div>
                             </div>
-                            <button class="check-btn" onclick="checkSort('sort-list-adv', ['ABCD', 'ACBD'], 'sort-feedback-adv', '✨ 逻辑链完全正确！思维缜密是解决复杂组合图形题目的关键。', '❌ 逻辑顺序有误。提示：先审题分析，再找重叠/特殊面，最后计算总和。')">验证逻辑链</button>
+                            <button class="check-btn" onclick="checkSort('sort-list-adv', ['ABCD', 'ACBD'], 'sort-feedback-adv', t('✨ 逻辑链完全正确！思维缜密是解决复杂组合图形题目的关键。', '✨ Correct logic chain! Precision is key to complex composite problems.'), t('❌ 逻辑顺序有误。提示：先审题分析，再找重叠/特殊面，最后计算总和。', '❌ Incorrect. Hint: Analyze first, find overlapping faces, then sum up.'))">
+                                <span class="zh">验证逻辑链</span>
+                                <span class="en">Verify Logic Chain</span>
+                            </button>
                             <div id="sort-feedback-adv" class="feedback"></div>
                         </div>
                     </div>
@@ -155,12 +241,23 @@
                 <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
 
                 <div class="question-title">
-                    <span>?</span> 这个组合柜的<b>体积</b>逻辑应该是：
+                    <span>?</span> 
+                    <span class="zh">这个组合柜的<b>体积</b>逻辑应该是：</span>
+                    <span class="en">The logic for <b>Volume</b> of this composite should be:</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">左柜体积 + 右柜体积</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">总表面积 × 平均高度</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">左柜体积 + 右柜体积 - 重叠体积</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">左柜体积 + 右柜体积</span>
+                        <span class="en">Left Vol + Right Vol</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">总表面积 × 平均高度</span>
+                        <span class="en">Total Area × Average Height</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">左柜体积 + 右柜体积 - 重叠体积</span>
+                        <span class="en">Left Vol + Right Vol - Overlapping Vol</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -168,12 +265,15 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1立分</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
-                    <span>表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1立分</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
+                    <span class="zh">表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1立分</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
+                    <span class="en">Surface area counts <b class="highlight-blue">faces</b>, uniform units are <b class="highlight-pink">the key</b>. 1 Liter equals <b class="highlight-orange">1 dm³</b>, don't confuse <b class="highlight-green">capacity and volume</b>.</span>
+                    <span class="zh">表面积看<b class="highlight-blue">几个面</b>，单位统一<b class="highlight-pink">是关键</b>。1升等于<b class="highlight-orange">1立分</b>，容积体积<b class="highlight-green">莫搞混</b>。</span>
+                    <span class="en">Surface area counts <b class="highlight-blue">faces</b>, uniform units are <b class="highlight-pink">the key</b>. 1 Liter equals <b class="highlight-orange">1 dm³</b>, don't confuse <b class="highlight-green">capacity and volume</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {

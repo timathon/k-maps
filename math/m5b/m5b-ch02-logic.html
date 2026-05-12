@@ -4,75 +4,138 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第二单元：逻辑挑战 - 因数与倍数</title>
+    <title class="zh">第二单元：逻辑挑战 - 因数与倍数</title>
+    <title class="en">Unit 2: Logic Challenge - Factors & Multiples</title>
     <link rel="stylesheet" href="./assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <a href="m5b-ch02.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch02.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
         
         <div class="chapter-header glass glass-card">
-            <div class="badge badge-ch02">逻辑挑战</div>
-            <h1 class="title text-gradient">因数与倍数逻辑训练</h1>
-            <p>理解数字间的相互关系，掌握高效找因数与判断质合的方法。</p>
+            <div class="badge badge-ch02">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">因数与倍数逻辑训练</span>
+                <span class="en">Factors & Multiples Logic</span>
+            </h1>
+            <p class="zh">理解数字间的相互关系，掌握高效找因数与判断质合的方法。</p>
+            <p class="en">Understand numerical relationships and master efficient methods for factors and primes.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
             
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 在寻找一个数（如36）的所有因数时，最科学、不容易遗漏的方法是？
+                    <span>1.</span> 
+                    <span class="zh">在寻找一个数（如36）的所有因数时，最科学、不容易遗漏的方法是？</span>
+                    <span class="en">When finding all factors of a number (e.g., 36), what is the most systematic method?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">成对寻找（如：1和36，2和18...）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">随便写，想到哪个写哪个</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">只找偶数因数</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">从小到大一个一个试，不考虑配对</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">成对寻找（如：1和36，2和18...）</span>
+                        <span class="en">Finding in pairs (e.g., 1 & 36, 2 & 18...)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">随便写，想到哪个写哪个</span>
+                        <span class="en">Random listing</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">只找偶数因数</span>
+                        <span class="en">Only finding even factors</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">从小到大一个一个试，不考虑配对</span>
+                        <span class="en">Testing one by one without pairing</span>
+                    </button>
                 </div>
             </div>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>2.</span> 关于质数和合数，下列逻辑判断正确的是？
+                    <span>2.</span> 
+                    <span class="zh">关于质数和合数，下列逻辑判断正确的是？</span>
+                    <span class="en">Regarding primes and composites, which logical statement is correct?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, false)">所有的质数都是奇数</button>
-                    <button class="option-btn" onclick="checkChoice(this, true)">2是唯一的偶质数，也是最小的质数</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">1既是质数也是合数</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">合数一定有奇数个因数</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">所有的质数都是奇数</span>
+                        <span class="en">All prime numbers are odd</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">2是唯一的偶质数，也是最小的质数</span>
+                        <span class="en">2 is the only even prime and the smallest prime</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">1既是质数也是合数</span>
+                        <span class="en">1 is both prime and composite</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">合数一定有奇数个因数</span>
+                        <span class="en">Composite numbers always have an odd number of factors</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出判断一个大数是否为<b>3的倍数</b>的最快逻辑步骤：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请排列出判断一个大数是否为<b>3的倍数</b>的最快逻辑步骤：</span>
+                <span class="en">Arrange the steps for checking if a large number is a <b>multiple of 3</b>:</span>
+            </p>
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>将该数各个数位上的数字相加，算出它们的和。</span>
+                        <span>
+                            <span class="zh">将该数各个数位上的数字相加，算出它们的和。</span>
+                            <span class="en">Add up all the digits of the number to find the sum.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>看清题目给出的原始数字。</span>
+                        <span>
+                            <span class="zh">看清题目给出的原始数字。</span>
+                            <span class="en">Observe the original number given in the problem.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">⣿</div>
-                        <span>得出结论：这个原始大数也是（或不是）3的倍数。</span>
+                        <span>
+                            <span class="zh">得出结论：这个原始大数也是（或不是）3的倍数。</span>
+                            <span class="en">Conclude: The original number is (or isn't) a multiple of 3.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>判断这个“和”能否被3整除。</span>
+                        <span>
+                            <span class="zh">判断这个“和”能否被3整除。</span>
+                            <span class="en">Determine if this "sum" is divisible by 3.</span>
+                        </span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 完美！这是判断3的倍数最稳妥的逻辑。记住：和能整除，原数就能整除！', '❌ 排序有误。逻辑提示：先求和，再判断和，最后定原数。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', t('✨ 完美！这是判断3的倍数最稳妥的逻辑。记住：和能整除，原数就能整除！', '✨ Perfect! This is the most reliable logic for 3. If the sum is divisible, the number is too!'), t('❌ 排序有误。逻辑提示：先求和，再判断和，最后定原数。', '❌ Order is wrong. Logic: First find the sum, then check the sum, then decide the original number.'))">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -80,12 +143,15 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
-                    <span>3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
+                    <span class="zh">3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
+                    <span class="en">For 3 <b class="highlight-blue">check the sum</b>, for 2 and 5 <b class="highlight-pink">check the end</b>. Finding <b class="highlight-orange">factors in pairs</b>, clear minds <b class="highlight-green">know their primes</b>.</span>
+                    <span class="zh">3的倍数<b class="highlight-blue">看和值</b>，2和5的<b class="highlight-pink">看尾数</b>。成对寻找<b class="highlight-orange">因数稳</b>，质合分清<b class="highlight-green">不糊涂</b>。</span>
+                    <span class="en">For 3 <b class="highlight-blue">check the sum</b>, for 2 and 5 <b class="highlight-pink">check the end</b>. Finding <b class="highlight-orange">factors in pairs</b>, clear minds <b class="highlight-green">know their primes</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {

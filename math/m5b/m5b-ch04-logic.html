@@ -4,34 +4,58 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第四单元：逻辑挑战 - 分数的意义和性质</title>
+    <title class="zh">第四单元：逻辑挑战 - 分数的意义和性质</title>
+    <title class="en">Unit 4: Logic Challenge - Meaning & Properties of Fractions</title>
     <link rel="stylesheet" href="./assets/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <a href="m5b-ch04.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch04.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
         
         <div class="chapter-header glass glass-card">
-            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
-            <h1 class="title text-gradient">分数意义与性质逻辑训练</h1>
-            <p>理清分数的本质，掌握化简与比较的核心逻辑。</p>
+            <div class="badge badge-ch04">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">分数逻辑思维训练</span>
+                <span class="en">Fraction Logic Training</span>
+            </h1>
+            <p class="zh">深刻理解分数单位，掌握约分与通分的数学逻辑。</p>
+            <p class="en">Deepen your understanding of fractional units and master the logic of simplification and common denominators.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
             
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 把1米长的绳子平均分成3段，每段长多少？每段占全长的几分之几？
+                    <span>1.</span> 
+                    <span class="zh">关于“分数单位”，下列逻辑描述正确的是？</span>
+                    <span class="en">Regarding "fractional units", which logical description is correct?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">每段长 1/3 米，每段占全长的 1/3</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">每段长 1/3 米，每段占全长的 1/1</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">每段长 1/1 米，每段占全长的 1/3</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">长度和占比是同一个概念</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">分母越大，分数单位越小</span>
+                        <span class="en">The larger the denominator, the smaller the fractional unit</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">所有的分数单位都等于1</span>
+                        <span class="en">All fractional units equal 1</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">分子越大，分数单位越大</span>
+                        <span class="en">The larger the numerator, the larger the fractional unit</span>
+                    </button>
                 </div>
             </div>
 
@@ -50,30 +74,44 @@
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出比较两个<b>异分母分数</b>（如 2/3 和 3/4）大小的逻辑步骤：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请排列出将两个异分母分数（如 1/4 和 1/6）进行<b>通分</b>的正确步骤：</span>
+                <span class="en">Arrange the steps for finding a <b>common denominator</b> for 1/4 and 1/6:</span>
+            </p>
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>利用分数的基本性质，将它们通分为同分母分数。</span>
+                        <span>
+                            <span class="zh">找出这两个分母的最小公倍数作为公分母（如 12）。</span>
+                            <span class="en">Find the LCM of the denominators to use as the common denominator (e.g., 12).</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>找出两个分数分母的最小公倍数。</span>
+                        <span>
+                            <span class="zh">观察原始分数的两个分母（如 4 和 6）。</span>
+                            <span class="en">Observe the denominators of the original fractions (e.g., 4 and 6).</span>
+                        </span>
                     </div>
-                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
+                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>得出结论：原分母分数的大小关系与通分后一致。</span>
-                    </div>
-                    <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
-                        <div class="sort-handle">⣿</div>
-                        <span>比较通分后分子的大小，分子大的分数大。</span>
+                        <span>
+                            <span class="zh">根据分数的基本性质，将分子和分母同时扩大相同的倍数。</span>
+                            <span class="en">Multiply the numerator and denominator by the same factor based on fraction properties.</span>
+                        </span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 逻辑清晰！通分是比较异分母分数的金钥匙，关键是化为同分母。', '❌ 排序有误。提示：先找公倍数定分母，再变分子，最后比大小。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '123', 'sort-feedback', t('✨ 完美！通分的核心就是：分母变一致，数值不能变。', '✨ Perfect! The core of common denominators: match denominators without changing value.'), t('❌ 排序有误。逻辑提示：先找公分母，再进行等值扩大。', '❌ Incorrect order. Hint: Find the common denominator first, then scale up.'))">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -81,12 +119,15 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>约分约到<b class="highlight-blue">互质止</b>，通分先找<b class="highlight-pink">公倍数</b>。分子分母<b class="highlight-orange">同乘除</b>，性质不变<b class="highlight-green">比大小</b>。</span>
-                    <span>约分约到<b class="highlight-blue">互质止</b>，通分先找<b class="highlight-pink">公倍数</b>。分子分母<b class="highlight-orange">同乘除</b>，性质不变<b class="highlight-green">比大小</b>。</span>
+                    <span class="zh">分母相同<b class="highlight-blue">看分子</b>，分子相同<b class="highlight-pink">看分母</b>。约分通分<b class="highlight-orange">性质灵</b>，分数世界<b class="highlight-green">任我行</b>。</span>
+                    <span class="en">Same denominator <b class="highlight-blue">compare numerators</b>, same numerator <b class="highlight-pink">compare denominators</b>. Properties make <b class="highlight-orange">simplification easy</b>, master the <b class="highlight-green">world of fractions</b>.</span>
+                    <span class="zh">分母相同<b class="highlight-blue">看分子</b>，分子相同<b class="highlight-pink">看分母</b>。约分通分<b class="highlight-orange">性质灵</b>，分数世界<b class="highlight-green">任我行</b>。</span>
+                    <span class="en">Same denominator <b class="highlight-blue">compare numerators</b>, same numerator <b class="highlight-pink">compare denominators</b>. Properties make <b class="highlight-orange">simplification easy</b>, master the <b class="highlight-green">world of fractions</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {

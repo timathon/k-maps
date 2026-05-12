@@ -4,75 +4,122 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第七单元：逻辑挑战 - 折线统计图</title>
+    <title class="zh">第七单元：逻辑挑战 - 折线统计图</title>
+    <title class="en">Unit 7: Logic Challenge - Line Graphs</title>
     <link rel="stylesheet" href="./assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <a href="m5b-ch07.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch07.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
         
         <div class="chapter-header glass glass-card">
-            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
-            <h1 class="title text-gradient">折线统计逻辑训练</h1>
-            <p>学会从动态的数据中发现规律，掌握趋势分析的方法。</p>
+            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">数据分析逻辑训练</span>
+                <span class="en">Data Analysis Logic</span>
+            </h1>
+            <p class="zh">不仅看数据的大小，更要逻辑分析数据的变化趋势。</p>
+            <p class="en">Look beyond raw numbers to logically analyze data trends.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
             
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 与条形统计图相比，折线统计图最大的逻辑优势在于？
+                    <span>1.</span> 
+                    <span class="zh">在分析两组数据的“增长快慢”时，折线统计图中的哪个逻辑特征最直接？</span>
+                    <span class="en">When analyzing "growth speed" between two datasets, which feature is most direct?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">能清晰地看出数据的变化趋势</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">能看出具体的数值</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">颜色更好看</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">画起来更简单</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">折线的倾斜程度（坡度）</span>
+                        <span class="en">Slope of the line</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">折线的颜色</span>
+                        <span class="en">Color of the line</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">数据点的大小</span>
+                        <span class="en">Size of the data points</span>
+                    </button>
                 </div>
             </div>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>2.</span> 在观察折线统计图时，如果折线非常“陡峭”，逻辑上意味着？
+                    <span>2.</span> <span class="zh">在观察折线统计图时，如果折线非常“陡峭”，逻辑上意味着？</span>
+                    <span class="en">When observing a line graph, if the line is very "steep", what does it logically mean?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">数据在短时间内变化非常剧烈</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">数据非常平稳</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">数据没有发生变化</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">图画错了</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">数据在短时间内变化非常剧烈</span>
+                        <span class="en">Data changes drastically in a short time</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">数据非常平稳</span>
+                        <span class="en">Data is very stable</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">数据没有发生变化</span>
+                        <span class="en">Data did not change</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出绘制折线统计图的正确步骤：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请排列出“根据已知数据预测未来趋势”的科学逻辑步骤：</span>
+                <span class="en">Arrange the steps for "predicting trends based on known data":</span>
+            </p>
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>根据数据的大小，在图中描出对应的点。</span>
+                        <span>
+                            <span class="zh">观察折线的整体走向（上升、下降或平稳）。</span>
+                            <span class="en">Observe the overall direction of the line (up, down, or stable).</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>整理原始数据，并在图中确定横轴和纵轴的刻度。</span>
+                        <span>
+                            <span class="zh">准确读取已有的每个时间点的数据。</span>
+                            <span class="en">Accurately read existing data at each time point.</span>
+                        </span>
                     </div>
-                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
+                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>在每个点旁标注具体的数值，并写好图表标题。</span>
-                    </div>
-                    <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
-                        <div class="sort-handle">⣿</div>
-                        <span>用线段顺次连接各点。</span>
+                        <span>
+                            <span class="zh">结合实际背景（如气温受季节影响），做出逻辑预测。</span>
+                            <span class="en">Make logic predictions considering context (e.g., seasons).</span>
+                        </span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 描绘精准！描点、连线、标数，是统计图制作的规范流程。', '❌ 排序有误。逻辑提示：先定轴，再描点，连线之后别忘标数。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '123', 'sort-feedback', '✨ 逻辑严密！预测不是瞎猜，而是基于数据的变化规律。', '❌ 排序有误。逻辑提示：先读数，再看趋势，最后综合背景做预测。')">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -80,12 +127,16 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>描点连线<b class="highlight-blue">标数据</b>，斜率越陡<b class="highlight-pink">变越快</b>。复式图看<b class="highlight-orange">清图例</b>，预测未来<b class="highlight-green">有依据</b>。</span>
-                    <span>描点连线<b class="highlight-blue">标数据</b>，斜率越陡<b class="highlight-pink">变越快</b>。复式图看<b class="highlight-orange">清图例</b>，预测未来<b class="highlight-green">有依据</b>。</span>
+                    <span class="zh">点看数据<b class="highlight-blue">线看变</b>，倾斜程度<b class="highlight-pink">显快慢</b>。复式统计<b class="highlight-orange">重比较</b>，逻辑预测<b class="highlight-green">有依据</b>。</span>
+                    <span class="en">Points show data <b class="highlight-blue">lines show change</b>, slope shows <b class="highlight-pink">speed of growth</b>. Compound graphs <b class="highlight-orange">compare well</b>, predictions have <b class="highlight-green">solid grounds</b>.</span>
+                    <span class="zh">点看数据<b class="highlight-blue">线看变</b>，倾斜程度<b class="highlight-pink">显快慢</b>。复式统计<b class="highlight-orange">重比较</b>，逻辑预测<b class="highlight-green">有依据</b>。</span>
+                    <span class="en">Points show data <b class="highlight-blue">lines show change</b>, slope shows <b class="highlight-pink">speed of growth</b>. Compound graphs <b class="highlight-orange">compare well</b>, predictions have <b class="highlight-green">solid grounds</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {

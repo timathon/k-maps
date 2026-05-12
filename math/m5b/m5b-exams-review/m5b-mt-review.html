@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学试卷原题提取</title>
+    <title class="zh">数学期中综合测评 - 五年级下册</title>
+    <title class="en">Math Mid-term Review - Grade 5</title>
     <!-- 引入 Tailwind CSS 进行页面样式布局 -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/style.css">
     <!-- 引入 SortableJS 实现拖拽排序功能 -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <!-- 配置 MathJax 以正确渲染数学公式和分数 -->
@@ -71,7 +73,9 @@
 <body class="bg-gray-100 p-4 md:p-8">
     <div class="max-w-4xl mx-auto">
         <a href="../m5b.html" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium mb-6 transition-colors">
-            <span class="mr-1">←</span> 返回学习地图
+            <span class="mr-1">←</span> 
+            <span class="zh">返回学习地图</span>
+            <span class="en">Back to Learning Map</span>
         </a>
         <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
 
@@ -83,17 +87,27 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
-                显示解题逻辑挑战
+                <span class="zh">显示解题逻辑挑战</span>
+                <span class="en">Show Logic Challenges</span>
             </button>
         </div>
 
-        <h1 class="text-2xl md:text-3xl font-bold text-center mb-8">原题提取</h1>
+        <h1 class="text-2xl md:text-3xl font-bold text-center mb-8">
+            <span class="zh">期中综合测评</span>
+            <span class="en">Mid-term Comprehensive Review</span>
+        </h1>
 
         <!-- 一、选择题部分 -->
-        <div class="section-title">一、选择（请将正确选项的字母填在括号里）</div>
+        <div class="section-title">
+            <span class="zh">一、选择（请将正确选项的字母填在括号里）</span>
+            <span class="en">I. Multiple Choice (Choose the correct letter)</span>
+        </div>
 
         <div class="question-block">
-            <p>3. 点A在1和2之间(如下图)，点A表示的分数是（&nbsp;&nbsp;&nbsp;&nbsp;）。</p>
+            <p>
+                <span class="zh">3. 点A在1和2之间(如下图)，点A表示的分数是（&nbsp;&nbsp;&nbsp;&nbsp;）。</span>
+                <span class="en">3. Point A is between 1 and 2 (see below). Point A represents the fraction (&nbsp;&nbsp;&nbsp;&nbsp;).</span>
+            </p>
             <div class="my-4 overflow-x-auto">
                 <svg width="400" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
                     <!-- 坐标轴 -->
@@ -112,6 +126,7 @@
                     <!-- 点 A -->
                     <circle cx="183.3" cy="50" r="4" fill="red" />
                     <text x="183.3" y="35" text-anchor="middle" font-size="16" fill="red" font-weight="bold">A</text>
+                    <text x="385" y="55" text-anchor="middle" font-size="14" font-weight="bold">x</text>
                 </svg>
             </div>
             <div class="options">
@@ -124,40 +139,60 @@
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">点A在1之后的第一段，所以表示的数是 $1 + \frac{1}{3}$。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">点A在1之后的第一段，所以表示的数是 $1 + \frac{1}{3}$。</span>
+                            <span class="en">Point A is at the first segment after 1, so it represents $1 + \frac{1}{3}$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">观察数轴，发现1和2之间被平均分成了3段。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">观察数轴，发现1和2之间被平均分成了3段。</span>
+                            <span class="en">Observe the number line; the segment between 1 and 2 is divided into 3 equal parts.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">将带分数 $1\frac{1}{3}$ 化为假分数，得到
-                            $\frac{4}{3}$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">将带分数 $1\frac{1}{3}$ 化为假分数，得到 $\frac{4}{3}$。</span>
+                            <span class="en">Convert the mixed number $1\frac{1}{3}$ to an improper fraction $\frac{4}{3}$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">确认每一小段代表的分数值是 $\frac{1}{3}$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">确认每一小段代表的分数值是 $\frac{1}{3}$。</span>
+                            <span class="en">Confirm that each small segment represents a value of $\frac{1}{3}$.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
         </div>
 
         <div class="question-block">
-            <p>9. 下面的两个几何体都是用6个棱长是1cm的小正方体拼成的。比较它们的表面积大小，下面说法正确的是（&nbsp;&nbsp;&nbsp;&nbsp;）。</p>
+            <p>
+                <span class="zh">9. 下面的两个几何体都是用6个棱长是1cm的小正方体拼成的。比较它们的表面积大小，下面说法正确的是（&nbsp;&nbsp;&nbsp;&nbsp;）。</span>
+                <span class="en">9. The two geometric solids below are both made of 6 small cubes with edge length 1cm. Comparing their surface areas, which statement is correct? (&nbsp;&nbsp;&nbsp;&nbsp;).</span>
+            </p>
             <div class="flex gap-16 my-4 overflow-x-auto justify-center md:justify-start">
                 <div class="text-center">
                     <svg width="120" height="120" viewBox="20 10 90 90" xmlns="http://www.w3.org/2000/svg">
@@ -179,7 +214,10 @@
                         <use href="#cube-iso" x="72" y="38" />
                         <use href="#cube-iso" x="24" y="48" />
                     </svg>
-                    <p class="text-sm mt-2 text-gray-600">图1</p>
+                    <p class="text-sm mt-2 text-gray-600">
+                        <span class="zh">图1</span>
+                        <span class="en">Fig 1</span>
+                    </p>
                 </div>
                 <div class="text-center">
                     <svg width="120" height="120" viewBox="20 10 90 90" xmlns="http://www.w3.org/2000/svg">
@@ -191,45 +229,78 @@
                         <use href="#cube-iso" x="40" y="56" />
                         <use href="#cube-iso" x="56" y="64" />
                     </svg>
-                    <p class="text-sm mt-2 text-gray-600">图2</p>
+                    <p class="text-sm mt-2 text-gray-600">
+                        <span class="zh">图2</span>
+                        <span class="en">Fig 2</span>
+                    </p>
                 </div>
             </div>
             <div class="options">
-                <span>A. 图1的表面积大</span>
-                <span>B. 图2的表面积大</span>
-                <span>C. 表面积一样大</span>
-                <span>D. 无法比较</span>
+                <span>A. 
+                    <span class="zh">图1的表面积大</span>
+                    <span class="en">Fig 1 is larger</span>
+                </span>
+                <span>B. 
+                    <span class="zh">图2的表面积大</span>
+                    <span class="en">Fig 2 is larger</span>
+                </span>
+                <span>C. 
+                    <span class="zh">表面积一样大</span>
+                    <span class="en">Same surface area</span>
+                </span>
+                <span>D. 
+                    <span class="zh">无法比较</span>
+                    <span class="en">Cannot compare</span>
+                </span>
             </div>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">查数图1露在外部的面，或者计算图1由于拼接而减少的面。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">查数图1露在外部的面，或者计算图1由于拼接而减少的面。</span>
+                            <span class="en">Count the exposed faces of Fig 1 or calculate the area reduced by joining.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">比较两个图形的外露面总数，判断哪个表面积更大。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">比较两个图形的外露面总数，判断哪个表面积更大。</span>
+                            <span class="en">Compare the total exposed faces to judge which area is larger.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">观察图1和图2，发现它们都是由6个小正方体组成的。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">观察图1和图2，发现它们都是由6个小正方体组成的。</span>
+                            <span class="en">Observe that both Fig 1 and Fig 2 are made of 6 small cubes.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">查数图2露在外部的面，或者计算图2由于拼接而减少的面。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">查数图2露在外部的面，或者计算图2由于拼接而减少的面。</span>
+                            <span class="en">Count the exposed faces of Fig 2 or calculate the area reduced by joining.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
@@ -242,22 +313,37 @@
                 <svg width="400" height="160" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
                     <rect x="150" y="10" width="230" height="140" fill="#d1d5db" stroke="#9ca3af" stroke-width="2"
                         rx="4" />
-                    <text x="265" y="85" text-anchor="middle" font-size="16" fill="#4b5563">纸片遮挡部分</text>
-                    <text x="20" y="35" font-size="14" fill="#333">甲</text>
+                    <text x="265" y="85" text-anchor="middle" font-size="16" fill="#4b5563">
+                        <tspan class="zh">纸片遮挡部分</tspan>
+                        <tspan class="en">Covered by Paper</tspan>
+                    </text>
+                    <text x="20" y="35" font-size="14" fill="#333">
+                        <tspan class="zh">甲</tspan>
+                        <tspan class="en">A</tspan>
+                    </text>
                     <line x1="50" y1="30" x2="150" y2="30" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
-                    <text x="20" y="70" font-size="14" fill="#333">乙</text>
+                    <text x="20" y="70" font-size="14" fill="#333">
+                        <tspan class="zh">乙</tspan>
+                        <tspan class="en">B</tspan>
+                    </text>
                     <line x1="50" y1="65" x2="150" y2="65" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />
-                    <text x="20" y="105" font-size="14" fill="#333">丙</text>
+                    <text x="20" y="105" font-size="14" fill="#333">
+                        <tspan class="zh">丙</tspan>
+                        <tspan class="en">C</tspan>
+                    </text>
                     <line x1="50" y1="100" x2="150" y2="100" stroke="#10b981" stroke-width="4" stroke-linecap="round" />
-                    <text x="20" y="140" font-size="14" fill="#333">丁</text>
+                    <text x="20" y="140" font-size="14" fill="#333">
+                        <tspan class="zh">丁</tspan>
+                        <tspan class="en">D</tspan>
+                    </text>
                     <line x1="50" y1="135" x2="150" y2="135" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
                 </svg>
             </div>
             <div class="options">
-                <span>A. 甲</span>
-                <span>B. 乙</span>
-                <span>C. 丙</span>
-                <span>D. 丁</span>
+                <span>A. <span class="zh">甲</span><span class="en">A</span></span>
+                <span>B. <span class="zh">乙</span><span class="en">B</span></span>
+                <span>C. <span class="zh">丙</span><span class="en">C</span></span>
+                <span>D. <span class="zh">丁</span><span class="en">D</span></span>
             </div>
 
             <!-- 逻辑重排模块 -->
@@ -297,49 +383,73 @@
 
 
         <!-- 二、填空题部分 -->
-        <div class="section-title">二、填空</div>
+        <div class="section-title">
+            <span class="zh">二、填空</span>
+            <span class="en">II. Fill in the Blanks</span>
+        </div>
 
         <div class="question-block">
-            <p>4. 把3米长的铁丝平均分成4份，每份是这根铁丝的 $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$，每份长 $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$ 米。</p>
+            <p>
+                <span class="zh">4. 把3米长的铁丝平均分成4份，每份是这根铁丝的 $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$，每份长 $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$ 米。</span>
+                <span class="en">4. Divide a 3-meter long wire into 4 equal parts. Each part is $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$ of the wire, and each part is $\frac{（\ \ \ \ ）}{（\ \ \ \ ）}$ meters long.</span>
+            </p>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">根据总长为3米，计算每份的实际长度：$3 \div 4 = \frac{3}{4}$
-                            米。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">根据总长为3米，计算每份的实际长度：$3 \div 4 = \frac{3}{4}$ 米。</span>
+                            <span class="en">Based on total length 3m, calculate each part: $3 \div 4 = \frac{3}{4}$ m.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">理解“平均分成4份”的意义，即把铁丝的总长度看作单位“1”。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">理解“平均分成4份”的意义，即把铁丝的总长度看作单位“1”。</span>
+                            <span class="en">Understand that dividing into 4 parts means the wire's total length is unit "1".</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">将两个计算结果分别填入对应的括号中。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">将两个计算结果分别填入对应的括号中。</span>
+                            <span class="en">Fill the two results into the corresponding blanks.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">计算每份占总长的比例：$1 \div 4 = \frac{1}{4}$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">计算每份占总长的比例：$1 \div 4 = \frac{1}{4}$。</span>
+                            <span class="en">Calculate the ratio of each part to the total length: $1 \div 4 = \frac{1}{4}$.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
         </div>
 
         <div class="question-block">
-            <p>5.
-                一个长和宽都是2dm，高是3dm的长方体容器中装有一些水，放入一块石块后(石块完全浸没在水中，如右图)，水面上升了1dm。这块石头的体积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{dm}^3$。
+            <p>
+                <span class="zh">5. 一个长和宽都是2dm，高是3dm的长方体容器中装有一些水，放入一块石块后(石块完全浸没在水中，如右图)，水面上升了1dm。这块石头的体积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{dm}^3$。</span>
+                <span class="en">5. A cuboid container (length & width 2dm, height 3dm) has some water. After a rock is fully submerged, the water level rises by 1dm. The volume of the rock is （&nbsp;&nbsp;&nbsp;&nbsp;）$\text{dm}^3$.</span>
             </p>
             <div class="my-4">
                 <svg width="250" height="220" viewBox="0 0 250 220" xmlns="http://www.w3.org/2000/svg">
@@ -376,41 +486,59 @@
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">找出计算上升部分水体积所需的条件：容器的底面长和宽。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">找出计算上升部分水体积所需的条件：容器的底面长和宽。</span>
+                            <span class="en">Find the required dimensions for the rising water: container's length and width.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">代入长方体体积公式计算：$2 \times 2 \times 1 =
-                            4\text{dm}^3$，即为石块体积。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">代入长方体体积公式计算：$2 \times 2 \times 1 = 4\text{dm}^3$，即为石块体积。</span>
+                            <span class="en">Substitute into the volume formula: $2 \times 2 \times 1 = 4\text{dm}^3$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">理解物理原理：“水面上升部分的体积”就等于完全浸没的石块体积。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">理解物理原理：“水面上升部分的体积”就等于完全浸没的石块体积。</span>
+                            <span class="en">Understand the physics: the "risen water volume" equals the submerged rock's volume.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">确定容器的内长为2dm，宽为2dm，水面实际上升的高度为1dm。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">确定容器的内长为2dm，宽为2dm，水面实际上升的高度为1dm。</span>
+                            <span class="en">Confirm container length 2dm, width 2dm, and water rise height 1dm.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
         </div>
 
         <div class="question-block">
-            <p>6. 榫卯(sǔn
-                mǎo)结构是古代中国建筑家具的主要结构方式。如下图，在一块棱长为5cm的正方体木料上挖一个棱长为2cm的正方体，再向下挖一个棱长为1cm的正方体。加工后的木块表面积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^2$。
+            <p>
+                <span class="zh">6. 榫卯(sǔn mǎo)结构是古代中国建筑家具的主要结构方式。如下图，在一块棱长为5cm的正方体木料上挖一个棱长为2cm的正方体，再向下挖一个棱长为1cm的正方体。加工后的木块表面积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^2$。</span>
+                <span class="en">6. Mortise and tenon is a traditional Chinese structural method. As shown below, a 2cm cube is carved out of a 5cm wood cube, and then a 1cm cube is carved further down. The surface area of the processed block is （&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^2$.</span>
             </p>
             <div class="my-4 overflow-x-auto">
                 <svg width="500" height="150" viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg">
@@ -472,36 +600,50 @@
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">将原表面积加上增加的侧面面积：$150 + 4 \times (2 \times 2) + 4
-                            \times (1 \times 1) = 170\text{cm}^2$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">将原表面积加上增加的侧面面积：$150 + 4 \times (2 \times 2) + 4 \times (1 \times 1) = 170\text{cm}^2$。</span>
+                            <span class="en">Add the extra side areas to the original surface area: $150 + 4 \times (2 \times 2) + 4 \times (1 \times 1) = 170\text{cm}^2$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">分析挖去2cm正方体：顶面减少的面积和坑底增加的面积抵消，等效于增加了 4个 $2
-                            \times 2$ 的内部侧面。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">分析挖去2cm正方体：顶面减少的面积和坑底增加的面积抵消，等效于增加了 4个 $2 \times 2$ 的内部侧面。</span>
+                            <span class="en">Analyze the 2cm cutout: top reduction and bottom increase cancel out, adding 4 internal $2 \times 2$ faces.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">分析继续向下挖去1cm正方体：同理，等效于又增加了 4个 $1 \times 1$
-                            的内部小侧面。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">分析继续向下挖去1cm正方体：同理，等效于又增加了 4个 $1 \times 1$ 的内部小侧面。</span>
+                            <span class="en">Analyze the 1cm cutout: similarly, this adds 4 internal $1 \times 1$ small faces.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">计算原 5cm 正方体的完整表面积：$5 \times 5 \times 6 =
-                            150\text{cm}^2$。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">计算原 5cm 正方体的完整表面积：$5 \times 5 \times 6 = 150\text{cm}^2$。</span>
+                            <span class="en">Calculate the total surface area of the original 5cm cube: $5 \times 5 \times 6 = 150\text{cm}^2$.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
@@ -509,10 +651,16 @@
 
 
         <!-- 三、按要求计算部分 -->
-        <div class="section-title">三、按要求计算</div>
+        <div class="section-title">
+            <span class="zh">三、按要求计算</span>
+            <span class="en">III. Calculations</span>
+        </div>
 
         <div class="question-block">
-            <p>2. 脱式计算。</p>
+            <p>
+                <span class="zh">2. 脱式计算。</span>
+                <span class="en">2. Step-by-step Calculation.</span>
+            </p>
             <div class="sub-question">
                 <p>(4) $(2.36 + 1.6 \times 0.4) \div 6$</p>
             </div>
@@ -520,32 +668,50 @@
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">计算括号内的加法：$2.36 + 0.64 = 3.0$。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">计算括号内的加法：$2.36 + 0.64 = 3.0$。</span>
+                            <span class="en">Calculate addition inside brackets: $2.36 + 0.64 = 3.0$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">明确四则运算顺序：有括号先算括号里面的，括号里先乘除后加减。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">明确四则运算顺序：有括号先算括号里面的，括号里先乘除后加减。</span>
+                            <span class="en">Follow order of operations: Brackets first, then multiplication/division, then addition/subtraction.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">将括号内的结果代入外部，进行最后的除法：$3.0 \div 6 = 0.5$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">将括号内的结果代入外部，进行最后的除法：$3.0 \div 6 = 0.5$。</span>
+                            <span class="en">Apply the bracket result to the division: $3.0 \div 6 = 0.5$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">先计算括号内的乘法部分：$1.6 \times 0.4 = 0.64$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">先计算括号内的乘法部分：$1.6 \times 0.4 = 0.64$。</span>
+                            <span class="en">First calculate multiplication inside brackets: $1.6 \times 0.4 = 0.64$.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
@@ -553,10 +719,16 @@
 
 
         <!-- 四、按要求做部分 -->
-        <div class="section-title">四、按要求做</div>
+        <div class="section-title">
+            <span class="zh">四、按要求做</span>
+            <span class="en">IV. Tasks</span>
+        </div>
 
         <div class="question-block">
-            <p>1. 一个长方体的“前面”和“左面”如右图所示。</p>
+            <p>
+                <span class="zh">1. 一个长方体的“前面”和“左面”如右图所示。</span>
+                <span class="en">1. The "front" and "left" views of a cuboid are shown on the right.</span>
+            </p>
             <div class="my-4">
                 <svg viewBox="0 0 240 160" class="w-full max-w-md border border-gray-400"
                     xmlns="http://www.w3.org/2000/svg">
@@ -570,47 +742,75 @@
                     <line x1="240" y1="0" x2="240" y2="160" stroke="#9ca3af" stroke-width="1" stroke-dasharray="3,2" />
                     <line x1="0" y1="160" x2="240" y2="160" stroke="#9ca3af" stroke-width="1" stroke-dasharray="3,2" />
                     <rect x="20" y="20" width="80" height="40" fill="none" stroke="#1f2937" stroke-width="2" />
-                    <text x="60" y="45" text-anchor="middle" font-size="14" fill="#1f2937">前面</text>
+                    <text x="60" y="45" text-anchor="middle" font-size="14" fill="#1f2937">
+                        <tspan class="zh">前面</tspan>
+                        <tspan class="en">Front</tspan>
+                    </text>
                     <rect x="160" y="20" width="60" height="40" fill="none" stroke="#1f2937" stroke-width="2" />
-                    <text x="190" y="45" text-anchor="middle" font-size="14" fill="#1f2937">左面</text>
+                    <text x="190" y="45" text-anchor="middle" font-size="14" fill="#1f2937">
+                        <tspan class="zh">左面</tspan>
+                        <tspan class="en">Left</tspan>
+                    </text>
                 </svg>
             </div>
             <div class="sub-question">
-                <p>(1) 请在方格图中画出这个长方体的“上面”。</p>
-                <p>(2) 如果每个小方格的边长是1cm，那么这个长方体的体积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^3$。</p>
+                <p>
+                    <span class="zh">(1) 请在方格图中画出这个长方体的“上面”。</span>
+                    <span class="en">(1) Draw the "top" view of this cuboid in the grid.</span>
+                </p>
+                <p>
+                    <span class="zh">(2) 如果每个小方格的边长是1cm，那么这个长方体的体积是（&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^3$。</span>
+                    <span class="en">(2) If each grid cell is 1cm, what is the volume? （&nbsp;&nbsp;&nbsp;&nbsp;）$\text{cm}^3$.</span>
+                </p>
             </div>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">观察“左面”，它的长表示长方体的宽，即得出宽为3格，高为2格。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">观察“左面”，它的长表示长方体的宽，即得出宽为3格，高为2格。</span>
+                            <span class="en">Observe "Left": its length is the cuboid's width (3 cells), height is 2 cells.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">利用体积公式 $V = \text{长} \times \text{宽} \times
-                            \text{高}$ 进行计算：$4 \times 3 \times 2 = 24\text{cm}^3$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">利用体积公式 $V = \text{长} \times \text{宽} \times \text{高}$ 进行计算：$4 \times 3 \times 2 = 24\text{cm}^3$。</span>
+                            <span class="en">Use volume formula $V = L \times W \times H$: $4 \times 3 \times 2 = 24\text{cm}^3$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">观察“前面”，它的长对应长方体的长，宽对应高。得出长为4格，高为2格。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">观察“前面”，它的长对应长方体的长，宽对应高。得出长为4格，高为2格。</span>
+                            <span class="en">Observe "Front": its length is the cuboid's length (4 cells), height is 2 cells.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">结合长为4、宽为3的结论，在方格图中画出一个 $4 \times 3$
-                            的矩形作为“上面”。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">结合长为4、宽为3的结论，在方格图中画出一个 $4 \times 3$ 的矩形作为“上面”。</span>
+                            <span class="en">Combining L=4, W=3, draw a $4 \times 3$ rectangle as the "Top" view.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
@@ -618,113 +818,166 @@
 
 
         <!-- 五、解决问题部分 -->
-        <div class="section-title">五、解决问题</div>
+        <div class="section-title">
+            <span class="zh">五、解决问题</span>
+            <span class="en">V. Problem Solving</span>
+        </div>
 
         <div class="question-block">
-            <p>1. 李师傅要加工一批零件，经检验有96个合格，4个不合格(没有其他情况)。</p>
+            <p>
+                <span class="zh">1. 李师傅要加工一批零件，经检验有96个合格，4个不合格(没有其他情况)。</span>
+                <span class="en">1. Master Li processed a batch of parts. 96 were qualified, and 4 were unqualified.</span>
+            </p>
             <div class="sub-question">
-                <p>(1) 合格的零件数量是不合格的几倍？</p>
-                <p>(2) 合格的零件数量是加工总数的几分之几？</p>
+                <p>
+                    <span class="zh">(1) 合格的零件数量是不合格的几倍？</span>
+                    <span class="en">(1) How many times are qualified parts compared to unqualified ones?</span>
+                </p>
+                <p>
+                    <span class="zh">(2) 合格的零件数量是加工总数的几分之几？</span>
+                    <span class="en">(2) What fraction of the total parts are qualified?</span>
+                </p>
             </div>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">最后根据题目要求化简，将分数 $\frac{96}{100}$ 约分为最简分数
-                            $\frac{24}{25}$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">最后根据题目要求化简，将分数 $\frac{96}{100}$ 约分为最简分数 $\frac{24}{25}$。</span>
+                            <span class="en">Simplify the fraction $\frac{96}{100}$ to its simplest form $\frac{24}{25}$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">分析第二小问求占比，这需要总数，所以先计算零件总数：$96 + 4 =
-                            100$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">分析第二小问求占比，这需要总数，所以先计算零件总数：$96 + 4 = 100$。</span>
+                            <span class="en">To find the ratio, calculate the total: $96 + 4 = 100$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">用合格数除以加工总数来列出表示占比的分数：$96 \div 100$。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">用合格数除以加工总数来列出表示占比的分数：$96 \div 100$。</span>
+                            <span class="en">Divide qualified count by total to express the ratio: $96 \div 100$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">解答第一小问，求倍数直接用合格数除以不合格数：$96 \div 4 = 24$
-                            倍。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">解答第一小问，求倍数直接用合格数除以不合格数：$96 \div 4 = 24$ 倍。</span>
+                            <span class="en">For part 1, divide qualified by unqualified: $96 \div 4 = 24$ times.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
         </div>
 
         <div class="question-block">
-            <p>3. 如下图，有三种不同长度的小棒若干根。</p>
+            <p>
+                <span class="zh">3. 如下图，有三种不同长度的小棒若干根。</span>
+                <span class="en">3. As shown below, there are rods of three different lengths.</span>
+            </p>
             <div class="my-6 flex flex-col gap-4 ml-4 md:ml-10">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-2 bg-red-400 rounded-full shadow-sm"></div>
-                    <span class="text-sm font-medium text-gray-700">4cm &nbsp; (12根)</span>
+                    <span class="text-sm font-medium text-gray-700">4cm &nbsp; (<span class="zh">12根</span><span class="en">12 pcs</span>)</span>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-20 h-2 bg-green-400 rounded-full shadow-sm"></div>
-                    <span class="text-sm font-medium text-gray-700">6cm &nbsp; (10根)</span>
+                    <span class="text-sm font-medium text-gray-700">6cm &nbsp; (<span class="zh">10根</span><span class="en">10 pcs</span>)</span>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-32 h-2 bg-blue-400 rounded-full shadow-sm"></div>
-                    <span class="text-sm font-medium text-gray-700">10cm &nbsp; (6根)</span>
+                    <span class="text-sm font-medium text-gray-700">10cm &nbsp; (<span class="zh">6根</span><span class="en">6 pcs</span>)</span>
                 </div>
             </div>
             <div class="sub-question">
-                <p>(1) 小华想用这些小棒搭一个最大的正方体(小棒不能折断或拼接)。这个最大正方体的棱长和是多少厘米？</p>
-                <p>(2) 小明想用这些小棒搭一个最大的长方体(小棒不能折断或拼接)。这个最大长方体的棱长和是多少厘米？</p>
+                <p>
+                    <span class="zh">(1) 小华想用这些小棒搭一个最大的正方体(小棒不能折断或拼接)。这个最大正方体的棱长和是多少厘米？</span>
+                    <span class="en">(1) Xiao Hua wants to build the largest cube. Rods cannot be broken. What is its total edge length?</span>
+                </p>
+                <p>
+                    <span class="zh">(2) 小明想用这些小棒搭一个最大的长方体(小棒不能折断或拼接)。这个最大长方体的棱长和是多少厘米？</span>
+                    <span class="en">(2) Xiao Ming wants to build the largest cuboid. Rods cannot be broken. What is its total edge length?</span>
+                </p>
             </div>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-amber-700 font-medium">分析长方体条件：长宽高各需要4根。要长方体最大，选较长的小棒各4根（即10cm, 6cm,
-                            4cm）。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">分析长方体条件：长宽高各需要4根。要长方体最大，选较长的小棒各4根（即10cm, 6cm, 4cm）。</span>
+                            <span class="en">Analyze cuboid: needs 4 rods each for L, W, H. For largest, pick 10cm, 6cm, 4cm.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span
-                            class="text-sm text-blue-700 font-medium">分析正方体条件：正方体需要12根完全相等的棱。观察已知，只有4cm的小棒刚好满足12根。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">分析正方体条件：正方体需要12根完全相等的棱。观察已知，只有4cm的小棒刚好满足12根。</span>
+                            <span class="en">Analyze cube: needs 12 equal rods. Only 4cm rods have 12 pieces.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">代入棱长和公式计算长方体：$(\text{长} + \text{宽} + \text{高})
-                            \times 4 = (10 + 6 + 4) \times 4 = 80\text{cm}$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">代入棱长和公式计算长方体：$(\text{长} + \text{宽} + \text{高}) \times 4 = (10 + 6 + 4) \times 4 = 80\text{cm}$。</span>
+                            <span class="en">Calculate cuboid total edge: $(L+W+H) \times 4 = (10+6+4) \times 4 = 80\text{cm}$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">计算搭出的正方体棱长和：$4 \times 12 =
-                            48\text{cm}$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">计算搭出的正方体棱长和：$4 \times 12 = 48\text{cm}$。</span>
+                            <span class="en">Calculate cube total edge: $4 \times 12 = 48\text{cm}$.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
         </div>
 
         <div class="question-block">
-            <p>4. 如下图，给一个组合柜刷上白色的油漆(底面不用刷)。(把手处忽略不计)</p>
+            <p>
+                <span class="zh">4. 如下图，给一个组合柜刷上白色的油漆(底面不用刷)。(把手处忽略不计)</span>
+                <span class="en">4. As shown below, paint a combined cabinet white (excluding bottom). Ignore handles.</span>
+            </p>
             <div class="my-4">
                 <svg width="250" height="240" viewBox="0 0 250 240" xmlns="http://www.w3.org/2000/svg">
                     <polygon points="60,150 120,150 150,120 90,120" fill="#f9fafb" stroke="#4b5563" stroke-width="2"
@@ -753,43 +1006,63 @@
                 </svg>
             </div>
             <div class="sub-question">
-                <p>(1) 刷白漆的面积是多少平方米？</p>
-                <p>(2) 这个组合柜的体积是多少立方米？</p>
+                <p>
+                    <span class="zh">(1) 刷白漆的面积是多少平方米？</span>
+                    <span class="en">(1) What is the total area to be painted?</span>
+                </p>
+                <p>
+                    <span class="zh">(2) 这个组合柜的体积是多少立方米？</span>
+                    <span class="en">(2) What is the total volume of the cabinet?</span>
+                </p>
             </div>
 
             <!-- 逻辑重排模块 -->
             <div
                 class="logic-steps-section hidden mt-6 p-5 bg-indigo-50/50 rounded-xl border border-indigo-100 shadow-inner">
-                <h4 class="text-sm font-bold text-indigo-900 mb-3">🧩 理清思路：请将解题步骤拖拽到正确顺序</h4>
+                <h4 class="text-sm font-bold text-indigo-900 mb-3">
+                    <span class="zh">🧩 理清思路：请将解题步骤拖拽到正确顺序</span>
+                    <span class="en">🧩 Sort the Logic: Drag the steps into the correct order</span>
+                </h4>
                 <ul class="sortable-list space-y-2">
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="2">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-emerald-700 font-medium">分别求总体积：总和 $=$ 左侧正方体体积 $+$ 右侧长方体体积 $= 0.216 +
-                            0.288 = 0.504\text{m}^3$。</span>
+                        <span class="text-sm text-emerald-700 font-medium">
+                            <span class="zh">分别求总体积：总和 $=$ 左侧正方体体积 $+$ 右侧长方体体积 $= 0.216 + 0.288 = 0.504\text{m}^3$。</span>
+                            <span class="en">Calculate total volume: Left cube + Right cuboid = $0.216 + 0.288 = 0.504\text{m}^3$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="4">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-rose-700 font-medium">计算并合并：左表($1.8$) $+$ 右表($2.28$) $-$ 拼接遮挡($2
-                            \times 0.36$) $= 3.36\text{m}^2$。</span>
+                        <span class="text-sm text-rose-700 font-medium">
+                            <span class="zh">计算并合并：左表($1.8$) $+$ 右表($2.28$) $-$ 拼接遮挡($2 \times 0.36$) $= 3.36\text{m}^2$。</span>
+                            <span class="en">Calculate area: Left ($1.8$) + Right ($2.28$) - Overlap ($2 \times 0.36$) = $3.36\text{m}^2$.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="1">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span class="text-sm text-blue-700 font-medium">将整体拆解为：左侧 $0.6 \times 0.6 \times 0.6$
-                            的小正方体柜子，和右侧 $0.6 \times 0.6 \times 0.8$ 的高长方体柜子。</span>
+                        <span class="text-sm text-blue-700 font-medium">
+                            <span class="zh">将整体拆解为：左侧 $0.6 \times 0.6 \times 0.6$ 的小正方体柜子，和右侧 $0.6 \times 0.6 \times 0.8$ 的高长方体柜子。</span>
+                            <span class="en">Decompose: Left $0.6^3$ cube cabinet, Right $0.6 \times 0.6 \times 0.8$ cuboid cabinet.</span>
+                        </span>
                     </li>
                     <li class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex items-start gap-3 transition-colors"
                         data-order="3">
                         <span class="drag-handle text-gray-400 hover:text-indigo-500 mt-0.5 text-lg">⣿</span>
-                        <span
-                            class="text-sm text-amber-700 font-medium">梳理面积计算方法：单独计算左右柜子的外表面积（扣除各自的底面），最后再减去它们互相紧贴遮挡住的部分。</span>
+                        <span class="text-sm text-amber-700 font-medium">
+                            <span class="zh">梳理面积计算方法：单独计算左右柜子的外表面积（扣除各自的底面），最后再减去它们互相紧贴遮挡住的部分。</span>
+                            <span class="en">Method for area: Calculate separate surfaces (no bottoms), then subtract the contact area.</span>
+                        </span>
                     </li>
                 </ul>
                 <div class="mt-4 flex items-center gap-3">
                     <button
-                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">验证排序</button>
+                        class="verify-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors">
+                        <span class="zh">验证排序</span>
+                        <span class="en">Verify Order</span>
+                    </button>
                     <span class="verify-result text-sm"></span>
                 </div>
             </div>
@@ -824,11 +1097,11 @@
                 });
 
                 if (isHidden) {
-                    this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> 隐藏解题逻辑挑战';
+                    this.innerHTML = t('<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> 隐藏解题逻辑挑战', '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> Hide Logic Challenge');
                     this.classList.replace('bg-indigo-600', 'bg-gray-600');
                     this.classList.replace('hover:bg-indigo-700', 'hover:bg-gray-700');
                 } else {
-                    this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 显示解题逻辑挑战';
+                    this.innerHTML = t('<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 显示解题逻辑挑战', '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Show Logic Challenge');
                     this.classList.replace('bg-gray-600', 'bg-indigo-600');
                     this.classList.replace('hover:bg-gray-700', 'hover:bg-indigo-700');
                 }
@@ -850,7 +1123,7 @@
 
                     const resultSpan = this.closest('.logic-steps-section').querySelector('.verify-result');
                     if (isCorrect) {
-                        resultSpan.innerHTML = '✨ 排序正确！思路非常清晰！';
+                        resultSpan.innerHTML = t('✨ 排序正确！思路非常清晰！', '✨ Correct! Your logic is clear!');
                         resultSpan.className = 'verify-result text-sm font-bold text-green-600';
                         // 排序正确后高亮
                         items.forEach(item => {
@@ -858,7 +1131,7 @@
                             item.classList.remove('border-gray-200', 'border-red-300', 'bg-red-50');
                         });
                     } else {
-                        resultSpan.innerHTML = '🤔 逻辑好像有些断层，再调整一下顺序吧！';
+                        resultSpan.innerHTML = t('🤔 逻辑好像有些断层，再调整一下顺序吧！', '🤔 Logic seems a bit fragmented. Try adjusting the order!');
                         resultSpan.className = 'verify-result text-sm font-bold text-red-500';
                         // 提示错误
                         items.forEach(item => {
@@ -869,6 +1142,10 @@
                 });
             });
         });
+    </script>
+    <script src="../assets/script.js" defer></script>
+    <script>
+        // Existing internal logic...
     </script>
 </body>
 

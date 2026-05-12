@@ -50,7 +50,7 @@ function checkAnswer(element, isCorrect, explanation) {
     if (isCorrect) {
         element.classList.add('correct');
         if (feedback) {
-            feedback.innerHTML = `<p style="color: var(--accent-green); margin-top: 1rem; font-weight: bold;">✅ 正确！${explanation}</p>`;
+            feedback.innerHTML = `<p style="color: var(--accent-green); margin-top: 1rem; font-weight: bold;">${t('correct')} ${explanation}</p>`;
         }
     } else {
         element.classList.add('wrong');
@@ -62,7 +62,7 @@ function checkAnswer(element, isCorrect, explanation) {
             }
         });
         if (feedback) {
-            feedback.innerHTML = `<p style="color: var(--accent-pink); margin-top: 1rem; font-weight: bold;">❌ 错误。${explanation}</p>`;
+            feedback.innerHTML = `<p style="color: var(--accent-pink); margin-top: 1rem; font-weight: bold;">${t('wrong')} ${explanation}</p>`;
         }
     }
 }
@@ -364,19 +364,7 @@ function initQuiz1() {
     ];
     
     options = shuffle(options);
-    
-    let optionsHtml = `<div class="quiz-options">`;
-    const labels = ['A', 'B', 'C'];
-    options.forEach((opt, idx) => {
-        optionsHtml += `
-            <div class="quiz-option" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct}, '${opt.exp}')">
-                ${labels[idx]}. ${opt.text}
-            </div>
-        `;
-    });
-    optionsHtml += `</div>`;
-    
-    content.innerHTML = qText + optionsHtml;
+    content.innerHTML = qText + renderQuizOptions(options);
 }
 
 function getDigitSum(num) {
@@ -410,25 +398,20 @@ function initQuiz2() {
         if (n.correct) {
             return { text: `${n.val}`, correct: true, exp: `${sumStr}=${sum}，${sum}是3的倍数，正确！` };
         } else {
-            return { text: `${n.val}`, correct: false, exp: `${sumStr}=${sum}，${sum}不是3的倍数。` };
+            return { 
+                text: `${n.val}`, 
+                correct: false, 
+                exp: t(`${sumStr}=${sum}，${sum}不是3的倍数。`, `${sumStr}=${sum}, ${sum} is not a multiple of 3.`) 
+            };
         }
     });
     
     options = shuffle(options);
-    
-    const qText = `<p style="margin-top: 1rem;">下面哪个数字是 3 的倍数？（提示：各位数字相加法）</p>`;
-    let optionsHtml = `<div class="quiz-options">`;
-    const labels = ['A', 'B', 'C'];
-    options.forEach((opt, idx) => {
-        optionsHtml += `
-            <div class="quiz-option" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct}, '${opt.exp}')">
-                ${labels[idx]}. ${opt.text}
-            </div>
-        `;
-    });
-    optionsHtml += `</div>`;
-    
-    content.innerHTML = qText + optionsHtml;
+    const qText = t(
+        `<p style="margin-top: 1rem;">下面哪个数字是 3 的倍数？（提示：各位数字相加法）</p>`,
+        `<p style="margin-top: 1rem;">Which of the following numbers is a multiple of 3? (Hint: Use the sum of digits rule)</p>`
+    );
+    content.innerHTML = qText + renderQuizOptions(options);
 }
 
 function initQuiz3() {
@@ -445,28 +428,32 @@ function initQuiz3() {
     const A5 = L*W + 2*(L*H + W*H);
     const Vol = L*W*H;
     
-    const qText = `<p style="margin-top: 1rem;">做一个长 ${L} 分米，宽 ${W} 分米，高 ${H} 分米的<strong>无盖</strong>木箱，至少需要多少平方分米的木板？</p>`;
+    const qText = t(
+        `<p style="margin-top: 1rem;">做一个长 ${L} 分米，宽 ${W} 分米，高 ${H} 分米的<strong>无盖</strong>木箱，至少需要多少平方分米的木板？</p>`,
+        `<p style="margin-top: 1rem;">To make a <strong>lidless</strong> box with length ${L} dm, width ${W} dm, and height ${H} dm, how many square decimeters of wood are needed?</p>`
+    );
     
     let options = [
-        { text: `${A5} 平方分米`, correct: true, exp: `无盖说明只需要算5个面：底面+前后左右四个面。${L}×${W} + 2×(${L}×${H} + ${W}×${H}) = ${A5}` },
-        { text: `${A6} 平方分米`, correct: false, exp: `这算出的是6个面的面积，题目说的是【无盖】哦！` },
-        { text: `${Vol} 平方分米`, correct: false, exp: `这是体积公式！求木板大小应该算表面积。` }
+        { 
+            text: t(`${A5} 平方分米`, `${A5} dm²`), 
+            correct: true, 
+            exp: t(`无盖说明只需要算5个面：底面+前后左右四个面。${L}×${W} + 2×(${L}×${H} + ${W}×${H}) = ${A5}`, 
+                   `Lidless means only 5 faces: bottom + 4 sides. ${L}×${W} + 2×(${L}×${H} + ${W}×${H}) = ${A5}`) 
+        },
+        { 
+            text: t(`${A6} 平方分米`, `${A6} dm²`), 
+            correct: false, 
+            exp: t(`这算出的是6个面的面积，题目说的是【无盖】哦！`, `This is for 6 faces, but the box is lidless!`) 
+        },
+        { 
+            text: t(`${Vol} 平方分米`, `${Vol} dm³`), 
+            correct: false, 
+            exp: t(`这是体积公式！求木板大小应该算表面积。`, `This is the volume formula! You need surface area.`) 
+        }
     ];
     
     options = shuffle(options);
-    
-    let optionsHtml = `<div class="quiz-options">`;
-    const labels = ['A', 'B', 'C'];
-    options.forEach((opt, idx) => {
-        optionsHtml += `
-            <div class="quiz-option" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct}, '${opt.exp}')">
-                ${labels[idx]}. ${opt.text}
-            </div>
-        `;
-    });
-    optionsHtml += `</div>`;
-    
-    content.innerHTML = qText + optionsHtml;
+    content.innerHTML = qText + renderQuizOptions(options);
 }
 
 // ==========================================
@@ -509,20 +496,20 @@ function updateFraction() {
         const sn = numer / g, sd = denom / g;
         let info = '';
         if (numer < denom) {
-            info += `<span style="color:var(--accent-green)">✓ 真分数</span>（小于1）`;
+            info += `<span style="color:var(--accent-green)">✓ ${t('真分数', 'Proper Fraction')}</span>${t('（小于1）', ' (< 1)')}`;
         } else if (numer === denom) {
             info += `<span style="color:var(--accent-blue)">= 1</span>`;
         } else {
             const whole = Math.floor(numer / denom);
             const rem = numer % denom;
-            info += `<span style="color:var(--accent-pink)">假分数</span> = ${whole}${rem > 0 ? ' ' + rem + '/' + denom : ''}`;
+            info += `<span style="color:var(--accent-pink)">${t('假分数', 'Improper Fraction')}</span> = ${whole}${rem > 0 ? ' ' + rem + '/' + denom : ''}`;
         }
         if (g > 1) {
-            info += `<br>约分：${numer}/${denom} = <strong style="color:var(--accent-green)">${sn}/${sd}</strong>（÷${g}）`;
+            info += `<br>${t('约分', 'Simplification')}：${numer}/${denom} = <strong style="color:var(--accent-green)">${sn}/${sd}</strong>（÷${g}）`;
         } else {
-            info += `<br><span style="color:var(--accent-green)">已是最简分数</span>`;
+            info += `<br><span style="color:var(--accent-green)">${t('已是最简分数', 'Already simplest form')}</span>`;
         }
-        info += `<br>小数：≈ ${(numer / denom).toFixed(3)}`;
+        info += `<br>${t('小数', 'Decimal')}：≈ ${(numer / denom).toFixed(3)}`;
         equiv.innerHTML = info;
     }
 }
@@ -542,11 +529,24 @@ function initQuiz4() {
     const sd = Math.floor(Math.random() * 5) + sn + 1;
     const n = sn * g, d = sd * g;
 
-    const qText = `<p style="margin-top: 1rem;">把 ${n}/${d} 约分成最简分数是？</p>`;
+    const qText = t(`<p style="margin-top: 1rem;">把 ${n}/${d} 约分成最简分数是？</p>`, `<p style="margin-top: 1rem;">Simplify ${n}/${d} to the simplest form.</p>`);
     let options = [
-        { text: `${sn}/${sd}`, correct: true, exp: `${n}和${d}的最大公因数是${g}，同时÷${g}得到${sn}/${sd}。` },
-        { text: `${n/2}/${d/2}`, correct: false, exp: `还没有约到最简哦！继续找公因数。` },
-        { text: `${sn+1}/${sd+1}`, correct: false, exp: `约分是分子分母同时除以公因数，不是减去相同的数。` }
+        { 
+            text: `${sn}/${sd}`, 
+            correct: true, 
+            exp: t(`${n}和${d}的最大公因数是${g}，同时÷${g}得到${sn}/${sd}。`, 
+                   `The GCF of ${n} and ${d} is ${g}. Dividing both by ${g} results in ${sn}/${sd}.`) 
+        },
+        { 
+            text: `${n/2}/${d/2}`, 
+            correct: false, 
+            exp: t(`还没有约到最简哦！继续找公因数。`, `Not in simplest form yet! Keep finding common factors.`) 
+        },
+        { 
+            text: `${sn+1}/${sd+1}`, 
+            correct: false, 
+            exp: t(`约分是分子分母同时除以公因数，不是减去相同的数。`, `Simplification involves division, not subtraction.`) 
+        }
     ];
     options = shuffle(options);
     let html = qText + renderQuizOptions(options);
@@ -772,20 +772,20 @@ function calcFraction() {
     // Step 1: 通分 (only if denominators differ)
     if (d1 !== d2) {
         html += `<div class="step-section">`;
-        html += `<div class="step-row"><span class="step-label">① 通分</span><span style="color:var(--text-secondary);font-size:0.85rem;">公分母 = lcm(${d1}, ${d2}) = ${commonD}</span></div>`;
+        html += `<div class="step-row"><span class="step-label">${t('① 通分', '① Common Denom.')}</span><span style="color:var(--text-secondary);font-size:0.85rem;">${t('找最小公倍数', 'Find LCM')} = lcm(${d1}, ${d2}) = ${commonD}</span></div>`;
         html += `<div class="step-row">`;
-        html += F(n1, d1) + `<span class="step-eq">=</span>` + F(newN1, commonD, 'result-frac') + `<span style="margin:0 0.8rem;color:var(--text-secondary)">，</span>`;
+        html += F(n1, d1) + `<span class="step-eq">=</span>` + F(newN1, commonD, 'result-frac') + `<span style="margin:0 0.8rem;color:var(--text-secondary)">, </span>`;
         html += F(n2, d2) + `<span class="step-eq">=</span>` + F(newN2, commonD, 'result-frac');
         html += `</div></div>`;
     } else {
         html += `<div class="step-section">`;
-        html += `<div class="step-row"><span class="step-label">① 同分母</span><span style="color:var(--text-secondary);font-size:0.85rem;">分母都是 ${d1}，直接计算</span></div>`;
+        html += `<div class="step-row"><span class="step-label">${t('① 同分母', '① Same Denom.')}</span><span style="color:var(--text-secondary);font-size:0.85rem;">${t('分母相同，直接计算', 'Denominators same, calculate directly')}</span></div>`;
         html += `</div>`;
     }
 
     // Step 2: 计算
     html += `<div class="step-section" style="margin-top:0.5rem;">`;
-    html += `<div class="step-row"><span class="step-label">② 计算</span></div>`;
+    html += `<div class="step-row"><span class="step-label">${t('② 计算', '② Calculation')}</span></div>`;
     html += `<div class="step-row">`;
     html += F(newN1, commonD) + `<span class="calc-op" style="font-size:1.2rem;">${opSymbol}</span>` + F(newN2, commonD);
     html += `<span class="step-eq">=</span>` + F(resN, commonD);
@@ -794,7 +794,7 @@ function calcFraction() {
     // Step 3: 化简 / 结果
     html += `<div class="step-section" style="margin-top:0.5rem;">`;
     if (g > 1) {
-        html += `<div class="step-row"><span class="step-label">③ 约分</span><span style="color:var(--text-secondary);font-size:0.85rem;">÷ ${g}</span></div>`;
+        html += `<div class="step-row"><span class="step-label">${t('③ 约分', '③ Simplification')}</span><span style="color:var(--text-secondary);font-size:0.85rem;">÷ ${g}</span></div>`;
         html += `<div class="step-row">`;
         html += F(resN, commonD) + `<span class="step-eq">=</span>`;
         if (finalD === 1) {
@@ -804,14 +804,14 @@ function calcFraction() {
         }
         html += `</div>`;
     } else {
-        html += `<div class="step-row"><span class="step-label">③ 结果</span></div>`;
+        html += `<div class="step-row"><span class="step-label">${t('③ 结果', '③ Result')}</span></div>`;
         html += `<div class="step-row">`;
         if (finalD === 1) {
             html += `<span class="result-frac" style="font-size:1.5rem;">${finalN}</span>`;
         } else {
             html += F(finalN, finalD, 'result-frac');
         }
-        html += `<span style="color:var(--accent-green);margin-left:0.5rem;">✓ 已是最简分数</span>`;
+        html += `<span style="color:var(--accent-green);margin-left:0.5rem;">✓ ${t('已是最简分数', 'Already simplest form')}</span>`;
         html += `</div>`;
     }
     html += `</div>`;
@@ -853,20 +853,20 @@ function initQuiz6() {
 
 const chartDataSets = {
     temp: {
-        labels: ['周一','周二','周三','周四','周五','周六','周日'],
-        single: [{ name: '气温(°C)', data: [18,22,25,20,23,28,26], color: '#3b82f6' }],
-        dual: [
-            { name: '最高温(°C)', data: [18,22,25,20,23,28,26], color: '#3b82f6' },
-            { name: '最低温(°C)', data: [8,12,14,10,13,17,15], color: '#ec4899' }
-        ]
+        get labels() { return t(['周一','周二','周三','周四','周五','周六','周日'], ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']); },
+        get single() { return [{ name: t('气温(°C)', 'Temp(°C)'), data: [18,22,25,20,23,28,26], color: '#3b82f6' }]; },
+        get dual() { return [
+            { name: t('最高温(°C)', 'High(°C)'), data: [18,22,25,20,23,28,26], color: '#3b82f6' },
+            { name: t('最低温(°C)', 'Low(°C)'), data: [8,12,14,10,13,17,15], color: '#ec4899' }
+        ]; }
     },
     sales: {
-        labels: ['1月','2月','3月','4月','5月','6月'],
-        single: [{ name: '销量(件)', data: [120,95,140,180,210,175], color: '#10b981' }],
-        dual: [
-            { name: '甲店', data: [120,95,140,180,210,175], color: '#3b82f6' },
-            { name: '乙店', data: [90,110,105,160,150,200], color: '#ec4899' }
-        ]
+        get labels() { return t(['1月','2月','3月','4月','5月','6月'], ['Jan','Feb','Mar','Apr','May','Jun']); },
+        get single() { return [{ name: t('销量(件)', 'Sales(pcs)'), data: [120,95,140,180,210,175], color: '#10b981' }]; },
+        get dual() { return [
+            { name: t('甲店', 'Shop A'), data: [120,95,140,180,210,175], color: '#3b82f6' },
+            { name: t('乙店', 'Shop B'), data: [90,110,105,160,150,200], color: '#ec4899' }
+        ]; }
     }
 };
 
@@ -953,17 +953,29 @@ function initQuiz7() {
     if (feedback) feedback.innerHTML = '';
 
     const types = [
-        { q: '要比较两个城市全年气温的变化趋势', a: '复式折线统计图', wrong: ['条形统计图', '扇形统计图'] },
-        { q: '要统计某班同学的身高分布情况', a: '条形统计图', wrong: ['折线统计图', '复式折线统计图'] },
-        { q: '要表示一周内每天最高温度的变化', a: '折线统计图', wrong: ['条形统计图', '扇形统计图'] }
+        { 
+            q: t('要比较两个城市全年气温的变化趋势', 'To compare the annual temperature trends of two cities'), 
+            a: t('复式折线统计图', 'Compound Line Graph'), 
+            wrong: [t('条形统计图', 'Bar Chart'), t('扇形统计图', 'Pie Chart')] 
+        },
+        { 
+            q: t('要统计某班同学的身高分布情况', 'To show the height distribution of a class'), 
+            a: t('条形统计图', 'Bar Chart'), 
+            wrong: [t('折线统计图', 'Line Graph'), t('复式折线统计图', 'Compound Line Graph')] 
+        },
+        { 
+            q: t('要表示一周内每天最高温度的变化', 'To represent the daily high temperature changes in a week'), 
+            a: t('折线统计图', 'Line Graph'), 
+            wrong: [t('条形统计图', 'Bar Chart'), t('扇形统计图', 'Pie Chart')] 
+        }
     ];
     const chosen = types[Math.floor(Math.random() * types.length)];
 
-    const qText = `<p style="margin-top: 1rem;">${chosen.q}，应该选用什么统计图最合适？</p>`;
+    const qText = t(`<p style="margin-top: 1rem;">${chosen.q}，应该选用什么统计图最合适？</p>`, `<p style="margin-top: 1rem;">${chosen.q}, which graph is most suitable?</p>`);
     let options = [
-        { text: chosen.a, correct: true, exp: `正确！${chosen.a}最适合这种情况。` },
-        { text: chosen.wrong[0], correct: false, exp: `${chosen.wrong[0]}不太适合这个场景哦。` },
-        { text: chosen.wrong[1], correct: false, exp: `${chosen.wrong[1]}在这里不是最佳选择。` }
+        { text: chosen.a, correct: true, exp: t(`正确！${chosen.a}最适合这种情况。`, `Correct! ${chosen.a} is the best fit.`) },
+        { text: chosen.wrong[0], correct: false, exp: t(`${chosen.wrong[0]}不太适合这个场景哦。`, `${chosen.wrong[0]} is not quite right here.`) },
+        { text: chosen.wrong[1], correct: false, exp: t(`${chosen.wrong[1]}在这里不是最佳选择。`, `${chosen.wrong[1]} is not the best choice here.`) }
     ];
     options = shuffle(options);
     content.innerHTML = qText + renderQuizOptions(options);
@@ -1023,11 +1035,11 @@ function weighBalls() {
     });
 
     if (leftBalls.length === 0 || rightBalls.length === 0) {
-        document.getElementById('ch8-log').innerHTML += '<br>⚠️ 两边都需要放球才能称量！';
+        document.getElementById('ch8-log').innerHTML += t('<br>⚠️ 两边都需要放球才能称量！', '<br>⚠️ Both pans need balls to weigh!');
         return;
     }
     if (leftBalls.length !== rightBalls.length) {
-        document.getElementById('ch8-log').innerHTML += '<br>⚠️ 两边放的球数量必须相同！';
+        document.getElementById('ch8-log').innerHTML += t('<br>⚠️ 两边放的球数量必须相同！', '<br>⚠️ Number of balls must be equal on both sides!');
         return;
     }
 
@@ -1039,18 +1051,26 @@ function weighBalls() {
 
     let resultMsg = '';
     if (!defectOnLeft && !defectOnRight) {
-        resultMsg = '⚖️ 天平平衡！次品不在天平上，在没放上来的球中。';
+        resultMsg = t('⚖️ 天平平衡！次品不在天平上，在没放上来的球中。', '⚖️ Balanced! Defect is not on the pans.');
         resetBeam();
     } else if (defectOnLeft) {
-        resultMsg = '⬆️ 左盘翘起来了（左轻）！次品在左盘中。';
+        resultMsg = t('⬆️ 左盘翘起来了（左轻）！次品在左盘中。', '⬆️ Left pan tilted up (Lighter)! Defect is in Left Pan.');
         tiltBeam('left-light');
     } else {
-        resultMsg = '⬆️ 右盘翘起来了（右轻）！次品在右盘中。';
+        resultMsg = t('⬆️ 右盘翘起来了（右轻）！次品在右盘中。', '⬆️ Right pan tilted up (Lighter)! Defect is in Right Pan.');
         tiltBeam('right-light');
     }
 
     const log = document.getElementById('ch8-log');
-    log.innerHTML += `<br><strong>第${balanceState.count}次：</strong>左[${leftBalls.map(i=>i+1).join(',')}] vs 右[${rightBalls.map(i=>i+1).join(',')}] → ${resultMsg}`;
+    const stepText = t(`第${balanceState.count}次`, `Step ${balanceState.count}`);
+    const vsText = t('vs', 'vs');
+    log.innerHTML += `<br><strong>${stepText}：</strong>${t('左', 'Left')}[${leftBalls.map(i=>i+1).join(',')}] ${vsText} ${t('右', 'Right')}[${rightBalls.map(i=>i+1).join(',')}] → ${resultMsg}`;
+    
+    // Update count in UI for both languages
+    const countEl = document.getElementById('ch8-count');
+    const countElEn = document.getElementById('ch8-count-en');
+    if (countEl) countEl.textContent = balanceState.count;
+    if (countElEn) countElEn.textContent = balanceState.count;
 
     // Check if only one ball remains as candidate
     if (leftBalls.length === 1 && rightBalls.length === 1) {
@@ -1067,8 +1087,19 @@ function revealDefect(idx) {
     const ball = document.querySelector(`.item-ball[data-idx="${idx}"]`);
     if (ball) ball.classList.add('found-defect');
     const log = document.getElementById('ch8-log');
-    let rating = balanceState.count <= 2 ? '🌟 太棒了！最优解！' : (balanceState.count <= 3 ? '👍 不错！' : '💪 试试能否再少几次？');
-    log.innerHTML += `<br><br>🎉 <strong>找到了！球 ${idx + 1} 是次品！</strong>用了 ${balanceState.count} 次称量。${rating}`;
+    
+    let rating = '';
+    if (balanceState.count <= 2) {
+        rating = t('🌟 太棒了！最优解！', '🌟 Excellent! Optimal solution!');
+    } else if (balanceState.count <= 3) {
+        rating = t('👍 不错！', '👍 Good job!');
+    } else {
+        rating = t('💪 试试能否再少几次？', '💪 Try finding it in fewer steps next time?');
+    }
+    
+    const foundText = t(`🎉 <strong>找到了！球 ${idx + 1} 是次品！</strong>`, `🎉 <strong>Found it! Ball ${idx + 1} is defective!</strong>`);
+    const countText = t(`用了 ${balanceState.count} 次称量。`, `Used ${balanceState.count} weighs.`);
+    log.innerHTML += `<br><br>${foundText} ${countText} ${rating}`;
 }
 
 function resetBeam() {
@@ -1107,11 +1138,28 @@ function initQuiz8() {
     const s = scenarios[Math.floor(Math.random() * scenarios.length)];
     const wrongAnswers = [s.ans + 1, s.ans + 2].filter(a => a !== s.ans);
 
-    const qText = `<p style="margin-top: 1rem;">有 ${s.n} 个外观相同的球，其中1个是次品（偏轻），用天平称量，最少需要几次才能保证找到次品？</p>`;
+    const qText = t(
+        `<p style="margin-top: 1rem;">有 ${s.n} 个外观相同的球，其中1个是次品（偏轻），用天平称量，最少需要几次才能保证找到次品？</p>`,
+        `<p style="margin-top: 1rem;">There are ${s.n} identical-looking balls. One is defective (lighter). What is the minimum number of weighs to guarantee finding it?</p>`
+    );
+    
     let options = [
-        { text: `${s.ans}次`, correct: true, exp: `${s.n}个物品，每次分3组，3的${s.ans}次方=${Math.pow(3,s.ans)}≥${s.n}，所以最少${s.ans}次。` },
-        { text: `${wrongAnswers[0]}次`, correct: false, exp: `可以更少哦！记住每次分3组的策略。` },
-        { text: `${wrongAnswers[1]}次`, correct: false, exp: `太多了！用分3组的策略可以更高效。` }
+        { 
+            text: t(`${s.ans}次`, `${s.ans} times`), 
+            correct: true, 
+            exp: t(`${s.n}个物品，每次分3组，3的${s.ans}次方=${Math.pow(3,s.ans)}≥${s.n}，所以最少${s.ans}次。`, 
+                   `${s.n} items, divide into 3 groups. 3 to the power of ${s.ans} = ${Math.pow(3,s.ans)} ≥ ${s.n}, so minimum is ${s.ans}.`)
+        },
+        { 
+            text: t(`${wrongAnswers[0]}次`, `${wrongAnswers[0]} times`), 
+            correct: false, 
+            exp: t(`可以更少哦！记住每次分3组的策略。`, `Can be even fewer! Remember the 3-group strategy.`) 
+        },
+        { 
+            text: t(`${wrongAnswers[1]}次`, `${wrongAnswers[1]} times`), 
+            correct: false, 
+            exp: t(`太多了！用分3组的策略可以更高效。`, `Too many! The 3-group strategy is more efficient.`) 
+        }
     ];
     options = shuffle(options);
     content.innerHTML = qText + renderQuizOptions(options);
@@ -1133,4 +1181,60 @@ function renderQuizOptions(options) {
     });
     html += `</div>`;
     return html;
+}
+// ==========================================
+// Language Utilities
+// ==========================================
+
+function t(zh, en) {
+    return document.body.classList.contains('lang-en') ? en : zh;
+}
+
+function initLanguage() {
+    const savedLang = localStorage.getItem('app-lang') || 'zh';
+    setLanguage(savedLang);
+    createLanguageToggle(savedLang);
+}
+
+function setLanguage(lang) {
+    document.body.classList.remove('lang-zh', 'lang-en');
+    document.body.classList.add('lang-' + lang);
+    localStorage.setItem('app-lang', lang);
+    
+    // Update active state of toggle buttons
+    const btns = document.querySelectorAll('.lang-btn');
+    btns.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+}
+
+function createLanguageToggle(activeLang) {
+    // Prevent duplicate toggles
+    if (document.querySelector('.lang-toggle-container')) return;
+    
+    const container = document.createElement('div');
+    container.className = 'lang-toggle-container';
+    
+    const zhBtn = document.createElement('div');
+    zhBtn.className = 'lang-btn' + (activeLang === 'zh' ? ' active' : '');
+    zhBtn.setAttribute('data-lang', 'zh');
+    zhBtn.innerHTML = '中文';
+    zhBtn.onclick = () => setLanguage('zh');
+    
+    const enBtn = document.createElement('div');
+    enBtn.className = 'lang-btn' + (activeLang === 'en' ? ' active' : '');
+    enBtn.setAttribute('data-lang', 'en');
+    enBtn.innerHTML = 'EN';
+    enBtn.onclick = () => setLanguage('en');
+    
+    container.appendChild(zhBtn);
+    container.appendChild(enBtn);
+    document.body.appendChild(container);
+}
+
+// Global initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguage);
+} else {
+    initLanguage();
 }

@@ -4,75 +4,138 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="light dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第八单元：逻辑挑战 - 找次品</title>
+    <title class="zh">第八单元：逻辑挑战 - 找次品</title>
+    <title class="en">Unit 8: Logic Challenge - Finding Defective Items</title>
     <link rel="stylesheet" href="./assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <a href="m5b-ch08.html" class="nav-back">← 返回单元概览</a>
+        <a href="m5b-ch08.html" class="nav-back">
+            <span class="zh">← 返回单元概览</span>
+            <span class="en">← Back to Unit Overview</span>
+        </a>
         
         <div class="chapter-header glass glass-card">
-            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">逻辑挑战</div>
-            <h1 class="title text-gradient">找次品策略逻辑训练</h1>
-            <p>掌握“分三份”的最优策略，建立严密的逻辑推理能力。</p>
+            <div class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);">
+                <span class="zh">逻辑挑战</span>
+                <span class="en">Logic Challenge</span>
+            </div>
+            <h1 class="title text-gradient">
+                <span class="zh">找次品策略逻辑训练</span>
+                <span class="en">Finding Defective Items Logic</span>
+            </h1>
+            <p class="zh">掌握“分三份”的最优策略，建立严密的逻辑推理能力。</p>
+            <p class="en">Master the "divide by three" strategy and build rigorous reasoning skills.</p>
         </div>
 
         <!-- Multiple Choice Section -->
         <div class="section">
-            <h2 class="section-title">💡 第一关：思维选择</h2>
+            <h2 class="section-title">
+                <span class="zh">💡 第一关：思维选择</span>
+                <span class="en">💡 Round 1: Logic Choice</span>
+            </h2>
             
             <div class="logic-card">
                 <div class="question-title">
-                    <span>1.</span> 使用天平找次品（次品较轻）时，将待测物品分成几份是最科学、最高效的？
+                    <span>1.</span> 
+                    <span class="zh">使用天平找次品（次品较轻）时，将待测物品分成几份是最科学、最高效的？</span>
+                    <span class="en">When using a scale to find a lighter defective item, dividing into how many groups is most efficient?</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">分成3份（尽量平均分）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">分成2份</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">分成4份</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">一个一个称</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">分成3份（尽量平均分）</span>
+                        <span class="en">Divide into 3 groups (as evenly as possible)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">分成2份</span>
+                        <span class="en">Divide into 2 groups</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">分成4份</span>
+                        <span class="en">Divide into 4 groups</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">一个一个称</span>
+                        <span class="en">Weigh them one by one</span>
+                    </button>
                 </div>
             </div>
 
             <div class="logic-card">
                 <div class="question-title">
-                    <span>2.</span> 如果有 81 个零件，其中有一个较轻的次品，最少称几次能保证找到它？（逻辑提示：3的几次方大于81）
+                    <span>2.</span> 
+                    <span class="zh">如果有 81 个零件，其中有一个较轻的次品，最少称几次能保证找到它？（逻辑提示：3的几次方大于81）</span>
+                    <span class="en">With 81 parts and one lighter defect, what's the minimum weighings to guarantee finding it? (Hint: 3^?)</span>
                 </div>
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkChoice(this, true)">4次（3的4次方是81）</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">3次</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">5次</button>
-                    <button class="option-btn" onclick="checkChoice(this, false)">9次</button>
+                    <button class="option-btn" onclick="checkChoice(this, true)">
+                        <span class="zh">4次（3的4次方是81）</span>
+                        <span class="en">4 times (3^4 = 81)</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">3次</span>
+                        <span class="en">3 times</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">5次</span>
+                        <span class="en">5 times</span>
+                    </button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">
+                        <span class="zh">9次</span>
+                        <span class="en">9 times</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Sorting Section -->
         <div class="section">
-            <h2 class="section-title">🧩 第二关：逻辑排序</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">请排列出在 <b>9个</b> 零件中找到一个较轻次品的<b>第一次</b>称量逻辑：</p>
+            <h2 class="section-title">
+                <span class="zh">🧩 第二关：逻辑排序</span>
+                <span class="en">🧩 Round 2: Logic Sorting</span>
+            </h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                <span class="zh">请排列出在 <b>9个</b> 零件中找到一个较轻次品的<b>第一次</b>称量逻辑：</span>
+                <span class="en">Arrange the logic for the <b>first</b> weighing to find one lighter defect among <b>9</b> parts:</span>
+            </p>
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
                     <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">⣿</div>
-                        <span>从3份中任取2份放到天平两侧。</span>
+                        <span>
+                            <span class="zh">从3份中任取2份放到天平两侧。</span>
+                            <span class="en">Place two of the groups on the scale.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">⣿</div>
-                        <span>将9个零件平均分成3份，每份3个。</span>
+                        <span>
+                            <span class="zh">将9个零件平均分成3份，每份3个。</span>
+                            <span class="en">Divide the 9 parts into 3 equal groups of 3.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">⣿</div>
-                        <span>若天平不平衡，则次品在较轻的那一端（剩余3个）。</span>
+                        <span>
+                            <span class="zh">若天平不平衡，则次品在较轻的那一端（剩余3个）。</span>
+                            <span class="en">If unbalanced, the defect is in the lighter group.</span>
+                        </span>
                     </div>
                     <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
                         <div class="sort-handle">⣿</div>
-                        <span>若天平平衡，则次品在没上天平的那份中（剩余3个）。</span>
+                        <span>
+                            <span class="zh">若天平平衡，则次品在没上天平的那份中（剩余3个）。</span>
+                            <span class="en">If balanced, the defect is in the group not on the scale.</span>
+                        </span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 推理严密！一次称量排除三分之二，这是最优算法的精髓。', '❌ 排序有误。逻辑提示：先分组，再上称，最后根据平衡状态锁定范围。')">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', t('✨ 推理严密！一次称量排除三分之二，这是最优算法的精髓。', '✨ Strong reasoning! Eliminating 2/3 in one weighing is the key.'), t('❌ 排序有误。逻辑提示：先分组，再上称，最后根据平衡状态锁定范围。', '❌ Incorrect order. Hint: Group first, weigh, then lock scope based on balance.'))">
+                    <span class="zh">提交排序</span>
+                    <span class="en">Submit Order</span>
+                </button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -80,12 +143,15 @@
         <div class="chant-box">
             <div class="chant-marquee">
                 <div class="chant-track">
-                    <span>找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
-                    <span>找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
+                    <span class="zh">找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
+                    <span class="en">For defective items <b class="highlight-blue">split into three</b>, if not even <b class="highlight-pink">make it close</b>. If balanced <b class="highlight-orange">it's outside</b>, if not <b class="highlight-green">it's the lighter side</b>.</span>
+                    <span class="zh">找次品里<b class="highlight-blue">分三份</b>，不能均分<b class="highlight-pink">尽量匀</b>。天平平衡<b class="highlight-orange">在外面</b>，不平就在<b class="highlight-green">重轻边</b>。</span>
+                    <span class="en">For defective items <b class="highlight-blue">split into three</b>, if not even <b class="highlight-pink">make it close</b>. If balanced <b class="highlight-orange">it's outside</b>, if not <b class="highlight-green">it's the lighter side</b>.</span>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./assets/script.js"></script>
 
     <script>
         function checkChoice(btn, isCorrect) {
