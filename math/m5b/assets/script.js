@@ -1214,18 +1214,23 @@ function createLanguageToggle(activeLang) {
     
     const container = document.createElement('div');
     container.className = 'lang-toggle-container';
+    container.style.cursor = 'pointer';
+    
+    // Clicking the container toggles the language
+    container.onclick = () => {
+        const isCurrentlyEn = document.body.classList.contains('lang-en');
+        setLanguage(isCurrentlyEn ? 'zh' : 'en');
+    };
     
     const zhBtn = document.createElement('div');
     zhBtn.className = 'lang-btn' + (activeLang === 'zh' ? ' active' : '');
     zhBtn.setAttribute('data-lang', 'zh');
     zhBtn.innerHTML = '中文';
-    zhBtn.onclick = () => setLanguage('zh');
     
     const enBtn = document.createElement('div');
     enBtn.className = 'lang-btn' + (activeLang === 'en' ? ' active' : '');
     enBtn.setAttribute('data-lang', 'en');
     enBtn.innerHTML = 'EN';
-    enBtn.onclick = () => setLanguage('en');
     
     container.appendChild(zhBtn);
     container.appendChild(enBtn);
