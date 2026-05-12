@@ -539,10 +539,11 @@ a {
 
 /* Logic Training Styles */
 .logic-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--glass-bg);
+  background-color: #1e293b; /* Solid fallback */
   border: 1px solid var(--glass-border);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
@@ -557,25 +558,27 @@ a {
 }
 
 .options-grid {
-  display: grid;
-  grid-template-columns: 1fr; /* Force single column on mobile */
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .option-btn {
-  background: rgba(255, 255, 255, 0.05);
-  background-color: rgba(255, 255, 255, 0.05); /* Fallback */
+  background: rgba(0, 0, 0, 0.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.1rem;
+  padding: 1rem 1.2rem;
   border-radius: 0.8rem;
   cursor: pointer;
   text-align: left;
   transition: var(--transition);
-  color: var(--text-primary);
-  font-size: 1.08rem;
+  color: var(--text-primary) !important;
+  font-size: 1.05rem;
   font-family: inherit;
-  -webkit-appearance: none; /* Fix for WeChat/Mobile Safari */
+  -webkit-appearance: none;
   appearance: none;
+  width: 100%;
+  display: block;
 }
 
 .option-btn:hover {
@@ -600,7 +603,8 @@ a {
 }
 
 .sort-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
   border: 1px solid var(--glass-border);
   padding: 1rem;
   border-radius: 0.8rem;
@@ -611,6 +615,7 @@ a {
   transition: var(--transition);
   font-size: 1.08rem;
   touch-action: none; /* Critical for mobile touch drag */
+  color: var(--text-primary) !important;
 }
 
 .sort-item:active {
@@ -627,9 +632,9 @@ a {
 .check-btn {
   margin-top: 1.5rem;
   padding: 0.8rem 2rem;
-  background: var(--accent-purple);
-  background-color: var(--accent-purple);
-  color: white;
+  background: var(--accent-purple) !important;
+  background-color: var(--accent-purple) !important;
+  color: white !important;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -638,6 +643,8 @@ a {
   font-size: 1.1rem;
   -webkit-appearance: none;
   appearance: none;
+  display: block;
+  width: 100%;
 }
 
 .check-btn:hover {
