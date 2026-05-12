@@ -715,11 +715,11 @@ a {
 /* Language Toggle Visibility */
 /* Default: Hide English, Show Chinese */
 .en { display: none !important; }
-.zh { display: unset; } 
+/* .zh elements stay as their natural display (block/inline) by default */
 
 /* English Mode */
 body.lang-en .zh { display: none !important; }
-body.lang-en .en { display: unset !important; }
+body.lang-en .en { display: revert !important; } /* Reverts to UA stylesheet (block for p, inline for span) */
 body.lang-en .en.flex { display: flex !important; }
 body.lang-en .en.block { display: block !important; }
 
