@@ -104,6 +104,11 @@ a {
   margin-top: 0.5rem;
 }
 
+.title.text-gradient {
+  display: inline-block;
+  width: auto;
+}
+
 .subtitle {
   text-align: center;
   color: var(--text-secondary);
