@@ -214,12 +214,12 @@
             <p class="en">When adding/subtracting fractions with different denominators, find the <b>LCM</b> first.</p>
             <div class="calc-area" style="margin: 1.5rem 0;">
                 <div class="calc-row">
-                    <input type="number" id="lcm-a" placeholder="分母1" data-zh-placeholder="分母1" data-en-placeholder="Denom 1" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
+                    <input type="number" id="lcm-a" value="4" placeholder="分母1" data-zh-placeholder="分母1" data-en-placeholder="Denom 1" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
                     <span class="calc-op" style="font-size: 1.1rem; color:var(--text-secondary)">
                         <span class="zh">和</span>
                         <span class="en">and</span>
                     </span>
-                    <input type="number" id="lcm-b" placeholder="分母2" data-zh-placeholder="分母2" data-en-placeholder="Denom 2" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
+                    <input type="number" id="lcm-b" value="6" placeholder="分母2" data-zh-placeholder="分母2" data-en-placeholder="Denom 2" style="width:100px; height:45px; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:white; font-size:1.1rem;">
                     <button onclick="calculateLCM()" class="btn btn-ch06" style="margin-left: 0.5rem; padding: 0 1.5rem; height:45px;">
                         <span class="zh">计算 LCM</span>
                         <span class="en">Calculate LCM</span>
@@ -308,7 +308,10 @@
 
     <script src="./assets/script.js"></script>
     <script>
-        window.onload = function() { calcFraction(); };
+        window.onload = function() { 
+            calcFraction(); 
+            calculateLCM();
+        };
 
         function calculateLCM() {
             const a = parseInt(document.getElementById('lcm-a').value);
