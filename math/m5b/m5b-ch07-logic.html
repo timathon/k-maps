@@ -5,118 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第七单元：逻辑挑战 - 折线统计图</title>
     <link rel="stylesheet" href="./assets/style.css">
-    <style>
-        .logic-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .question-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .options-grid {
-            display: grid;
-            gap: 1rem;
-        }
-        .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s ease;
-            color: var(--text-primary);
-        }
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-blue);
-        }
-        .option-btn.correct {
-            background: rgba(16, 185, 129, 0.2) !important;
-            border-color: var(--accent-green) !important;
-        }
-        .option-btn.wrong {
-            background: rgba(239, 68, 68, 0.2) !important;
-            border-color: #ef4444 !important;
-        }
-
-        /* Sorting Styles */
-        .sort-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        .sort-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-        .sort-item:active { cursor: grabbing; }
-        .sort-handle {
-            color: var(--text-secondary);
-            cursor: grab;
-            user-select: none;
-        }
-        .sort-index {
-            width: 28px;
-            height: 28px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--accent-purple);
-        }
-        
-        .check-btn {
-            margin-top: 1.5rem;
-            padding: 0.8rem 2rem;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.3s;
-        }
-        .check-btn:hover { opacity: 0.9; }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-        .feedback.success {
-            display: block;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-        .feedback.error {
-            display: block;
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid #ef4444;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -164,29 +52,25 @@
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
-                    <div class="sort-item" draggable="true" data-id="2">
+                    <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>根据数据的大小，在图中描出对应的点。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="1">
+                    <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>整理原始数据，并在图中确定横轴和纵轴的刻度。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="4">
+                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>在每个点旁标注具体的数值，并写好图表标题。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="3">
+                    <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>用线段顺次连接各点。</span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort()">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 描绘精准！描点、连线、标数，是统计图制作的规范流程。', '❌ 排序有误。逻辑提示：先定轴，再描点，连线之后别忘标数。')">提交排序</button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -220,28 +104,64 @@
             }
         }
 
-        const sortList = document.getElementById('sort-list');
         let dragItem = null;
 
-        sortList.addEventListener('dragstart', (e) => {
-            dragItem = e.target;
-            e.target.style.opacity = '0.5';
-        });
+        function initSortable() {
+            document.querySelectorAll('.sort-container').forEach(list => {
+                // Desktop Drag & Drop
+                list.addEventListener('dragstart', (e) => {
+                    dragItem = e.target;
+                    e.target.style.opacity = '0.5';
+                });
 
-        sortList.addEventListener('dragend', (e) => {
-            e.target.style.opacity = '1';
-            updateIndices();
-        });
+                list.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                    updateIndices();
+                });
 
-        sortList.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(sortList, e.clientY);
-            if (afterElement == null) {
-                sortList.appendChild(dragItem);
-            } else {
-                sortList.insertBefore(dragItem, afterElement);
-            }
-        });
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                });
+
+                // Touch Support
+                list.addEventListener('touchstart', (e) => {
+                    const item = e.target.closest('.sort-item');
+                    if (item) {
+                        dragItem = item;
+                        item.style.opacity = '0.5';
+                        item.classList.add('dragging');
+                    }
+                }, { passive: true });
+
+                list.addEventListener('touchmove', (e) => {
+                    if (!dragItem) return;
+                    const touch = e.touches[0];
+                    // Prevent scrolling while dragging
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, touch.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                }, { passive: false });
+
+                list.addEventListener('touchend', (e) => {
+                    if (dragItem) {
+                        dragItem.style.opacity = '1';
+                        dragItem.classList.remove('dragging');
+                        dragItem = null;
+                        updateIndices();
+                    }
+                });
+            });
+        }
 
         function getDragAfterElement(container, y) {
             const draggableElements = [...container.querySelectorAll('.sort-item:not(.dragging)')];
@@ -257,22 +177,22 @@
         }
 
         function updateIndices() {
-            const items = sortList.querySelectorAll('.sort-item');
-            items.forEach((item, index) => {
-                item.querySelector('.sort-index').textContent = index + 1;
-            });
+            // Numbers removed throughout
         }
 
-        function checkSort() {
-            const items = sortList.querySelectorAll('.sort-item');
+        function checkSort(listId, correctOrder, feedbackId, successMsg, errorMsg) {
+            const list = document.getElementById(listId);
+            const items = list.querySelectorAll('.sort-item');
             const currentOrder = Array.from(items).map(item => item.dataset.id).join('');
-            const correctOrder = "1234";
-            const feedback = document.getElementById('sort-feedback');
-            if (currentOrder === correctOrder) {
-                feedback.textContent = "✨ 描绘精准！描点、连线、标数，是统计图制作的规范流程。";
+            const feedback = document.getElementById(feedbackId);
+            
+            const isCorrect = Array.isArray(correctOrder) ? correctOrder.includes(currentOrder) : currentOrder === correctOrder;
+
+            if (isCorrect) {
+                feedback.textContent = successMsg || "✨ 逻辑正确！";
                 feedback.className = "feedback success";
             } else {
-                feedback.textContent = "❌ 排序有误。逻辑提示：先定轴，再描点，连线之后别忘标数。";
+                feedback.textContent = errorMsg || "❌ 排序有误。请检查逻辑顺序。";
                 feedback.className = "feedback error";
             }
         }
@@ -291,9 +211,10 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            initSortable();
             updateIndices();
             shuffleOptions();
         });
-    </script>
+</script>
 </body>
 </html>

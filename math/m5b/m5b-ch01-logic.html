@@ -7,133 +7,40 @@
     <title>第一单元：逻辑挑战 - 观察物体（三）</title>
     <link rel="stylesheet" href="./assets/style.css">
     <style>
-        .logic-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
+        /* Chapter-specific 3D Scene Styles */
+        .scene-3d {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(35deg);
+            margin-top: 30px;
         }
-
-        .question-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .cube-3d {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
         }
-
-        .options-grid {
-            display: grid;
-            gap: 1rem;
+        .cube-face {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
         }
-
-        .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s ease;
-            color: var(--text-primary);
+        .cube-face.empty {
+            border: 1px dashed rgba(255,255,255,0.15);
+            background: transparent !important;
+            box-shadow: none;
         }
-
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-blue);
-        }
-
-        .option-btn.correct {
-            background: rgba(16, 185, 129, 0.2) !important;
-            border-color: var(--accent-green) !important;
-        }
-
-        .option-btn.wrong {
-            background: rgba(239, 68, 68, 0.2) !important;
-            border-color: #ef4444 !important;
-        }
-
-        /* Sorting Styles */
-        .sort-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .sort-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .sort-item:active {
-            cursor: grabbing;
-        }
-
-        .sort-handle {
-            color: var(--text-secondary);
-            cursor: grab;
-            user-select: none;
-        }
-
-        .sort-index {
-            width: 28px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--accent-purple);
-        }
-
-        .check-btn {
-            margin-top: 1.5rem;
-            padding: 0.8rem 2rem;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.3s;
-        }
-
-        .check-btn:hover {
-            opacity: 0.9;
-        }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-
-        .feedback.success {
-            display: block;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-
-        .feedback.error {
-            display: block;
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid #ef4444;
-        }
+        .cube-face.top { transform: rotateX(90deg) translateZ(15px); background: rgba(16, 185, 129, 0.9); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(15px); background: rgba(16, 185, 129, 0.9); }
+        .cube-face.front { transform: translateZ(15px); background: rgba(59, 130, 246, 0.9); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(15px); background: rgba(59, 130, 246, 0.9); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(15px); background: rgba(236, 72, 153, 0.9); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(15px); background: rgba(236, 72, 153, 0.9); }
     </style>
 </head>
 
@@ -182,29 +89,25 @@
 
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
-                    <div class="sort-item" draggable="true" data-id="3">
+                    <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="3">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>观察<b>左面</b>视图，调整每一行的深度和方块位置。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="1">
+                    <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>首先观察<b>上面</b>视图，在地面上画出底座的“占位图”。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="4">
+                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>最后对比所有视图，确保拼搭出的模型与三视图完全一致。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="2">
+                    <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="2">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>参考<b>正面</b>视图，确定底座上每一列小正方体的最高层数。</span>
                     </div>
                 </div>
 
-                <button class="check-btn" onclick="checkSort()">提交排序</button>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback', '✨ 完美！这是还原三视图最稳健的逻辑链。', '❌ 排序有误。提示：先确定一层，再逐层叠加，最后验证。')">提交排序</button>
                 <div id="sort-feedback" class="feedback"></div>
             </div>
         </div>
@@ -222,19 +125,16 @@
     </div>
 
     <script>
-        // Choice logic
         function checkChoice(btn, isCorrect) {
             const options = btn.parentElement.querySelectorAll('.option-btn');
             options.forEach(opt => {
                 opt.classList.remove('correct', 'wrong');
                 opt.style.pointerEvents = 'none';
             });
-
             if (isCorrect) {
                 btn.classList.add('correct');
             } else {
                 btn.classList.add('wrong');
-                // Highlight the correct one
                 options.forEach(opt => {
                     if (opt.getAttribute('onclick').includes('true')) {
                         opt.classList.add('correct');
@@ -243,29 +143,64 @@
             }
         }
 
-        // Sorting logic (Drag and Drop)
-        const sortList = document.getElementById('sort-list');
         let dragItem = null;
 
-        sortList.addEventListener('dragstart', (e) => {
-            dragItem = e.target;
-            e.target.style.opacity = '0.5';
-        });
+        function initSortable() {
+            document.querySelectorAll('.sort-container').forEach(list => {
+                // Desktop Drag & Drop
+                list.addEventListener('dragstart', (e) => {
+                    dragItem = e.target;
+                    e.target.style.opacity = '0.5';
+                });
 
-        sortList.addEventListener('dragend', (e) => {
-            e.target.style.opacity = '1';
-            updateIndices();
-        });
+                list.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                    updateIndices();
+                });
 
-        sortList.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(sortList, e.clientY);
-            if (afterElement == null) {
-                sortList.appendChild(dragItem);
-            } else {
-                sortList.insertBefore(dragItem, afterElement);
-            }
-        });
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                });
+
+                // Touch Support
+                list.addEventListener('touchstart', (e) => {
+                    const item = e.target.closest('.sort-item');
+                    if (item) {
+                        dragItem = item;
+                        item.style.opacity = '0.5';
+                        item.classList.add('dragging');
+                    }
+                }, { passive: true });
+
+                list.addEventListener('touchmove', (e) => {
+                    if (!dragItem) return;
+                    const touch = e.touches[0];
+                    // Prevent scrolling while dragging
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, touch.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                }, { passive: false });
+
+                list.addEventListener('touchend', (e) => {
+                    if (dragItem) {
+                        dragItem.style.opacity = '1';
+                        dragItem.classList.remove('dragging');
+                        dragItem = null;
+                        updateIndices();
+                    }
+                });
+            });
+        }
 
         function getDragAfterElement(container, y) {
             const draggableElements = [...container.querySelectorAll('.sort-item:not(.dragging)')];
@@ -281,28 +216,26 @@
         }
 
         function updateIndices() {
-            const items = sortList.querySelectorAll('.sort-item');
-            items.forEach((item, index) => {
-                item.querySelector('.sort-index').textContent = index + 1;
-            });
+            // Numbers removed throughout
         }
 
-        function checkSort() {
-            const items = sortList.querySelectorAll('.sort-item');
+        function checkSort(listId, correctOrder, feedbackId, successMsg, errorMsg) {
+            const list = document.getElementById(listId);
+            const items = list.querySelectorAll('.sort-item');
             const currentOrder = Array.from(items).map(item => item.dataset.id).join('');
-            const correctOrder = "1234";
-            const feedback = document.getElementById('sort-feedback');
+            const feedback = document.getElementById(feedbackId);
             
-            if (currentOrder === correctOrder) {
-                feedback.textContent = "✨ 太棒了！逻辑完全正确。先定底座，再定高层，最后验证，这是观察物体的金牌法则！";
+            const isCorrect = Array.isArray(correctOrder) ? correctOrder.includes(currentOrder) : currentOrder === correctOrder;
+
+            if (isCorrect) {
+                feedback.textContent = successMsg || "✨ 逻辑正确！";
                 feedback.className = "feedback success";
             } else {
-                feedback.textContent = "❌ 排序有误，再想一想逻辑顺序：我们要先确定地面上的位置，再往高处搭。";
+                feedback.textContent = errorMsg || "❌ 排序有误。请检查逻辑顺序。";
                 feedback.className = "feedback error";
             }
         }
 
-        // Shuffle multiple choice options
         function shuffleOptions() {
             const grids = document.querySelectorAll('.options-grid');
             grids.forEach(grid => {
@@ -316,12 +249,12 @@
             });
         }
 
-        // Initial setup
         window.addEventListener('DOMContentLoaded', () => {
+            initSortable();
             updateIndices();
             shuffleOptions();
         });
-    </script>
+</script>
 </body>
 
 </html>

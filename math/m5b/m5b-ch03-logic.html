@@ -5,118 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第三单元：逻辑挑战 - 长方体和正方体</title>
     <link rel="stylesheet" href="./assets/style.css">
-    <style>
-        .logic-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .question-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .options-grid {
-            display: grid;
-            gap: 1rem;
-        }
-        .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s ease;
-            color: var(--text-primary);
-        }
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-blue);
-        }
-        .option-btn.correct {
-            background: rgba(16, 185, 129, 0.2) !important;
-            border-color: var(--accent-green) !important;
-        }
-        .option-btn.wrong {
-            background: rgba(239, 68, 68, 0.2) !important;
-            border-color: #ef4444 !important;
-        }
 
-        /* Sorting Styles */
-        .sort-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        .sort-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 1rem;
-            border-radius: 0.8rem;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-        .sort-item:active { cursor: grabbing; }
-        .sort-handle {
-            color: var(--text-secondary);
-            cursor: grab;
-            user-select: none;
-        }
-        .sort-index {
-            width: 28px;
-            height: 28px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--accent-purple);
-        }
-        
-        .check-btn {
-            margin-top: 1.5rem;
-            padding: 0.8rem 2rem;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.3s;
-        }
-        .check-btn:hover { opacity: 0.9; }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-        .feedback.success {
-            display: block;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-        .feedback.error {
-            display: block;
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid #ef4444;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -164,30 +53,113 @@
             
             <div class="logic-card">
                 <div class="sort-container" id="sort-list">
-                    <div class="sort-item" draggable="true" data-id="2">
+                    <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="2">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>将物体完全浸没在水中。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="1">
+                    <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="1">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>在量杯中倒入适量的水，记录此时水的体积 V1。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="4">
+                    <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="4">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>计算物体体积：V = V2 - V1。</span>
                     </div>
-                    <div class="sort-item" draggable="true" data-id="3">
+                    <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="3">
                         <div class="sort-handle">☰</div>
-                        <div class="sort-index">?</div>
                         <span>记录物体浸没后水面上升到的总体积 V2。</span>
                     </div>
                 </div>
                 
-                <button class="check-btn" onclick="checkSort()">提交排序</button>
-                <div id="sort-feedback" class="feedback"></div>
+                <button class="check-btn" onclick="checkSort('sort-list', '1234', 'sort-feedback-1', '✨ 逻辑正确！排水法测量物体体积的关键是计算上升水的体积。', '❌ 排序有误。逻辑提示：先记水，再放物，后记水，最后算差值。')">提交排序</button>
+                <div id="sort-feedback-1" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Advanced Challenge Section -->
+        <div class="section">
+            <h2 class="section-title">🚀 第三关：进阶挑战（组合图形）</h2>
+            <div class="logic-card">
+                <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap-reverse;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <div class="question-title">
+                            <span>*</span> 如图，给一个组合柜（由两个长方体组成）刷上油漆：
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            左柜：0.6m × 0.6m × 0.6m<br>
+                            右柜：0.6m × 0.6m × 0.8m<br>
+                            <b>注意：底面不用刷。</b>
+                        </p>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-orange);">任务：排列出求“刷漆面积”的正确逻辑链</p>
+                            <div class="sort-container" id="sort-list-adv">
+                                <div class="sort-item" style="color: var(--accent-blue);" draggable="true" data-id="C">
+                                    <div class="sort-handle">☰</div>
+                                    <span>计算两个柜子各自的 5 个面面积之和（排除底面）。</span>
+                                </div>
+                                <div class="sort-item" style="color: var(--accent-pink);" draggable="true" data-id="A">
+                                    <div class="sort-handle">☰</div>
+                                    <span>审题：明确“底面不刷”且“重叠面不刷”。</span>
+                                </div>
+                                <div class="sort-item" style="color: var(--accent-orange);" draggable="true" data-id="B">
+                                    <div class="sort-handle">☰</div>
+                                    <span>找出两个柜子紧贴在一起的重叠面积。</span>
+                                </div>
+                                <div class="sort-item" style="color: var(--accent-green);" draggable="true" data-id="D">
+                                    <div class="sort-handle">☰</div>
+                                    <span>总和减去 2 个重叠面的面积，得出最终刷漆面积。</span>
+                                </div>
+                            </div>
+                            <button class="check-btn" onclick="checkSort('sort-list-adv', ['ABCD', 'ACBD'], 'sort-feedback-adv', '✨ 逻辑链完全正确！思维缜密是解决复杂组合图形题目的关键。', '❌ 逻辑顺序有误。提示：先审题分析，再找重叠/特殊面，最后计算总和。')">验证逻辑链</button>
+                            <div id="sort-feedback-adv" class="feedback"></div>
+                        </div>
+                    </div>
+
+                    <!-- Proportional CSS Illustration of Combined Cabinet -->
+                    <div style="flex: 0 0 250px; height: 320px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 1rem; perspective: 1000px; position: relative; padding-top: 40px;">
+                        <div style="position: relative; width: 180px; height: 180px; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(-20deg);">
+                            <!-- Right Cabinet (0.8m height) -->
+                            <div style="position: absolute; bottom: 0; right: 0; width: 90px; height: 120px; transform-style: preserve-3d;">
+                                <!-- Visible Faces -->
+                                <div style="position: absolute; width: 90px; height: 120px; background: rgba(59, 130, 246, 0.6); border: 1px solid rgba(255,255,255,0.5); transform: translateZ(45px);">
+                                    <div style="position: absolute; right: -45px; top: 50%; transform: translateY(-50%); color: var(--accent-blue); font-size: 0.75rem; font-weight: bold; border-left: 2px solid var(--accent-blue); padding-left: 4px; white-space: nowrap;">0.8m</div>
+                                </div>
+                                <div style="position: absolute; width: 90px; height: 90px; background: rgba(59, 130, 246, 0.4); border: 1px solid rgba(255,255,255,0.5); transform: rotateX(90deg) translateZ(45px);">
+                                    <div style="position: absolute; right: -40px; top: 10px; color: var(--text-secondary); font-size: 0.7rem; white-space: nowrap;">深 0.6m</div>
+                                </div>
+                                <div style="position: absolute; width: 90px; height: 120px; background: rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.5); transform: rotateY(90deg) translateZ(45px);"></div>
+                                <!-- Hidden/Back Faces (Dashed) -->
+                                <div style="position: absolute; width: 90px; height: 120px; border: 1px dashed rgba(255,255,255,0.2); transform: translateZ(-45px);"></div>
+                                <div style="position: absolute; width: 90px; height: 90px; border: 1px dashed rgba(255,255,255,0.2); transform: rotateX(90deg) translateZ(-75px);"></div>
+                            </div>
+                            <!-- Left Cabinet (0.6m height - CUBE) -->
+                            <div style="position: absolute; bottom: 0; left: 0; width: 90px; height: 90px; transform-style: preserve-3d;">
+                                <!-- Visible Faces -->
+                                <div style="position: absolute; width: 90px; height: 90px; background: rgba(236, 72, 153, 0.6); border: 1px solid rgba(255,255,255,0.5); transform: translateZ(45px);">
+                                    <div style="position: absolute; left: -45px; top: 50%; transform: translateY(-50%); color: var(--accent-pink); font-size: 0.75rem; font-weight: bold; border-right: 2px solid var(--accent-pink); padding-right: 4px; white-space: nowrap;">0.6m</div>
+                                    <div style="position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); color: var(--text-secondary); font-size: 0.7rem; border-bottom: 1px solid var(--text-secondary); padding: 0 5px; white-space: nowrap;">宽 0.6m</div>
+                                </div>
+                                <div style="position: absolute; width: 90px; height: 90px; background: rgba(236, 72, 153, 0.4); border: 1px solid rgba(255,255,255,0.5); transform: rotateX(90deg) translateZ(45px);"></div>
+                                <div style="position: absolute; width: 90px; height: 90px; background: rgba(236, 72, 153, 0.3); border: 1px solid rgba(255,255,255,0.5); transform: rotateY(-90deg) translateZ(45px);"></div>
+                                <!-- Hidden/Back Faces (Dashed) -->
+                                <div style="position: absolute; width: 90px; height: 90px; border: 1px dashed rgba(255,255,255,0.2); transform: translateZ(-45px);"></div>
+                                <div style="position: absolute; width: 90px; height: 90px; border: 1px dashed rgba(255,255,255,0.2); transform: rotateX(90deg) translateZ(-45px);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                <div class="question-title">
+                    <span>?</span> 这个组合柜的<b>体积</b>逻辑应该是：
+                </div>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkChoice(this, true)">左柜体积 + 右柜体积</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">总表面积 × 平均高度</button>
+                    <button class="option-btn" onclick="checkChoice(this, false)">左柜体积 + 右柜体积 - 重叠体积</button>
+                </div>
             </div>
         </div>
 
@@ -220,28 +192,64 @@
             }
         }
 
-        const sortList = document.getElementById('sort-list');
         let dragItem = null;
 
-        sortList.addEventListener('dragstart', (e) => {
-            dragItem = e.target;
-            e.target.style.opacity = '0.5';
-        });
+        function initSortable() {
+            document.querySelectorAll('.sort-container').forEach(list => {
+                // Desktop Drag & Drop
+                list.addEventListener('dragstart', (e) => {
+                    dragItem = e.target;
+                    e.target.style.opacity = '0.5';
+                });
 
-        sortList.addEventListener('dragend', (e) => {
-            e.target.style.opacity = '1';
-            updateIndices();
-        });
+                list.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                    updateIndices();
+                });
 
-        sortList.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(sortList, e.clientY);
-            if (afterElement == null) {
-                sortList.appendChild(dragItem);
-            } else {
-                sortList.insertBefore(dragItem, afterElement);
-            }
-        });
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                });
+
+                // Touch Support
+                list.addEventListener('touchstart', (e) => {
+                    const item = e.target.closest('.sort-item');
+                    if (item) {
+                        dragItem = item;
+                        item.style.opacity = '0.5';
+                        item.classList.add('dragging');
+                    }
+                }, { passive: true });
+
+                list.addEventListener('touchmove', (e) => {
+                    if (!dragItem) return;
+                    const touch = e.touches[0];
+                    // Prevent scrolling while dragging
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, touch.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(dragItem);
+                    } else {
+                        list.insertBefore(dragItem, afterElement);
+                    }
+                }, { passive: false });
+
+                list.addEventListener('touchend', (e) => {
+                    if (dragItem) {
+                        dragItem.style.opacity = '1';
+                        dragItem.classList.remove('dragging');
+                        dragItem = null;
+                        updateIndices();
+                    }
+                });
+            });
+        }
 
         function getDragAfterElement(container, y) {
             const draggableElements = [...container.querySelectorAll('.sort-item:not(.dragging)')];
@@ -257,22 +265,22 @@
         }
 
         function updateIndices() {
-            const items = sortList.querySelectorAll('.sort-item');
-            items.forEach((item, index) => {
-                item.querySelector('.sort-index').textContent = index + 1;
-            });
+            // Numbers removed throughout
         }
 
-        function checkSort() {
-            const items = sortList.querySelectorAll('.sort-item');
+        function checkSort(listId, correctOrder, feedbackId, successMsg, errorMsg) {
+            const list = document.getElementById(listId);
+            const items = list.querySelectorAll('.sort-item');
             const currentOrder = Array.from(items).map(item => item.dataset.id).join('');
-            const correctOrder = "1234";
-            const feedback = document.getElementById('sort-feedback');
-            if (currentOrder === correctOrder) {
-                feedback.textContent = "✨ 太棒了！这就是排水法的核心逻辑：上升的水的体积 = 物体的体积。";
+            const feedback = document.getElementById(feedbackId);
+            
+            const isCorrect = Array.isArray(correctOrder) ? correctOrder.includes(currentOrder) : currentOrder === correctOrder;
+
+            if (isCorrect) {
+                feedback.textContent = successMsg || "✨ 逻辑正确！";
                 feedback.className = "feedback success";
             } else {
-                feedback.textContent = "❌ 排序有误。逻辑提示：先测初体积，再放入物体，最后算差值。";
+                feedback.textContent = errorMsg || "❌ 排序有误。请检查逻辑顺序。";
                 feedback.className = "feedback error";
             }
         }
@@ -291,9 +299,10 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            initSortable();
             updateIndices();
             shuffleOptions();
         });
-    </script>
+</script>
 </body>
 </html>

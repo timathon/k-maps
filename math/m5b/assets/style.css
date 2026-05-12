@@ -534,3 +534,126 @@ a {
 .cube-face.back { transform: rotateY(180deg) translateZ(15px); background: rgba(59, 130, 246, 0.9); }
 .cube-face.right { transform: rotateY(90deg) translateZ(15px); background: rgba(236, 72, 153, 0.9); }
 .cube-face.left { transform: rotateY(-90deg) translateZ(15px); background: rgba(236, 72, 153, 0.9); }
+
+/* Logic Training Styles */
+.logic-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.question-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.options-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.option-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.1rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition);
+  color: var(--text-primary);
+  font-size: 1.08rem; /* Slightly increased, but refined per feedback */
+  font-family: inherit;
+}
+
+.option-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-blue);
+}
+
+.option-btn.correct {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: var(--accent-green) !important;
+}
+
+.option-btn.wrong {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+}
+
+.sort-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sort-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 1rem;
+  border-radius: 0.8rem;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition);
+  font-size: 1.08rem;
+  touch-action: none; /* Critical for mobile touch drag */
+}
+
+.sort-item:active {
+  cursor: grabbing;
+}
+
+.sort-handle {
+  color: inherit;
+  opacity: 0.6;
+  cursor: grab;
+  user-select: none;
+}
+
+.check-btn {
+  margin-top: 1.5rem;
+  padding: 0.8rem 2rem;
+  background: var(--accent-purple);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  font-size: 1.1rem;
+}
+
+.check-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: none;
+  font-size: 1.05rem;
+}
+
+.feedback.success {
+  display: block;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+  border: 1px solid var(--accent-green);
+}
+
+.feedback.error {
+  display: block;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
