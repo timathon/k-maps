@@ -603,18 +603,17 @@ a {
 }
 
 .sort-item {
-  background: rgba(0, 0, 0, 0.2) !important;
-  background-color: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid var(--glass-border);
-  padding: 1rem;
+  padding: 1rem 1.2rem;
   border-radius: 0.8rem;
-  cursor: grab;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: var(--transition);
+  gap: 1.2rem;
+  transition: all 0.2s ease;
   font-size: 1.08rem;
-  touch-action: none; /* Critical for mobile touch drag */
+  font-weight: 500;
+  touch-action: none;
   color: var(--text-primary) !important;
 }
 
@@ -624,9 +623,27 @@ a {
 
 .sort-handle {
   color: inherit;
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: grab;
   user-select: none;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* SortableJS Classes */
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--accent-blue) !important;
+}
+
+.sort-item.correct-bg {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: var(--accent-green) !important;
+}
+
+.sort-item.wrong-bg {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
 }
 
 .check-btn {
