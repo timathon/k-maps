@@ -1,60 +1,1469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Maps Content Index</title>
+    <title>K-Maps 课程资源索引地图</title>
+    <meta name="description" content="K-Maps 智能教育学习地图内容目录。涵盖小学五年级下册数学逻辑挑战、名师精讲，以及初中七年级下册几何综合题解题策略训练等精品教学资源。">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-color: #060913;
+            --card-bg: rgba(13, 21, 38, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+            --secondary: #8b5cf6;
+            
+            --badge-map: #06b6d4;
+            --badge-core: #3b82f6;
+            --badge-logic: #10b981;
+            --badge-strategy: #f59e0b;
+            --badge-exam: #f43f5e;
+            
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: #f4f4f9;
+            font-family: 'Outfit', 'Noto Sans SC', 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(139, 92, 246, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
         }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 0.5rem;
+
+        /* Ambient floating glow circles */
+        .ambient-glow-1 {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse-glow 8s infinite alternate ease-in-out;
         }
-        ul {
-            list-style-type: none;
-            padding-left: 1.5rem;
+
+        .ambient-glow-2 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse-glow 12s infinite alternate-reverse ease-in-out;
         }
-        li {
-            margin-bottom: 0.5rem;
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.9) translate(0, 0); opacity: 0.8; }
+            100% { transform: scale(1.1) translate(30px, 20px); opacity: 1; }
         }
-        strong {
-            display: block;
-            margin-top: 1rem;
-            color: #2980b9;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.05rem;
-        }
-        a {
-            color: #34495e;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        a:hover {
-            color: #3498db;
-            text-decoration: underline;
-        }
+
+        /* Layout Container */
         .container {
-            background: white;
-            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        /* Header design */
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 12px var(--primary);
+            animation: blink 2s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .logo-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #a5b4fc, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto;
+            font-weight: 350;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Main Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Sidebar Panel styling */
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 1.75rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* Search input styling */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(6, 9, 19, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 0.85rem 1rem 0.85rem 2.75rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
+            background: rgba(6, 9, 19, 0.9);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-muted);
+            fill: none;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus + .search-icon {
+            stroke: var(--primary);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.2rem;
+            display: none;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .search-clear:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Quick Controls (Buttons) */
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 550;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Statistics list */
+        .stats-widget {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.5rem;
+        }
+
+        .stats-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 450;
+        }
+
+        /* Legend / Filter tags styling */
+        .legend-widget {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.5rem;
+        }
+
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem 0.6rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .legend-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+        }
+
+        .legend-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-count {
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Explorer styling (Right Column) */
+        .explorer {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            min-height: 550px;
+        }
+
+        .explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .explorer-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explorer-title-icon {
+            width: 20px;
+            height: 20px;
+            stroke: var(--primary);
+            fill: none;
+        }
+
+        .results-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ACCORDION / TREE STRUCTURE */
+        .tree {
+            user-select: none;
+        }
+
+        .tree-node {
+            margin-top: 0.25rem;
+        }
+
+        .node-header {
+            display: flex;
+            align-items: center;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .node-header:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .caret {
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-muted);
+            fill: none;
+            margin-right: 0.35rem;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .tree-node.open > .node-header > .caret {
+            transform: rotate(90deg);
+        }
+
+        .icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .folder-icon {
+            stroke: #fbbf24;
+            fill: rgba(251, 191, 36, 0.15);
+        }
+
+        .file-icon {
+            stroke: #60a5fa;
+            fill: rgba(96, 165, 250, 0.15);
+        }
+
+        .node-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e5e7eb;
+            letter-spacing: 0.02em;
+        }
+
+        .node-children {
+            display: none;
+            padding-left: 1.25rem;
+            border-left: 1px dashed rgba(255, 255, 255, 0.08);
+            margin-left: 1.35rem;
+            position: relative;
+        }
+
+        .tree-node.open > .node-children {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* File specific items */
+        .tree-node.file {
+            margin: 0.35rem 0;
+        }
+
+        .node-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.015);
+            transition: var(--transition);
+        }
+
+        .node-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-width: 0;
+            margin-right: 1rem;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            font-weight: 550;
+            color: #f3f4f6;
+            margin-bottom: 0.15rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .file-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Badges */
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+
+        .badge-map {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--badge-map);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .badge-core {
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--badge-core);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-logic {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--badge-logic);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-strategy {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--badge-strategy);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .badge-exam {
+            background: rgba(244, 63, 94, 0.12);
+            color: var(--badge-exam);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        /* Empty Directory indicator */
+        .empty-msg {
+            padding: 1rem 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .empty-msg::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* Search matching effects */
+        .tree-node.search-mismatch {
+            display: none !important;
+        }
+
+        .tree-node.search-match > .node-header,
+        .tree-node.search-match > .node-link {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .highlight {
+            background-color: rgba(245, 158, 11, 0.3);
+            color: #ffffff;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        /* No Results styling */
+        .no-results-panel {
+            text-align: center;
+            padding: 4rem 1rem;
+            display: none;
+        }
+
+        .no-results-icon {
+            width: 48px;
+            height: 48px;
+            stroke: var(--text-muted);
+            stroke-width: 1.5;
+            fill: none;
+            margin: 0 auto 1rem auto;
+            opacity: 0.6;
+        }
+
+        .no-results-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2rem;
+            font-weight: 300;
+        }
+
+        /* Mobile & Responsive Rules */
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem 0.75rem;
+            }
+
+            header {
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                font-size: 1.85rem;
+                letter-spacing: -0.01em;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .panel {
+                padding: 1.25rem 1rem;
+                gap: 1.25rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 0.55rem 1rem;
+            }
+
+            .explorer {
+                padding: 1.25rem 1rem;
+                min-height: auto;
+            }
+
+            .explorer-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding-bottom: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .node-header {
+                padding: 0.5rem 0.5rem;
+            }
+
+            .node-name {
+                font-size: 0.85rem;
+            }
+
+            .node-children {
+                padding-left: 0.65rem;
+                margin-left: 0.45rem;
+            }
+
+            .node-link {
+                padding: 0.5rem 0.6rem;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+
+            .file-info {
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .file-name {
+                font-size: 0.8rem;
+                white-space: normal;
+                word-break: break-all;
+            }
+
+            .file-title {
+                font-size: 0.7rem;
+                white-space: normal;
+                word-break: break-all;
+            }
+
+            .badge {
+                font-size: 0.6rem;
+                padding: 0.1rem 0.35rem;
+                margin-top: 0.15rem;
+            }
+
+            .empty-msg {
+                padding: 0.5rem 0.5rem;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
+
 <body>
+    <!-- Ambient glow backdrops -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
     <div class="container">
-        <h1>K-Maps Content Index</h1>
-        <ul><li><strong>english</strong></li><li><strong>math</strong><ul><li><strong>m5b</strong><ul><li><a href="math/m5b/m5b-ch01.html">m5b-ch01.html</a></li><li><a href="math/m5b/m5b-ch02.html">m5b-ch02.html</a></li><li><a href="math/m5b/m5b-ch03.html">m5b-ch03.html</a></li><li><a href="math/m5b/m5b-ch04.html">m5b-ch04.html</a></li><li><a href="math/m5b/m5b-ch05.html">m5b-ch05.html</a></li><li><a href="math/m5b/m5b-ch06.html">m5b-ch06.html</a></li><li><a href="math/m5b/m5b-ch07.html">m5b-ch07.html</a></li><li><a href="math/m5b/m5b-ch08.html">m5b-ch08.html</a></li><li><a href="math/m5b/m5b.html">m5b.html</a></li></ul></li></ul></li></ul>
+        <!-- Site Header -->
+        <header>
+            <div class="logo-container">
+                <div class="logo-dot"></div>
+                <span class="logo-text">SmartEDU K-Maps</span>
+            </div>
+            <h1>K-Maps 课程资源索引地图</h1>
+            <p class="subtitle">在这里便捷探索和访问本站部署的所有优质教学资源与互动逻辑测评页面。资源均深度对齐各学科大纲与思维进阶路径。</p>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="dashboard">
+            <!-- Sidebar Panel -->
+            <aside class="panel">
+                <!-- Search Section -->
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="输入关键字搜索资源..." autocomplete="off">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <button id="search-clear" class="search-clear" aria-label="Clear search">×</button>
+                </div>
+
+                <!-- Tree Controls -->
+                <div class="controls">
+                    <button id="btn-expand-all" class="btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        展开全部
+                    </button>
+                    <button id="btn-collapse-all" class="btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M5 12h14"/>
+                        </svg>
+                        折叠全部
+                    </button>
+                </div>
+
+                <!-- Stats Widget -->
+                <section class="stats-widget" aria-labelledby="stats-heading">
+                    <h2 id="stats-heading" class="stats-title">资源统计清单</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-val" id="stat-subjects">2</span>
+                            <span class="stat-lbl">参与学科</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-val" id="stat-total-files">19</span>
+                            <span class="stat-lbl">HTML 资源</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-val" id="stat-logic-challenges">8</span>
+                            <span class="stat-lbl">逻辑挑战</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-val" id="stat-strategies">1</span>
+                            <span class="stat-lbl">核心策略</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Legend / Filters -->
+                <section class="legend-widget" aria-labelledby="legend-heading">
+                    <h2 id="legend-heading" class="stats-title">资源分类图例</h2>
+                    <div class="legend-list">
+                        <div class="legend-item" onclick="filterLegend('map')">
+                            <div class="legend-left">
+                                <span class="legend-dot" style="background: var(--badge-map)"></span>
+                                <span>课程学习地图 (Map)</span>
+                            </div>
+                            <span class="legend-count">1</span>
+                        </div>
+                        <div class="legend-item" onclick="filterLegend('core')">
+                            <div class="legend-left">
+                                <span class="legend-dot" style="background: var(--badge-core)"></span>
+                                <span>核心基础精讲 (Core)</span>
+                            </div>
+                            <span class="legend-count">8</span>
+                        </div>
+                        <div class="legend-item" onclick="filterLegend('logic')">
+                            <div class="legend-left">
+                                <span class="legend-dot" style="background: var(--badge-logic)"></span>
+                                <span>高阶思维逻辑 (Logic)</span>
+                            </div>
+                            <span class="legend-count">8</span>
+                        </div>
+                        <div class="legend-item" onclick="filterLegend('exam')">
+                            <div class="legend-left">
+                                <span class="legend-dot" style="background: var(--badge-exam)"></span>
+                                <span>综合评测复习 (Exam)</span>
+                            </div>
+                            <span class="legend-count">1</span>
+                        </div>
+                        <div class="legend-item" onclick="filterLegend('strategy')">
+                            <div class="legend-left">
+                                <span class="legend-dot" style="background: var(--badge-strategy)"></span>
+                                <span>压轴突破策略 (Strategy)</span>
+                            </div>
+                            <span class="legend-count">1</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Explorer Card -->
+            <section class="explorer" aria-labelledby="explorer-heading">
+                <div class="explorer-header">
+                    <h2 id="explorer-heading" class="explorer-title">
+                        <svg class="explorer-title-icon" viewBox="0 0 24 24">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        项目目录结构
+                    </h2>
+                    <span id="results-count" class="results-info">共 19 个 HTML 页面</span>
+                </div>
+
+                <!-- Tree Accordion -->
+                <div class="tree" id="project-tree">
+                    
+                    <!-- Level 1: english -->
+                    <div class="tree-node folder" id="node-english">
+                        <div class="node-header" onclick="toggleNode('node-english')">
+                            <svg class="caret" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            <span class="node-name">english</span>
+                        </div>
+                        <div class="node-children">
+                            
+                            <!-- Level 2: e5b -->
+                            <div class="tree-node folder" id="node-e5b">
+                                <div class="node-header" onclick="toggleNode('node-e5b')">
+                                    <svg class="caret" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    <span class="node-name">e5b</span>
+                                </div>
+                                <div class="node-children">
+                                    <div class="empty-msg">No files found in this directory</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Level 1: math -->
+                    <div class="tree-node folder open" id="node-math">
+                        <div class="node-header" onclick="toggleNode('node-math')">
+                            <svg class="caret" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            <span class="node-name">math</span>
+                        </div>
+                        <div class="node-children">
+                            
+                            <!-- Level 2: m5b -->
+                            <div class="tree-node folder open" id="node-m5b">
+                                <div class="node-header" onclick="toggleNode('node-m5b')">
+                                    <svg class="caret" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    <span class="node-name">m5b</span>
+                                </div>
+                                <div class="node-children">
+                                    
+                                    <!-- m5b.html -->
+                                    <div class="tree-node file" data-title="五年级下册数学 - 学习地图">
+                                        <a href="math/m5b/m5b.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b.html</span>
+                                                <span class="file-title">五年级下册数学 - 学习地图</span>
+                                            </span>
+                                            <span class="badge badge-map">Map</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Level 3: m5b-exams-review -->
+                                    <div class="tree-node folder" id="node-m5b-exams-review">
+                                        <div class="node-header" onclick="toggleNode('node-m5b-exams-review')">
+                                            <svg class="caret" viewBox="0 0 24 24">
+                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                            </svg>
+                                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                            </svg>
+                                            <span class="node-name">m5b-exams-review</span>
+                                        </div>
+                                        <div class="node-children">
+                                            <div class="tree-node file" data-title="数学期中综合测评 - 五年级下册">
+                                                <a href="math/m5b/m5b-exams-review/m5b-mt-review.html" class="node-link">
+                                                    <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                                    </svg>
+                                                    <span class="file-info">
+                                                        <span class="file-name">m5b-mt-review.html</span>
+                                                        <span class="file-title">数学期中综合测评 - 五年级下册</span>
+                                                    </span>
+                                                    <span class="badge badge-exam">Exam</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Unit 1 -->
+                                    <div class="tree-node file" data-title="第一单元：观察物体（三） - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch01.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch01.html</span>
+                                                <span class="file-title">第一单元：观察物体（三）</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第一单元：逻辑挑战 - 观察物体（三）">
+                                        <a href="math/m5b/m5b-ch01-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch01-logic.html</span>
+                                                <span class="file-title">第一单元：逻辑挑战 - 观察物体（三）</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 2 -->
+                                    <div class="tree-node file" data-title="第二单元：因数与倍数 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch02.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch02.html</span>
+                                                <span class="file-title">第二单元：因数与倍数</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第二单元：逻辑挑战 - 因数与倍数">
+                                        <a href="math/m5b/m5b-ch02-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch02-logic.html</span>
+                                                <span class="file-title">第二单元：逻辑挑战 - 因数与倍数</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 3 -->
+                                    <div class="tree-node file" data-title="第三单元：长方体和正方体 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch03.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch03.html</span>
+                                                <span class="file-title">第三单元：长方体和正方体</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第三单元：逻辑挑战 - 长方体和正方体">
+                                        <a href="math/m5b/m5b-ch03-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch03-logic.html</span>
+                                                <span class="file-title">第三单元：逻辑挑战 - 长方体和正方体</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 4 -->
+                                    <div class="tree-node file" data-title="第四单元：分数的意义和性质 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch04.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch04.html</span>
+                                                <span class="file-title">第四单元：分数的意义和性质</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第四单元：逻辑挑战 - 分数的意义 and 性质">
+                                        <a href="math/m5b/m5b-ch04-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch04-logic.html</span>
+                                                <span class="file-title">第四单元：逻辑挑战 - 分数的意义和性质</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 5 -->
+                                    <div class="tree-node file" data-title="第五单元：图形的运动（三） - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch05.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch05.html</span>
+                                                <span class="file-title">第五单元：图形的运动（三）</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第五单元：逻辑挑战 - 图形的运动">
+                                        <a href="math/m5b/m5b-ch05-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch05-logic.html</span>
+                                                <span class="file-title">第五单元：逻辑挑战 - 图形的运动</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 6 -->
+                                    <div class="tree-node file" data-title="第六单元：分数的加法和减法 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch06.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch06.html</span>
+                                                <span class="file-title">第六单元：分数的加法和减法</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第六单元：逻辑挑战 - 分数的加法和减法">
+                                        <a href="math/m5b/m5b-ch06-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch06-logic.html</span>
+                                                <span class="file-title">第六单元：逻辑挑战 - 分数的加法和减法</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 7 -->
+                                    <div class="tree-node file" data-title="第七单元：折线统计图 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch07.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch07.html</span>
+                                                <span class="file-title">第七单元：折线统计图</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第七单元：逻辑挑战 - 折线统计图">
+                                        <a href="math/m5b/m5b-ch07-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch07-logic.html</span>
+                                                <span class="file-title">第七单元：逻辑挑战 - 折线统计图</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Unit 8 -->
+                                    <div class="tree-node file" data-title="第八单元：数学广角——找次品 - 五年级下册数学">
+                                        <a href="math/m5b/m5b-ch08.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch08.html</span>
+                                                <span class="file-title">第八单元：数学广角——找次品</span>
+                                            </span>
+                                            <span class="badge badge-core">Core</span>
+                                        </a>
+                                    </div>
+                                    <div class="tree-node file" data-title="第八单元：逻辑挑战 - 找次品">
+                                        <a href="math/m5b/m5b-ch08-logic.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">m5b-ch08-logic.html</span>
+                                                <span class="file-title">第八单元：逻辑挑战 - 找次品</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Level 2: m7b -->
+                            <div class="tree-node folder open" id="node-m7b">
+                                <div class="node-header" onclick="toggleNode('node-m7b')">
+                                    <svg class="caret" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    <span class="node-name">m7b</span>
+                                </div>
+                                <div class="node-children">
+                                    
+                                    <!-- Level 3: m7b-ch5 -->
+                                    <div class="tree-node folder open" id="node-m7b-ch5">
+                                        <div class="node-header" onclick="toggleNode('node-m7b-ch5')">
+                                            <svg class="caret" viewBox="0 0 24 24">
+                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                            </svg>
+                                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                            </svg>
+                                            <span class="node-name">m7b-ch5</span>
+                                        </div>
+                                        <div class="node-children">
+                                            
+                                            <!-- Level 4: m7b-ch5-strategies -->
+                                            <div class="tree-node folder open" id="node-m7b-ch5-strategies">
+                                                <div class="node-header" onclick="toggleNode('node-m7b-ch5-strategies')">
+                                                    <svg class="caret" viewBox="0 0 24 24">
+                                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                                    </svg>
+                                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                                    </svg>
+                                                    <span class="node-name">m7b-ch5-strategies</span>
+                                                </div>
+                                                <div class="node-children">
+                                                    
+                                                    <!-- Level 5: m7b-ch5-strategies-1.html -->
+                                                    <div class="tree-node file" data-title="七下数学第五章几何策略-等腰三角形-设元法与分类讨论">
+                                                        <a href="math/m7b/m7b-ch5/m7b-ch5-strategies/m7b-ch5-strategies-1.html" class="node-link">
+                                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                                            </svg>
+                                                            <span class="file-info">
+                                                                <span class="file-name">m7b-ch5-strategies-1.html</span>
+                                                                <span class="file-title">七下数学第五章几何策略-等腰三角形-设元法与分类讨论</span>
+                                                            </span>
+                                                            <span class="badge badge-strategy">Strategy</span>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- No Results fallback -->
+                <div class="no-results-panel" id="no-results">
+                    <svg class="no-results-icon" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <p class="no-results-text">未找到匹配的课程资源，请尝试输入其他关键词。</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 SmartEDU K-Maps Platform. All resources are curated for high-performance learning support.</p>
+        </footer>
     </div>
+
+    <!-- Interactive script -->
+    <script>
+        // Toggle Accordion Tree Node (Open/Close)
+        function toggleNode(id) {
+            const node = document.getElementById(id);
+            if (node) {
+                node.classList.toggle('open');
+            }
+        }
+
+        // Expand All folders
+        document.getElementById('btn-expand-all').addEventListener('click', () => {
+            const folders = document.querySelectorAll('.tree-node.folder');
+            folders.forEach(f => f.classList.add('open'));
+        });
+
+        // Collapse All folders
+        document.getElementById('btn-collapse-all').addEventListener('click', () => {
+            const folders = document.querySelectorAll('.tree-node.folder');
+            folders.forEach(f => f.classList.remove('open'));
+        });
+
+        // Search Input Functionality
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear');
+        const resultsCountEl = document.getElementById('results-count');
+        const noResultsEl = document.getElementById('no-results');
+        const treeRoot = document.getElementById('project-tree');
+
+        searchInput.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            
+            if (val.length > 0) {
+                clearBtn.style.display = 'block';
+                performSearch(val);
+            } else {
+                clearBtn.style.display = 'none';
+                resetSearch();
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            resetSearch();
+            searchInput.focus();
+        });
+
+        // Legend Click Quick Search / Filter
+        function filterLegend(badgeType) {
+            // Simply fill search bar with key tags or write a custom filtering logic
+            searchInput.value = badgeType;
+            clearBtn.style.display = 'block';
+            performSearch(badgeType);
+        }
+
+        // Perform search logic
+        function performSearch(query) {
+            let matchesCount = 0;
+            const files = document.querySelectorAll('.tree-node.file');
+            const folders = document.querySelectorAll('.tree-node.folder');
+            
+            // First, remove mismatch class from everywhere
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('search-match', 'search-mismatch');
+            });
+
+            // Find matching files
+            files.forEach(file => {
+                const fileName = file.querySelector('.file-name').textContent.toLowerCase();
+                const fileTitle = file.getAttribute('data-title').toLowerCase();
+                const badge = file.querySelector('.badge').textContent.toLowerCase();
+
+                if (fileName.includes(query) || fileTitle.includes(query) || badge.includes(query)) {
+                    file.classList.add('search-match');
+                    matchesCount++;
+
+                    // Expand and show all parent folders of the matched file
+                    let parent = file.parentElement;
+                    while (parent && parent !== treeRoot) {
+                        if (parent.classList.contains('node-children')) {
+                            // The parent tree-node folder is the parent element of the node-children div
+                            const folderNode = parent.parentElement;
+                            if (folderNode && folderNode.classList.contains('folder')) {
+                                folderNode.classList.add('open');
+                                folderNode.classList.add('search-match');
+                            }
+                        }
+                        parent = parent.parentElement;
+                    }
+                } else {
+                    file.classList.add('search-mismatch');
+                }
+            });
+
+            // Now evaluate folders: hide any folder that does not contain a search match
+            folders.forEach(folder => {
+                // If this folder itself does not have a search-match child file or child folder
+                const hasMatchChild = folder.querySelector('.search-match');
+                if (!hasMatchChild) {
+                    folder.classList.add('search-mismatch');
+                } else {
+                    folder.classList.remove('search-mismatch');
+                }
+            });
+
+            // Update UI count
+            resultsCountEl.textContent = `找到 ${matchesCount} 个匹配项`;
+            if (matchesCount === 0) {
+                noResultsEl.style.display = 'block';
+                treeRoot.style.display = 'none';
+            } else {
+                noResultsEl.style.display = 'none';
+                treeRoot.style.display = 'block';
+            }
+        }
+
+        // Reset search state
+        function resetSearch() {
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('search-match', 'search-mismatch');
+            });
+            
+            // Re-open top levels by default
+            document.getElementById('node-english').classList.remove('open');
+            document.getElementById('node-e5b').classList.remove('open');
+            document.getElementById('node-math').classList.add('open');
+            document.getElementById('node-m5b').classList.add('open');
+            document.getElementById('node-m7b').classList.add('open');
+            document.getElementById('node-m7b-ch5').classList.add('open');
+            document.getElementById('node-m7b-ch5-strategies').classList.add('open');
+
+            resultsCountEl.textContent = "共 19 个 HTML 页面";
+            noResultsEl.style.display = 'none';
+            treeRoot.style.display = 'block';
+        }
+
+        // Record last opened file in localStorage
+        document.querySelectorAll('.node-link').forEach(link => {
+            link.addEventListener('click', function() {
+                localStorage.setItem('lastOpenedFile', this.getAttribute('href'));
+            });
+        });
+
+        // Restore accordion state if last opened file is recorded
+        function restoreAccordionState() {
+            const lastOpened = localStorage.getItem('lastOpenedFile');
+            if (lastOpened) {
+                const targetLink = document.querySelector(`.node-link[href="${lastOpened}"]`);
+                if (targetLink) {
+                    // Fold all folders first
+                    document.querySelectorAll('.tree-node.folder').forEach(f => {
+                        f.classList.remove('open');
+                    });
+
+                    // Find the file node containing the link
+                    const fileNode = targetLink.closest('.tree-node.file');
+                    if (fileNode) {
+                        // Clear highlight from all files first
+                        document.querySelectorAll('.tree-node.file').forEach(f => {
+                            f.classList.remove('search-match');
+                        });
+                        // Highlight the last opened file
+                        fileNode.classList.add('search-match');
+                        
+                        // Expand all parent folders
+                        let parent = fileNode.parentElement;
+                        while (parent && parent !== treeRoot) {
+                            if (parent.classList.contains('node-children')) {
+                                const folderNode = parent.parentElement;
+                                if (folderNode && folderNode.classList.contains('folder')) {
+                                    folderNode.classList.add('open');
+                                }
+                            }
+                            parent = parent.parentElement;
+                        }
+
+                        // Smooth scroll the last opened file into view
+                        setTimeout(() => {
+                            fileNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    }
+                }
+            }
+        }
+
+        // Run on pageshow to handle normal loading and Back-Forward Cache (bfcache) navigation
+        window.addEventListener('pageshow', restoreAccordionState);
+    </script>
 </body>
+
 </html>
