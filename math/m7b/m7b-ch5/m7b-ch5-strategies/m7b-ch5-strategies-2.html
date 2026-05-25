@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathStrategist: 破题策略训练</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            startup: {
+                typeset: false // We will call typesetPromise manually
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-5px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* Option buttons styling */
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+            border-color: #6366f1; /* indigo-500 */
+            background-color: #f8fafc; /* slate-50 */
+        }
+
+        .correct-ans {
+            background-color: #f0fdf4 !important; /* bg-green-50 */
+            border-color: #22c55e !important;     /* border-green-500 */
+            color: #166534 !important;            /* text-green-800 */
+        }
+
+        .wrong-ans {
+            background-color: #fef2f2 !important;    /* bg-red-50 */
+            border-color: #ef4444 !important;      /* border-red-500 */
+            color: #991b1b !important;             /* text-red-800 */
+        }
+
+        /* MathJax Mobile Responsiveness */
+        #feedback-box mjx-container,
+        #quiz-container mjx-container,
+        #challenge-container mjx-container {
+            display: inline-block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        #feedback-box mjx-container[display="true"],
+        #quiz-container mjx-container[display="true"],
+        #challenge-container mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        #feedback-box mjx-container::-webkit-scrollbar,
+        #quiz-container mjx-container::-webkit-scrollbar,
+        #challenge-container mjx-container::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
+
+        @media (max-width: 600px) {
+            #feedback-box mjx-container,
+            #quiz-container mjx-container,
+            #challenge-container mjx-container {
+                font-size: 88% !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen py-10 px-4">
+
+    <div class="max-w-3xl mx-auto space-y-8">
+
+        <header class="text-center space-y-2 relative">
+            <a href="../../../../index.html" class="absolute -top-10 left-0 md:top-0 md:left-4 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-slate-200 text-lg opacity-50 hover:opacity-100 hover:bg-slate-50 hover:shadow transition-all hover:scale-105" title="返回首页">
+                🏠
+            </a>
+            <h1 class="text-3xl font-bold text-indigo-700">破题策略训练：等腰三角形的代数推演</h1>
+            <p class="text-slate-500">跟随导师的引导，建立属于你的思维闭环</p>
+        </header>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-indigo-800">原题呈现</h2>
+                <span class="px-2 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">难度：★★★☆☆</span>
+            </div>
+            <div class="p-6 lg:p-8 flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1 text-base leading-relaxed space-y-3">
+                    <p>14. 如图，在 $\triangle ABC$ 中，$AB=AC$，点 $E$，$F$ 分别在边 $AB$，$AC$ 上，连接 $BF$，$CE$，且 $CB=CE=CF$.</p>
+                    <p class="font-medium text-indigo-900">(1) 当 $\angle A=40^\circ$ 时，求 $\angle BFC$ 的度数.</p>
+                    <p class="font-medium text-indigo-900">(2) 若 $\angle BFC + \angle BEC = 126^\circ$，求 $\angle A$ 的度数.
+                    </p>
+                </div>
+                <div
+                    class="w-full md:w-64 shrink-0 bg-slate-50 rounded-xl p-4 border border-slate-100 flex justify-center">
+                    <svg viewBox="0 0 300 280" class="w-full h-auto stroke-current text-slate-800" stroke-width="2.5"
+                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="150,40 90,240 210,240" />
+                        <line x1="90" y1="240" x2="176" y2="125" />
+                        <line x1="210" y1="240" x2="110" y2="174" />
+                        <text x="150" y="30" fill="currentColor" stroke="none" text-anchor="middle"
+                            class="text-lg font-serif italic">A</text>
+                        <text x="75" y="252" fill="currentColor" stroke="none" text-anchor="middle"
+                            class="text-lg font-serif italic">B</text>
+                        <text x="225" y="252" fill="currentColor" stroke="none" text-anchor="middle"
+                            class="text-lg font-serif italic">C</text>
+                        <text x="95" y="178" fill="currentColor" stroke="none" text-anchor="middle"
+                            class="text-lg font-serif italic">E</text>
+                        <text x="190" y="128" fill="currentColor" stroke="none" text-anchor="middle"
+                            class="text-lg font-serif italic">F</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Quiz Container -->
+        <div id="quiz-container"
+            class="bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative min-h-[400px] fade-in">
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 h-1.5">
+                <div id="progress-bar" class="bg-blue-600 h-1.5 transition-all duration-500" style="width: 0%;"></div>
+            </div>
+            <div class="p-6 lg:p-8" id="question-area">
+            </div>
+        </div>
+
+        <div id="challenge-container"
+            class="hidden bg-white rounded-2xl shadow-lg border-2 border-amber-300 p-6 lg:p-8 fade-in">
+            <div class="text-center mb-6">
+                <span
+                    class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">Final
+                    Challenge</span>
+                <h2 class="text-2xl font-bold text-slate-800">梳理思维闭环</h2>
+                <p class="text-slate-500 mt-2">请按正确的逻辑顺序，点击下方策略卡片，重构我们的解题过程。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase">可选策略库 (点击选择)</h3>
+                    <div id="available-items" class="flex flex-wrap gap-3 min-h-[150px] content-start">
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase">逻辑执行链 (点击移除)</h3>
+                        <button id="reset-challenge-btn" onclick="resetChallenge()" disabled class="text-xs bg-slate-100 text-slate-400 border border-slate-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-not-allowed opacity-50">
+                            重置
+                        </button>
+                    </div>
+                    <div id="board-items"
+                        class="space-y-2 min-h-[200px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl p-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center hidden" id="verify-section">
+                <button onclick="verifyChallenge()"
+                    class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all">
+                    验证逻辑闭环
+                </button>
+                <p id="challenge-feedback" class="mt-4 font-bold text-lg hidden"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300" onclick="closeModal()"></div>
+        <!-- Modal Content Container -->
+        <div id="modal-content-wrapper" class="relative bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-800">策略详情</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 focus:outline-none text-2xl font-light">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div id="modal-body" class="text-slate-600 text-base leading-relaxed space-y-4">
+                    <!-- Dynamic content with MathJax formula will go here -->
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 text-right">
+                <button onclick="closeModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Data Structure ---
+        const quizData = [
+            {
+                title: "第一步：全局感知 (Global Perception)",
+                question: "观察题目给出的条件 $AB=AC$ 和 $CB=CE=CF$，我们应该优先联想到哪种几何模型或策略？",
+                options: [
+                    { text: "A. 寻找相似三角形进行边长比例推导", isCorrect: false },
+                    { text: "B. 利用等腰三角形的“等边对等角”进行角度推演", isCorrect: true },
+                    { text: "C. 尝试证明 $\\triangle ABE \\cong \\triangle ACF$", isCorrect: false }
+                ],
+                explanation: "<span class='font-bold text-indigo-700'>思维进阶：</span> 题目中出现了大量的“线段相等”条件，且集中在共底边的三角形中。这是非常典型的“等腰三角形”特征。它强烈暗示我们：不要纠结于边长，核心策略是利用“等边对等角”来建立角度之间的代数关系。"
+            },
+            {
+                title: "第二步：精准设元 (Setup & Bridge)",
+                question: "为了求解 $\\angle BFC$（第1问）和探究 $\\angle A$（第2问），设定哪个角为基础变量 $\\alpha$ 最有利于在各个等腰三角形中顺畅传递角度？",
+                options: [
+                    { text: "A. 直接设目标角 $\\angle BFC = \\alpha$", isCorrect: false },
+                    { text: "B. 设底角 $\\angle ABC = \\alpha$", isCorrect: false },
+                    { text: "C. 设顶角 $\\angle A = \\alpha$ (或利用已知度数)", isCorrect: true }
+                ],
+                explanation: "<span class='font-bold text-indigo-700'>思维进阶：</span> 在等腰 $\\triangle ABC$ 中，顶角 $\\angle A$ 是“牵一发而动全身”的核心节点。设 $\\angle A = \\alpha$，我们可以迅速将大底角表示为 $\\angle C = 90^\\circ - \\frac{\\alpha}{2}$。由于其他条件（如 $CB=CF$）都在底边附近，用大底角向内推演是最顺畅的桥梁。"
+            },
+            {
+                title: "第三步：代数推演 (Execution Strategy)",
+                question: "设 $\\angle A = \\alpha$。在等腰 $\\triangle CBF$ 中（$CB=CF$），底角 $\\angle CFB$（即 $\\angle BFC$）应该如何用 $\\alpha$ 表示？<br><span class='text-sm text-slate-500'>提示：注意顶角 $\\angle BCF$ 其实就是 $\\triangle ABC$ 的底角 $\\angle C$。</span>",
+                options: [
+                    { text: "A. $\\angle BFC = 180^\\circ - 2\\alpha$", isCorrect: false },
+                    { text: "B. $\\angle BFC = \\frac{180^\\circ - \\angle C}{2} = 45^\\circ + \\frac{\\alpha}{4}$", isCorrect: true },
+                    { text: "C. $\\angle BFC = 90^\\circ - \\frac{\\alpha}{2}$", isCorrect: false }
+                ],
+                explanation: "<span class='font-bold text-indigo-700'>思维进阶：</span> 这是一个极其漂亮的代数传递！大等腰 $\\triangle ABC$ 的底角 $\\angle C = 90^\\circ - \\frac{\\alpha}{2}$，它恰好充当了小等腰 $\\triangle CBF$ 的顶角！所以小底角 $\\angle BFC = \\frac{180^\\circ - (90^\\circ - \\frac{\\alpha}{2})}{2} = 45^\\circ + \\frac{\\alpha}{4}$。如果代入第(1)问的 $\\alpha=40^\\circ$，答案 $55^\\circ$ 瞬间秒杀。"
+            },
+            {
+                title: "第四步：锁定目标 (Target Locking)",
+                question: "第(2)问条件是 $\\angle BFC + \\angle BEC = 126^\\circ$。同理，观察 $\\triangle BCE$，它也是个等腰三角形（$CB=CE$）。$\\angle BEC$ 该怎么表示，从而构建最终方程？",
+                options: [
+                    { text: "A. 它的底角是 $\\angle CBE$（即 $\\angle B$），所以 $\\angle BEC = 90^\\circ - \\frac{\\alpha}{2}$", isCorrect: true },
+                    { text: "B. 它的顶角是 $\\angle B$，所以 $\\angle BEC = 45^\\circ + \\frac{\\alpha}{4}$", isCorrect: false },
+                    { text: "C. 它等于顶角 $\\angle A = \\alpha$", isCorrect: false }
+                ],
+                explanation: "<span class='font-bold text-indigo-700'>思维进阶：</span> 完全正确！$\\triangle BCE$ 中，$CB=CE$，所以 $\\angle CEB = \\angle CBE$。而 $\\angle CBE$ 就是大等腰的底角 $\\angle B = 90^\\circ - \\frac{\\alpha}{2}$。现在方程浮出水面：$(45^\\circ + \\frac{\\alpha}{4}) + (90^\\circ - \\frac{\\alpha}{2}) = 126^\\circ$。解得 $\\alpha = 36^\\circ$。破题成功！"
+            }
+        ];
+
+        // Challenge Data
+        const correctStrategyOrder = [
+            { 
+                id: 1, 
+                text: "识别等腰模型", 
+                detail: "在本题中，指观察到已知条件 $AB=AC$ 和 $CB=CE=CF$，从而锁定三个核心等腰三角形：$\\triangle ABC$、$\\triangle BCE$ 和 $\\triangle CBF$，这是所有角度推导的基石。" 
+            },
+            { 
+                id: 2, 
+                text: "设顶角为自变量", 
+                detail: "设等腰 $\\triangle ABC$ 的顶角 $\\angle A = \\alpha$，以此为核心自变量，从而能将大底角表示为 $\\angle C = 90^\\circ - \\frac{\\alpha}{2}$。" 
+            },
+            { 
+                id: 3, 
+                text: "角度代数推演", 
+                detail: "利用 $CB=CF$，将 $\\triangle ABC$ 的底角 $\\angle C$ 作为等腰 $\\triangle CBF$ 的顶角，代数推导出其底角 $\\angle BFC = 45^\\circ + \\frac{\\alpha}{4}$。" 
+            },
+            { 
+                id: 4, 
+                text: "构建等量方程", 
+                detail: "利用 $CB=CE$，在等腰 $\\triangle BCE$ 中表示出底角 $\\angle BEC = 90^\\circ - \\frac{\\alpha}{2}$。由题设条件 $\\angle BFC + \\angle BEC = 126^\\circ$ 列出包含 $\\alpha$ 的等量方程。" 
+            },
+            { 
+                id: 5, 
+                text: "求解并检验", 
+                detail: "解出代数方程 $(45^\\circ + \\frac{\\alpha}{4}) + (90^\\circ - \\frac{\\alpha}{2}) = 126^\\circ$ 得 $\\alpha = 36^\\circ$。代入检验，各角度数均符合几何意义（大于 $0^\\circ$ 且内角和为 $180^\\circ$）。" 
+            }
+        ];
+
+        let availableItems = [];
+        let boardItems = [];
+
+        // --- 2. Quiz State & Logic ---
+        let currentStep = 0;
+        let optionSelected = false;
+
+        function renderStep() {
+            optionSelected = false;
+            const stepData = quizData[currentStep];
+            const container = document.getElementById('question-area');
+
+            // Shuffle options in place to randomize choices order
+            stepData.options.sort(() => Math.random() - 0.5);
+
+            // Update Progress Bar
+            const progress = ((currentStep + 1) / quizData.length) * 100;
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = `${progress}%`;
+            }
+
+            let html = `
+                <div class="fade-in space-y-6">
+                    <div>
+                        <div class="mb-2 text-sm font-bold text-indigo-500 tracking-wider">${stepData.title}</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-6">${stepData.question}</h3>
+                    </div>
+                    <div class="space-y-3" id="options-container">
+            `;
+
+            stepData.options.forEach((opt, idx) => {
+                html += `
+                    <button onclick="selectOption(${idx})" id="opt-${idx}" class="option-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-medium hover:bg-slate-50 focus:outline-none mb-3 text-lg">
+                        ${opt.text}
+                    </button>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div id="feedback-box" class="mt-6 p-5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 text-lg leading-relaxed transition-all duration-300 flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <svg class="h-5 w-5 text-slate-400 transition-colors duration-300" id="feedback-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3 transition-colors duration-300 flex-1 min-w-0" id="feedback-content">
+                            请在上方选择一个选项以查看解题策略解析。
+                        </div>
+                    </div>
+                    <div class="mt-8 text-right" id="next-btn-container">
+                        <button id="next-btn" onclick="nextStep()" disabled class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-slate-300 cursor-not-allowed focus:outline-none transition-colors duration-300">
+                            ${currentStep === quizData.length - 1 ? "进入终极挑战 🚀" : "进入下一步 ➔"}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+            // Re-render MathJax dynamically
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([container]).catch(function (err) {
+                    console.error('MathJax error: ', err.message);
+                });
+            }
+        }
+
+        function selectOption(index) {
+            if (optionSelected) return; // Prevent multiple clicks
+            optionSelected = true;
+
+            const stepData = quizData[currentStep];
+            const isCorrect = stepData.options[index].isCorrect;
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackContent = document.getElementById('feedback-content');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            // Style options
+            stepData.options.forEach((opt, idx) => {
+                const el = document.getElementById(`opt-${idx}`);
+                el.disabled = true;
+                el.classList.add('cursor-not-allowed');
+                el.classList.remove('hover:bg-indigo-50', 'hover:border-indigo-200', 'cursor-pointer');
+
+                if (idx === index) {
+                    if (isCorrect) {
+                        el.classList.add('correct-ans');
+                    } else {
+                        el.classList.add('wrong-ans');
+                    }
+                } else if (opt.isCorrect) {
+                    // Highlight the correct one if they got it wrong
+                    el.classList.add('border-green-500', 'text-green-600', 'border-dashed');
+                } else {
+                    el.classList.add('opacity-50');
+                }
+            });
+
+            // Show feedback
+            let feedbackHtml = stepData.explanation;
+            if (!isCorrect) {
+                feedbackHtml = `<span class="font-bold text-red-600">方向偏离：</span>请仔细体悟背后的逻辑。<br><br>` + feedbackHtml;
+            }
+            feedbackContent.innerHTML = feedbackHtml;
+            feedbackContent.classList.remove('text-slate-500');
+            feedbackContent.classList.add('text-slate-800');
+
+            feedbackBox.classList.remove('bg-slate-50', 'border-slate-100');
+            if (isCorrect) {
+                feedbackBox.classList.add('bg-green-50', 'border-green-100');
+                feedbackIcon.classList.remove('text-slate-400');
+                feedbackIcon.classList.add('text-green-500');
+            } else {
+                feedbackBox.classList.add('bg-amber-50', 'border-amber-100');
+                feedbackIcon.classList.remove('text-slate-400');
+                feedbackIcon.classList.add('text-amber-500');
+            }
+
+            // Enable Next Button
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('bg-slate-300', 'cursor-not-allowed');
+            nextBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'cursor-pointer');
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([feedbackBox]).catch(function (err) {
+                    console.error('MathJax error: ', err.message);
+                });
+            }
+
+            // Smart Scrolling
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) {
+                const rect = quizContainer.getBoundingClientRect();
+                if (Math.abs(rect.top) > 5) {
+                    quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep < quizData.length) {
+                renderStep();
+            } else {
+                initChallenge();
+            }
+        }
+
+        // --- 3. Final Challenge Logic ---
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function initChallenge() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('challenge-container').classList.remove('hidden');
+
+            // Clone and shuffle
+            availableItems = shuffle([...correctStrategyOrder]);
+            boardItems = [];
+            renderChallengeUI();
+        }
+
+        function moveToBoard(id) {
+            const itemIndex = availableItems.findIndex(i => i.id === id);
+            if (itemIndex > -1) {
+                const item = availableItems.splice(itemIndex, 1)[0];
+                boardItems.push(item);
+                renderChallengeUI();
+            }
+
+            // Scroll container to the top of the viewport
+            const container = document.getElementById('challenge-container');
+            if (container) {
+                const rect = container.getBoundingClientRect();
+                if (Math.abs(rect.top) > 5) {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        }
+
+        function moveToAvailable(id) {
+            const itemIndex = boardItems.findIndex(i => i.id === id);
+            if (itemIndex > -1) {
+                const item = boardItems.splice(itemIndex, 1)[0];
+                availableItems.push(item);
+                renderChallengeUI();
+            }
+        }
+
+        function resetChallenge() {
+            availableItems = shuffle([...correctStrategyOrder]);
+            boardItems = [];
+            renderChallengeUI();
+        }
+
+        function renderChallengeUI() {
+            const availContainer = document.getElementById('available-items');
+            const boardContainer = document.getElementById('board-items');
+            const verifySection = document.getElementById('verify-section');
+            const feedback = document.getElementById('challenge-feedback');
+
+            // Reset feedback
+            feedback.classList.add('hidden');
+            feedback.textContent = "";
+            document.getElementById('challenge-container').classList.remove('shake', 'border-red-500');
+
+            // Render Available
+            availContainer.innerHTML = '';
+            availableItems.forEach(item => {
+                availContainer.innerHTML += `
+                    <button onclick="moveToBoard(${item.id})" class="w-full bg-white border-2 border-slate-200 text-slate-700 px-4 py-3 rounded-lg shadow-sm font-medium hover:border-indigo-400 hover:text-indigo-600 transition-colors mb-2 text-left flex justify-between items-center group">
+                        <span>${item.text}</span>
+                        <span onclick="event.stopPropagation(); showDetail(${item.id})" class="w-6 h-6 flex items-center justify-center bg-slate-100 text-slate-400 hover:bg-indigo-100 hover:text-indigo-600 rounded-full font-bold transition-all text-sm" title="查看本题策略详情">?</span>
+                    </button>
+                `;
+            });
+            if (availableItems.length === 0) {
+                availContainer.innerHTML = '<p class="text-slate-400 text-sm italic py-4 text-center w-full">所有卡片已移动</p>';
+            }
+
+            // Render Board
+            boardContainer.innerHTML = '';
+            boardItems.forEach((item, idx) => {
+                boardContainer.innerHTML += `
+                    <div onclick="moveToAvailable(${item.id})" class="cursor-pointer bg-indigo-50 text-indigo-800 border border-indigo-200 px-4 py-3 rounded-lg shadow-sm font-medium flex items-center justify-between mb-2 hover:bg-indigo-100 transition-colors">
+                        <span>${idx + 1}. ${item.text}</span>
+                        <span class="text-indigo-500 text-sm bg-white w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-red-600 transition-colors font-bold">&times;</span>
+                    </div>
+                `;
+            });
+            if (boardItems.length === 0) {
+                boardContainer.innerHTML = '<p class="text-slate-400 text-sm italic py-4 text-center w-full">请从左侧依次点击选择步骤...</p>';
+            }
+
+            // Toggle Verify Button
+            if (boardItems.length === correctStrategyOrder.length) {
+                verifySection.classList.remove('hidden');
+            } else {
+                verifySection.classList.add('hidden');
+            }
+
+            // Update Reset Button State
+            const resetBtn = document.getElementById('reset-challenge-btn');
+            if (resetBtn) {
+                if (boardItems.length > 0) {
+                    resetBtn.disabled = false;
+                    resetBtn.className = "text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-pointer";
+                } else {
+                    resetBtn.disabled = true;
+                    resetBtn.className = "text-xs bg-slate-100 text-slate-400 border border-slate-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-not-allowed opacity-50";
+                }
+            }
+        }
+
+        // --- 4. Detail Modal Logic ---
+        function showDetail(id) {
+            const item = correctStrategyOrder.find(i => i.id === id);
+            if (item) {
+                showModal(item.text, item.detail);
+            }
+        }
+
+        function showModal(title, content) {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            const mTitle = document.getElementById('modal-title');
+            const mBody = document.getElementById('modal-body');
+
+            mTitle.textContent = title;
+            mBody.innerHTML = content;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                wrapper.classList.remove('scale-95', 'opacity-0');
+                wrapper.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([mBody]).catch(err => console.error(err));
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+
+            wrapper.classList.remove('scale-100', 'opacity-100');
+            wrapper.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function verifyChallenge() {
+            const feedback = document.getElementById('challenge-feedback');
+            const container = document.getElementById('challenge-container');
+            let isCorrect = true;
+
+            for (let i = 0; i < correctStrategyOrder.length; i++) {
+                if (boardItems[i].id !== correctStrategyOrder[i].id) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                // Show final success screen inside the challenge-container
+                container.innerHTML = `
+                    <div class="text-center fade-in py-8">
+                        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                            <svg class="h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-4">思维闭环构建成功！</h2>
+                        <p class="text-lg text-slate-600 mb-8 max-w-xl mx-auto">
+                            恭喜你！你已成功攻克本关，完整梳理了等腰三角形代数推演的思维图谱：<br><br>
+                            <strong class="text-indigo-700 bg-indigo-50 px-4 py-3 rounded-xl inline-block my-2 border border-indigo-100 shadow-sm text-base">
+                                识别等腰模型 $\\rightarrow$ 设顶角为自变量 $\\rightarrow$ 角度代数推演 $\\rightarrow$ 构建等量方程 $\\rightarrow$ 求解并检验
+                            </strong><br><br>
+                            用代数语言刻画几何关系，是解决复杂角度计算的不二法门！
+                        </p>
+                        <button onclick="location.reload()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none transition-colors">
+                            重新挑战一次
+                        </button>
+                    </div>
+                `;
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([container]);
+                }
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('text-red-600');
+                feedback.innerHTML = "❌ 逻辑链条存在断裂。请重新调整步骤顺序！";
+                container.classList.add('shake', 'border-red-500');
+                setTimeout(() => container.classList.remove('shake'), 500);
+            }
+        }
+
+        // Initialize when window loads
+        window.onload = () => {
+            // Wait briefly for MathJax script to load before first render
+            setTimeout(() => {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise().then(() => {
+                        renderStep();
+                    }).catch(function (err) {
+                        console.error('MathJax error: ', err.message);
+                        renderStep();
+                    });
+                } else {
+                    renderStep();
+                }
+            }, 500);
+        };
+    </script>
+</body>
+
+</html>

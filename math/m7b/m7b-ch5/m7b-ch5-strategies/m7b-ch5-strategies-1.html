@@ -74,6 +74,7 @@
             overflow-y: hidden !important;
             vertical-align: middle;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
         }
 
         #explanation-content mjx-container[display="true"],
@@ -82,6 +83,11 @@
             max-width: 100% !important;
             overflow-x: auto !important;
             overflow-y: hidden !important;
+        }
+
+        #explanation-content mjx-container::-webkit-scrollbar,
+        #question-area mjx-container::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
         }
 
         @media (max-width: 600px) {
@@ -158,6 +164,32 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300" onclick="closeModal()"></div>
+        <!-- Modal Content Container -->
+        <div id="modal-content-wrapper" class="relative bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden shadow-2xl border border-gray-100 transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 id="modal-title" class="text-lg font-bold text-gray-800">策略详情</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none text-2xl font-light">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div id="modal-body" class="text-gray-600 text-base leading-relaxed space-y-4">
+                    <!-- Dynamic content with MathJax formula will go here -->
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 text-right">
+                <button onclick="closeModal()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm">
+                    我知道了
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -347,14 +379,12 @@
                 MathJax.typesetPromise([expBox]);
             }
 
-            // Scroll container to the top of the viewport in mobile view
-            if (window.innerWidth < 768) {
-                const quizContainer = document.getElementById('quiz-container');
-                if (quizContainer) {
-                    const rect = quizContainer.getBoundingClientRect();
-                    if (Math.abs(rect.top) > 5) {
-                        quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+            // Scroll container to the top of the viewport
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) {
+                const rect = quizContainer.getBoundingClientRect();
+                if (Math.abs(rect.top) > 5) {
+                    quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }
         };
@@ -370,10 +400,26 @@
 
         // --- 新增：排序挑战逻辑 ---
         const strategySteps = [
-            { id: 1, text: "设元代数化" },
-            { id: 2, text: "目标表达式推导" },
-            { id: 3, text: "分类讨论建构方程" },
-            { id: 4, text: "检验界限限制" }
+            { 
+                id: 1, 
+                text: "设元代数化", 
+                detail: "在这一步中，我们通过引入自变量 $x$ 搭建桥梁。设 $\\angle A = \\angle BCD = x$，将几何问题代数化，是后续所有推导的起点。" 
+            },
+            { 
+                id: 2, 
+                text: "目标表达式推导", 
+                detail: "根据 $AB=AC$ 和 $BE \\perp AC$，我们可以通过代数运算层层传递，把底角和相关直角三角形的角表示出来，得到第一问的目标关系式：$\\angle CBE = \\frac{1}{2}x$。" 
+            },
+            { 
+                id: 3, 
+                text: "分类讨论建构方程", 
+                detail: "因为已知 $\\triangle BDF$ 是等腰三角形，但不确定哪两个角相等，必须对三种可能的情况进行分类讨论。利用内角和列出对应的代数方程：① $90^\\circ - x = 90^\\circ - \\frac{1}{2}x$；② $90^\\circ - x = \\frac{3}{2}x$；③ $90^\\circ - \\frac{1}{2}x = \\frac{3}{2}x$。" 
+            },
+            { 
+                id: 4, 
+                text: "检验界限限制", 
+                detail: "虽然解出多个代数结果，但必须回到几何图形中进行实际检验。由于点 $D$ 必须在边 $AB$ 上，这意味着射线 $CD$ 在 $\\angle ACB$ 内部，由此得出隐藏限制 $x < 60^\\circ$，从而排除无效的解，锁定最终答案。" 
+            }
         ];
         let availableSteps = [];
         let selectedSteps = [];
@@ -405,9 +451,9 @@
             let availableHtml = '';
             availableSteps.forEach((step, idx) => {
                 availableHtml += `
-                    <button onclick="selectStep(${idx})" class="w-full bg-white border-2 border-gray-200 text-gray-700 px-4 py-3 rounded-lg shadow-sm font-medium hover:border-indigo-400 hover:text-indigo-600 transition-colors mb-2 text-left flex justify-between items-center">
+                    <button onclick="selectStep(${idx})" class="w-full bg-white border-2 border-gray-200 text-gray-700 px-4 py-3 rounded-lg shadow-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors mb-2 text-left flex justify-between items-center group">
                         <span>${step.text}</span>
-                        <span class="text-gray-400 text-xl font-light">+</span>
+                        <span onclick="event.stopPropagation(); showDetail(${step.id})" class="w-6 h-6 flex items-center justify-center bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600 rounded-full font-bold transition-all text-sm" title="查看本题策略详情">?</span>
                     </button>`;
             });
 
@@ -420,7 +466,12 @@
                         </div>
                         
                         <div class="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300 min-h-[120px] transition-colors" id="selected-area-container">
-                            <h4 class="text-sm font-semibold text-gray-500 mb-3">你的排序结果：</h4>
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="text-sm font-semibold text-gray-500">你的排序结果：</h4>
+                                <button id="reset-challenge-btn" onclick="resetChallenge()" disabled class="text-xs bg-slate-100 text-slate-400 border border-slate-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-not-allowed opacity-50">
+                                    重置
+                                </button>
+                            </div>
                             <div id="selected-area-content">${selectedHtml}</div>
                         </div>
 
@@ -455,6 +506,18 @@
                     errorContainer.innerHTML = errorMsg ? `<div class="text-red-500 text-sm font-medium text-center animate-pulse">${errorMsg}</div>` : '';
                 }
             }
+
+            // Update Reset Button State
+            const resetBtn = document.getElementById('reset-challenge-btn');
+            if (resetBtn) {
+                if (selectedSteps.length > 0) {
+                    resetBtn.disabled = false;
+                    resetBtn.className = "text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-pointer";
+                } else {
+                    resetBtn.disabled = true;
+                    resetBtn.className = "text-xs bg-slate-100 text-slate-400 border border-slate-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-not-allowed opacity-50";
+                }
+            }
         };
 
         const selectStep = (idx) => {
@@ -467,11 +530,26 @@
             } else {
                 renderSortingUI(false);
             }
+
+            // Scroll container to the top of the viewport
+            const container = document.getElementById('quiz-container');
+            if (container) {
+                const rect = container.getBoundingClientRect();
+                if (Math.abs(rect.top) > 5) {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         };
 
         const unselectStep = (idx) => {
             availableSteps.push(selectedSteps[idx]);
             selectedSteps.splice(idx, 1);
+            renderSortingUI(false);
+        };
+
+        const resetChallenge = () => {
+            availableSteps = [...strategySteps].sort(() => Math.random() - 0.5);
+            selectedSteps = [];
             renderSortingUI(false);
         };
 
@@ -510,6 +588,46 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 MathJax.typesetPromise([container]);
             }
+        };
+
+        // --- Modal Functions ---
+        const showDetail = (id) => {
+            const step = strategySteps.find(s => s.id === id);
+            if (step) {
+                showModal(step.text, step.detail);
+            }
+        };
+
+        const showModal = (title, content) => {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            const mTitle = document.getElementById('modal-title');
+            const mBody = document.getElementById('modal-body');
+
+            mTitle.textContent = title;
+            mBody.innerHTML = content;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                wrapper.classList.remove('scale-95', 'opacity-0');
+                wrapper.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([mBody]).catch(err => console.error(err));
+            }
+        };
+
+        const closeModal = () => {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+
+            wrapper.classList.remove('scale-100', 'opacity-100');
+            wrapper.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         };
 
         // Initialize

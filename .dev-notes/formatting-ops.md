@@ -123,3 +123,109 @@ if (isInitial) {
     document.getElementById('available-area-content').innerHTML = availableHtml;
 }
 ```
+
+---
+
+### 7. Initial MathJax Page Typesetting & Reference Safety
+When configuring MathJax with `startup: { typeset: false }` for custom dynamic typesetting, static math formulas in the raw HTML (e.g. in original problem descriptions) will not render automatically. Also, if MathJax is slow to load, direct global references cause runtime `ReferenceError` crashes.
+
+- **Initial Document Typeset**: Run a full document typesetting pass on window load before rendering the first quiz step.
+- **Defensive API Checks**: Ensure `window.MathJax` and `window.MathJax.typesetPromise` are defined before executing any typeset commands.
+
+```javascript
+// Initialize on page load
+window.onload = () => {
+    setTimeout(() => {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise().then(() => {
+                renderStep();
+            }).catch(function (err) {
+                console.error('MathJax error: ', err.message);
+                renderStep();
+            });
+        } else {
+            renderStep();
+        }
+    }, 500);
+};
+
+// Safe typeset within dynamic rendering blocks
+if (window.MathJax && window.MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+        console.error('MathJax error: ', err.message);
+    });
+}
+```
+
+---
+
+### 8. Unconditional Scrolling for Focus Preservation
+To ensure that expanding explanation boxes or growing logic chains do not push active buttons (like "进入下一步" or "验证逻辑闭环") out of the visible screen on both desktop and mobile viewports:
+- Trigger smooth scrolling to the top of the container unconditionally whenever a selection changes or a step is moved.
+- Use a `Math.abs(rect.top) > 5` check to prevent jitter or unnecessary scrolling if the container is already perfectly aligned with the viewport top.
+
+```javascript
+// Triggered on option click or step selection
+const container = document.getElementById('quiz-container');
+if (container) {
+    const rect = container.getBoundingClientRect();
+    if (Math.abs(rect.top) > 5) {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+```
+
+---
+
+### 9. Strategy Detail Modals & Event Isolation
+To show students what a specific strategy refers to in the context of the current problem without breaking the sorting flow:
+- **Event Isolation**: Use `event.stopPropagation()` on the help (`?`) icon click handler to prevent it from triggering the parent card's select/unselect movement handler.
+- **MathJax Typesetting inside Modals**: MathJax must typeset the modal content dynamically upon opening the modal. Pass the modal body element to `MathJax.typesetPromise` to compile any LaTeX formulas within the strategy descriptions.
+- **Backdrop & Animation**: Style the modal with a blur backdrop (`backdrop-blur-sm bg-slate-900/50` or `bg-gray-900/50`) and animate using Tailwind transition properties (`scale-95 opacity-0` to `scale-100 opacity-100`).
+
+```html
+<!-- Help icon button inside strategy card -->
+<span onclick="event.stopPropagation(); showDetail(${step.id})" 
+      class="w-6 h-6 flex items-center justify-center bg-gray-100 text-gray-400 hover:bg-blue-100 hover:text-blue-600 rounded-full font-bold transition-all text-sm cursor-pointer" 
+      title="查看本题策略详情">?</span>
+```
+
+```javascript
+function showModal(title, content) {
+    const modal = document.getElementById('detail-modal');
+    const mTitle = document.getElementById('modal-title');
+    const mBody = document.getElementById('modal-body');
+
+    mTitle.textContent = title;
+    mBody.innerHTML = content;
+
+    modal.classList.remove('hidden');
+    // Animate wrapper entry here...
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise([mBody]).catch(err => console.error(err));
+    }
+}
+```
+
+---
+
+### 10. Logic Chain Reset Button
+To allow students to quickly restart sorting challenges from scratch:
+- Render a themed "重置" (Reset) button aligned on the header of the "逻辑执行链" (Logic Chain) column.
+- The button starts disabled and transitions into an active themed state (using the primary color of the page, e.g., Blue or Indigo) as soon as one or more items are added to the logic chain.
+- Clicking the reset button shuffles the available items pool and clears the logic chain.
+
+```javascript
+// Update state dynamically on render
+const resetBtn = document.getElementById('reset-challenge-btn');
+if (resetBtn) {
+    if (selectedSteps.length > 0) {
+        resetBtn.disabled = false;
+        resetBtn.className = "text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-pointer";
+    } else {
+        resetBtn.disabled = true;
+        resetBtn.className = "text-xs bg-slate-100 text-slate-400 border border-slate-200 font-semibold px-2.5 py-1 rounded-md transition-all cursor-not-allowed opacity-50";
+    }
+}
+```
