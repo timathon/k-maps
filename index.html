@@ -809,7 +809,7 @@
                             <span class="stat-lbl">参与学科</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-total-files">19</span>
+                            <span class="stat-val" id="stat-total-files">21</span>
                             <span class="stat-lbl">HTML 资源</span>
                         </div>
                         <div class="stat-card">
@@ -817,7 +817,7 @@
                             <span class="stat-lbl">逻辑挑战</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-strategies">1</span>
+                            <span class="stat-val" id="stat-strategies">3</span>
                             <span class="stat-lbl">核心策略</span>
                         </div>
                     </div>
@@ -860,7 +860,7 @@
                                 <span class="legend-dot" style="background: var(--badge-strategy)"></span>
                                 <span>压轴突破策略 (Strategy)</span>
                             </div>
-                            <span class="legend-count">1</span>
+                            <span class="legend-count">3</span>
                         </div>
                     </div>
                 </section>
@@ -875,7 +875,7 @@
                         </svg>
                         项目目录结构
                     </h2>
-                    <span id="results-count" class="results-info">共 19 个 HTML 页面</span>
+                    <span id="results-count" class="results-info">共 21 个 HTML 页面</span>
                 </div>
 
                 <!-- Tree Accordion -->
@@ -1204,6 +1204,52 @@
                                 </div>
                                 <div class="node-children">
                                     
+                                    <!-- Level 3: m7b-ch4 -->
+                                    <div class="tree-node folder open" id="node-m7b-ch4">
+                                        <div class="node-header" onclick="toggleNode('node-m7b-ch4')">
+                                            <svg class="caret" viewBox="0 0 24 24">
+                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                            </svg>
+                                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                            </svg>
+                                            <span class="node-name">m7b-ch4</span>
+                                        </div>
+                                        <div class="node-children">
+                                            
+                                            <!-- Level 4: m7b-ch4-strategies -->
+                                            <div class="tree-node folder open" id="node-m7b-ch4-strategies">
+                                                <div class="node-header" onclick="toggleNode('node-m7b-ch4-strategies')">
+                                                    <svg class="caret" viewBox="0 0 24 24">
+                                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                                    </svg>
+                                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                                    </svg>
+                                                    <span class="node-name">m7b-ch4-strategies</span>
+                                                </div>
+                                                <div class="node-children">
+                                                    
+                                                    <!-- Level 5: m7b-ch4-strategies-1.html -->
+                                                    <div class="tree-node file" data-title="七下数学第四章 - 几何策略 - 双动点与全等分类讨论">
+                                                        <a href="math/m7b/m7b-ch4/m7b-ch4-strategies/m7b-ch4-strategies-1.html" class="node-link">
+                                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                                            </svg>
+                                                            <span class="file-info">
+                                                                <span class="file-name">m7b-ch4-strategies-1.html</span>
+                                                                <span class="file-title">七下数学第四章 - 几何策略 - 双动点与全等分类讨论</span>
+                                                            </span>
+                                                            <span class="badge badge-strategy">Strategy</span>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
                                     <!-- Level 3: m7b-ch5 -->
                                     <div class="tree-node folder open" id="node-m7b-ch5">
                                         <div class="node-header" onclick="toggleNode('node-m7b-ch5')">
@@ -1418,10 +1464,12 @@
             document.getElementById('node-math').classList.add('open');
             document.getElementById('node-m5b').classList.add('open');
             document.getElementById('node-m7b').classList.add('open');
+            document.getElementById('node-m7b-ch4').classList.add('open');
+            document.getElementById('node-m7b-ch4-strategies').classList.add('open');
             document.getElementById('node-m7b-ch5').classList.add('open');
             document.getElementById('node-m7b-ch5-strategies').classList.add('open');
 
-            resultsCountEl.textContent = "共 19 个 HTML 页面";
+            resultsCountEl.textContent = "共 21 个 HTML 页面";
             noResultsEl.style.display = 'none';
             treeRoot.style.display = 'block';
         }

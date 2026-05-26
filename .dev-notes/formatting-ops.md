@@ -229,3 +229,36 @@ if (resetBtn) {
     }
 }
 ```
+
+---
+
+### 11. Difficulty Badge & Color Harmonization
+To ensure consistent difficulty representation across problem pages and directory indices:
+- **Problem Page**: Include a difficulty badge inside the header of the "原题呈现" container:
+  ```html
+  <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">难度：★★★☆☆</span>
+  ```
+- **Directory Index Cards**: Match the difficulty of each card with difficulty-based color-coding in the tree-node or index panels:
+  - **4-Star Difficulty**: Use amber-themed tags:
+    ```html
+    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-1 rounded-md">难度：★★★★☆</span>
+    ```
+  - **3-Star Difficulty**: Use indigo-themed tags:
+    ```html
+    <span class="text-xs font-bold text-indigo-400 bg-indigo-400/10 border border-indigo-400/20 px-2.5 py-1 rounded-md">难度：★★★☆☆</span>
+    ```
+
+---
+
+### 12. Geometric Accuracy in SVGs (Collinearity & Segments)
+To preserve the mathematical correctness and clarity of geometric diagrams:
+- **Avoiding False Collinearity**: In dynamic geometry problems with moving points (e.g. $M$ and $N$), line segments connecting them through a midpoint (like $EM$ and $EN$) are only collinear in highly specific states.
+- **Segment Representation**: Avoid drawing these as a single straight `<line x1="M_x" y1="M_y" x2="N_x" y2="N_y">`. Instead, draw them as two separate segments meeting at the common point:
+  ```html
+  <!-- EM segment -->
+  <line x1="220" y1="40" x2="200" y2="100" />
+  <!-- EN segment (offset to prevent straight line) -->
+  <line x1="200" y1="100" x2="150" y2="160" />
+  ```
+- **Label Alignment**: When moving point coordinates in SVG, ensure that circle anchors (`cx`) and labels (`text x`) are offset consistently (e.g., placing the label 10px to the left of the circle anchor).
+- **Core Connections**: Ensure all helper lines and connection segments described in the problem statement (e.g. connection line $BD$) are fully drawn.
