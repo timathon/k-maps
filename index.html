@@ -809,7 +809,7 @@
                             <span class="stat-lbl">参与学科</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-total-files">21</span>
+                            <span class="stat-val" id="stat-total-files">22</span>
                             <span class="stat-lbl">HTML 资源</span>
                         </div>
                         <div class="stat-card">
@@ -839,7 +839,7 @@
                                 <span class="legend-dot" style="background: var(--badge-core)"></span>
                                 <span>核心基础精讲 (Core)</span>
                             </div>
-                            <span class="legend-count">8</span>
+                            <span class="legend-count">9</span>
                         </div>
                         <div class="legend-item" onclick="filterLegend('logic')">
                             <div class="legend-left">
@@ -875,7 +875,7 @@
                         </svg>
                         项目目录结构
                     </h2>
-                    <span id="results-count" class="results-info">共 21 个 HTML 页面</span>
+                    <span id="results-count" class="results-info">共 22 个 HTML 页面</span>
                 </div>
 
                 <!-- Tree Accordion -->
@@ -975,6 +975,33 @@
                                                         <span class="file-title">数学期中综合测评 - 五年级下册</span>
                                                     </span>
                                                     <span class="badge badge-exam">Exam</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Level 3: m5b-practices -->
+                                    <div class="tree-node folder" id="node-m5b-practices">
+                                        <div class="node-header" onclick="toggleNode('node-m5b-practices')">
+                                            <svg class="caret" viewBox="0 0 24 24">
+                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                            </svg>
+                                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                            </svg>
+                                            <span class="node-name">m5b-practices</span>
+                                        </div>
+                                        <div class="node-children">
+                                            <div class="tree-node file" data-title="分数加减混合运算简便计算练习题 - 五年级下册">
+                                                <a href="math/m5b/m5b-practices/fraction-add-sub.html" class="node-link">
+                                                    <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                                    </svg>
+                                                    <span class="file-info">
+                                                        <span class="file-name">fraction-add-sub.html</span>
+                                                        <span class="file-title">分数加减混合运算简便计算练习题</span>
+                                                    </span>
+                                                    <span class="badge badge-core">Core</span>
                                                 </a>
                                             </div>
                                         </div>
@@ -1469,7 +1496,7 @@
             document.getElementById('node-m7b-ch5').classList.add('open');
             document.getElementById('node-m7b-ch5-strategies').classList.add('open');
 
-            resultsCountEl.textContent = "共 21 个 HTML 页面";
+            resultsCountEl.textContent = "共 22 个 HTML 页面";
             noResultsEl.style.display = 'none';
             treeRoot.style.display = 'block';
         }

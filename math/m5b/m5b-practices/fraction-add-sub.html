@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五年级下册分数加减混合运算简便计算练习题</title>
+    <style>
+        /* A4 Page Layout Specifications */
+        @page {
+            size: A4;
+            margin: 15mm 12mm 15mm 12mm;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #000;
+            background-color: #fff;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .fraction-worksheet-container {
+            width: 100%;
+            max-width: 186mm;
+            /* Keeps content bounded tightly to A4 printable safe zones */
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        /* Classroom Info Metadata Header */
+        .student-meta-header {
+            display: flex;
+            justify-content: flex-end;
+            gap: 60px;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            padding-right: 20px;
+        }
+
+        .meta-field span {
+            display: inline-block;
+            border-bottom: 1px solid transparent;
+            min-width: 80px;
+        }
+
+        /* 4x6 Expression Layout Grid */
+        .operations-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            row-gap: 65px;
+            column-gap: 25px;
+        }
+
+        /* Equation Blocks */
+        .equation-block {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            font-size: 16px;
+            font-weight: 500;
+            min-height: 65px;
+            white-space: nowrap;
+        }
+
+        /* Interactive Editable Numbers */
+        .editable-math-zone {
+            outline: none;
+            border: 1px solid transparent;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background 0.2s, border 0.2s;
+        }
+
+        .editable-math-zone:hover {
+            background-color: #f0f4f8;
+            border-color: #cbd5e1;
+        }
+
+        .editable-math-zone:focus {
+            background-color: #fff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Fraction Structure Formatter */
+        .fraction-block {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 2px;
+        }
+
+        .numerator {
+            border-bottom: 1.5px solid #000;
+            padding: 0 3px 3px 3px;
+            line-height: 1;
+        }
+
+        .denominator {
+            padding: 4px 3px 0 3px;
+            line-height: 1;
+        }
+
+        /* Integer/Whole Prefix */
+        .mixed-number-whole {
+            margin-right: 1px;
+        }
+
+        /* Document Pagination Tracker */
+        .worksheet-pagination-footer {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 50px;
+            color: #333;
+        }
+
+        /* Print Settings override */
+        @media print {
+            .fraction-worksheet-container {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .editable-math-zone:hover,
+            .editable-math-zone:focus {
+                background: transparent !important;
+                border-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            body {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="fraction-worksheet-container">
+        <div class="student-meta-header">
+            <div class="meta-field">班级：<span contenteditable="true"></span></div>
+            <div class="meta-field">姓名：<span contenteditable="true"></span></div>
+            <div class="meta-field">学号：<span contenteditable="true"></span></div>
+        </div>
+
+        <div class="operations-grid">
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">8</div>
+                        <div class="denominator">9</div>
+                    </div> +
+                    (<div class="fraction-block">
+                        <div class="numerator">4</div>
+                        <div class="denominator">11</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">9</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">2</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    2.5 - (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">8</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">8</div>
+                        <div class="denominator">9</div>
+                    </div> +
+                    (<div class="fraction-block">
+                        <div class="numerator">5</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">9</div>
+                    </div>)
+                </span>
+            </div>
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">29</div>
+                        <div class="denominator">24</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">5</div>
+                        <div class="denominator">24</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">4</div>
+                        <div class="denominator">9</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">2</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">8</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">11</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">4</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">2</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">8</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">20</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">10</div>
+                    </div>)
+                </span>
+            </div>
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">18</div>
+                        <div class="denominator">11</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">11</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">8</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">11</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">6</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">8</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">2</span>
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    (<span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">3</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">5</div>
+                        <div class="denominator">8</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">2</span>
+                    <div class="fraction-block">
+                        <div class="numerator">5</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">12</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div>)
+                </span>
+            </div>
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">9</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">10</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">2</div>
+                        <div class="denominator">9</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">17</div>
+                        <div class="denominator">10</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    11 - <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">10</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">10</div>
+                    </div>
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">2</div>
+                    </div> -
+                    (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> - 0.5)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">2</div>
+                        <div class="denominator">3</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">9</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">6</div>
+                        <div class="denominator">12</div>
+                    </div>
+                </span>
+            </div>
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">15</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">12</div>
+                    </div> +
+                    (<div class="fraction-block">
+                        <div class="numerator">8</div>
+                        <div class="denominator">15</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">12</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    0.9 - (<div class="fraction-block">
+                        <div class="numerator">2</div>
+                        <div class="denominator">9</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">20</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    2.6 - (<div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">5</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">2</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">3</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">3</div>
+                        <div class="denominator">4</div>
+                    </div> -
+                    <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">4</div>
+                    </div>
+                </span>
+            </div>
+
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <div class="fraction-block">
+                        <div class="numerator">8</div>
+                        <div class="denominator">25</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">12</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">2</div>
+                        <div class="denominator">5</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">5</div>
+                        <div class="denominator">6</div>
+                    </div>
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    0.8 - (<div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">10</div>
+                    </div> -
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">12</div>
+                    </div>)
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">2</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">3</div>
+                    </div> +
+                    1.25 - <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">4</div>
+                    </div>
+                </span>
+            </div>
+            <div class="equation-block">
+                <span class="editable-math-zone" contenteditable="true">
+                    <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">2</div>
+                        <div class="denominator">9</div>
+                    </div> +
+                    <div class="fraction-block">
+                        <div class="numerator">7</div>
+                        <div class="denominator">12</div>
+                    </div> -
+                    <span class="mixed-number-whole">1</span>
+                    <div class="fraction-block">
+                        <div class="numerator">1</div>
+                        <div class="denominator">6</div>
+                    </div>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="worksheet-pagination-footer">4 / 9</div>
+    </div>
+
+</body>
+
+</html>
