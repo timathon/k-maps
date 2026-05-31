@@ -19,6 +19,7 @@
             color: #000;
             background-color: #fff;
             -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .fraction-worksheet-container {
@@ -118,6 +119,89 @@
             color: #333;
         }
 
+        /* Modern Floating Control Dashboard */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 16px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .control-panel:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.12);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%);
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .control-btn.btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            box-shadow: none;
+        }
+
+        .control-btn.btn-secondary:hover {
+            background: #f1f5f9;
+            color: #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Answer Zones Styling */
+        .answer-zone {
+            display: inline-flex;
+            align-items: center;
+            color: #2563eb;
+            font-weight: 700;
+            margin-left: 6px;
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, width 0.3s ease;
+            vertical-align: middle;
+        }
+
+        body.show-answers .answer-zone {
+            opacity: 1;
+            width: auto;
+            overflow: visible;
+        }
+
         /* Print Settings override */
         @media print {
             .fraction-worksheet-container {
@@ -135,11 +219,26 @@
             body {
                 width: 100%;
             }
+
+            .control-panel {
+                display: none !important;
+            }
+
+            .answer-zone {
+                display: none !important;
+            }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Floating UI Dashboard Controls -->
+    <div class="control-panel">
+        <button id="btn-generate" class="control-btn">🔄 生成新题</button>
+        <button id="btn-answers" class="control-btn btn-secondary">👁️ 显示答案</button>
+        <button id="btn-print" class="control-btn btn-secondary">🖨️ 打印题目</button>
+    </div>
 
     <div class="fraction-worksheet-container">
         <div class="student-meta-header">
@@ -148,7 +247,7 @@
             <div class="meta-field">学号：<span contenteditable="true"></span></div>
         </div>
 
-        <div class="operations-grid">
+        <div class="operations-grid" id="operations-grid">
 
             <div class="equation-block">
                 <span class="editable-math-zone" contenteditable="true">
@@ -540,6 +639,564 @@
         <div class="worksheet-pagination-footer">4 / 9</div>
     </div>
 
+    <script>
+        // Exact Fraction Arithmetic Class
+        class Fraction {
+            constructor(num, den = 1) {
+                if (den === 0) throw new Error("Denominator cannot be zero");
+                let g = Fraction.gcd(Math.abs(num), Math.abs(den));
+                this.num = num / g;
+                this.den = den / g;
+                if (this.den < 0) {
+                    this.num = -this.num;
+                    this.den = -this.den;
+                }
+            }
+
+            static gcd(a, b) {
+                return b === 0 ? a : Fraction.gcd(b, a % b);
+            }
+
+            static lcm(a, b) {
+                return (a * b) / Fraction.gcd(a, b);
+            }
+
+            add(other) {
+                return new Fraction(this.num * other.den + other.num * this.den, this.den * other.den);
+            }
+
+            sub(other) {
+                return new Fraction(this.num * other.den - other.num * this.den, this.den * other.den);
+            }
+
+            static fromValue(val) {
+                if (val instanceof Fraction) return val;
+                if (typeof val === 'number') {
+                    if (Number.isInteger(val)) {
+                        return new Fraction(val, 1);
+                    } else {
+                        let decStr = val.toString();
+                        let decPlaces = (decStr.split('.')[1] || '').length;
+                        let den = Math.pow(10, decPlaces);
+                        let num = Math.round(val * den);
+                        return new Fraction(num, den);
+                    }
+                }
+                if (typeof val === 'object' && val !== null) {
+                    let whole = val.whole || 0;
+                    let num = val.num || 0;
+                    let den = val.den || 1;
+                    return new Fraction(whole * den + num, den);
+                }
+                return new Fraction(0, 1);
+            }
+
+            toTerm() {
+                let whole = Math.floor(Math.abs(this.num) / this.den);
+                let remNum = Math.abs(this.num) % this.den;
+                if (this.num < 0) {
+                    whole = -whole;
+                }
+                if (remNum === 0) {
+                    return { type: 'integer', value: whole };
+                }
+                if (whole === 0) {
+                    return { type: 'fraction', num: remNum, den: this.den };
+                }
+                return { type: 'mixed', num: remNum, den: this.den, whole: whole };
+            }
+        }
+
+        // Helper functions
+        function randomChoice(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function randomRange(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function isCoprime(a, b) {
+            return Fraction.gcd(a, b) === 1;
+        }
+
+        function termToHTML(term) {
+            if (term.type === 'integer') {
+                return term.value.toString();
+            } else if (term.type === 'decimal') {
+                return term.value.toFixed(term.value % 1 === 0 ? 0 : (term.value * 10 % 1 === 0 ? 1 : 2));
+            } else if (term.type === 'fraction' || term.type === 'mixed') {
+                let html = '';
+                if (term.whole) {
+                    html += `<span class="mixed-number-whole">${term.whole}</span>`;
+                }
+                html += `<div class="fraction-block">
+                    <div class="numerator">${term.num}</div>
+                    <div class="denominator">${term.den}</div>
+                </div>`;
+                return html;
+            }
+            return '';
+        }
+
+        // Slot Generator Functions (Q1 to Q24)
+        function generateQ1() {
+            const b = randomChoice([5, 7, 8, 9, 10, 11, 12]);
+            const a = randomRange(1, b - 1);
+            const e = b - a;
+            let d;
+            do {
+                d = randomChoice([3, 4, 5, 7, 9, 11]);
+            } while (d === b || !isCoprime(d, b));
+            const c = randomRange(1, d - 1);
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: b };
+            const expr = `${termToHTML(A)} + (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).add(new Fraction(c, d).add(new Fraction(e, b)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ2() {
+            const b = randomChoice([12, 16, 24]);
+            let d, f;
+            if (b === 12) { d = 4; f = 2; }
+            else if (b === 16) { d = 8; f = 4; }
+            else { d = 8; f = 4; }
+            let c, e;
+            if (d === 4 && f === 2) { c = 3; e = 1; }
+            else if (d === 8 && f === 4) { c = 5; e = 2; }
+            else { c = 3; e = 1; }
+            const innerVal = new Fraction(c, d).sub(new Fraction(e, f));
+            let a;
+            const minA = Math.floor(b * innerVal.num / innerVal.den) + 1;
+            do {
+                a = randomRange(minA, b - 1);
+            } while (!isCoprime(a, b));
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} - ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(innerVal);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ3() {
+            const dec = randomChoice([1.5, 2.5, 3.5]);
+            const b = randomChoice([4, 5]);
+            const d = b * 2;
+            let a, c;
+            if (b === 4) { a = 3; c = 3; }
+            else { a = 4; c = 3; }
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const DecTerm = { type: 'decimal', value: dec };
+            const expr = `${termToHTML(DecTerm)} - (${termToHTML(A)} - ${termToHTML(B)})`;
+            const ans = Fraction.fromValue(dec).sub(new Fraction(a, b).sub(new Fraction(c, d)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ4() {
+            const b = randomChoice([7, 9, 11]);
+            const d = randomChoice([8, 10, 12]);
+            let e = randomRange(1, 2);
+            let a = randomRange(e + 2, b - 1);
+            const minC = Math.floor(d * e / b) + 1;
+            let c = randomRange(minC, d - 1);
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: b };
+            const expr = `${termToHTML(A)} + (${termToHTML(B)} - ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).add(new Fraction(c, d).sub(new Fraction(e, b)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ5() {
+            const b = randomChoice([12, 16, 20, 24]);
+            let e = randomChoice([3, 4, 5]);
+            while (Fraction.gcd(b, e) > 1) {
+                e = randomChoice([3, 4, 5]);
+            }
+            const d = randomRange(1, e - 1);
+            const minC = Math.floor(b * d / e) + 1;
+            let c = randomRange(minC, b - 1);
+            let a = b + c;
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: b };
+            const C = { type: 'fraction', num: d, den: e };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} - ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(new Fraction(c, b).sub(new Fraction(d, e)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ6() {
+            const b = 2, d = 4, f = 8;
+            const c = 3;
+            const e = randomChoice([3, 5]);
+            const innerVal = new Fraction(c, d).sub(new Fraction(e, f));
+            const a = 1;
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} - ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(innerVal);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        function generateQ7() {
+            const b = 12, d = 4, f = 2;
+            const c = 1, e = 1;
+            const a = 11;
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(new Fraction(c, d).add(new Fraction(e, f)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q8
+        function generateQ8() {
+            const d = 20, f = 10, b = 8;
+            const c = randomChoice([1, 3]), e = 1;
+            const inner = new Fraction(c, d).add(new Fraction(e, f));
+            const a = randomChoice([3, 5]);
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(inner);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q9
+        function generateQ9() {
+            const b = randomChoice([7, 9, 11, 13]);
+            const e = randomChoice([4, 5, 8, 10]);
+            const c = randomRange(2, b - 1);
+            const a = b + c;
+            const d = randomRange(1, e - 1);
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: b };
+            const C = { type: 'fraction', num: d, den: e };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(new Fraction(c, b).add(new Fraction(d, e)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q10
+        function generateQ10() {
+            const d = 6, f = 8, b = 12;
+            const c = 1, e = 1;
+            const a = randomChoice([5, 7, 11]);
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = new Fraction(a, b).sub(new Fraction(c, d).add(new Fraction(e, f)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q11
+        function generateQ11() {
+            const W1 = 2, W2 = 1;
+            const b = 4, d = 3, f = 8;
+            let c, e;
+            if (Math.random() < 0.5) { c = 2; e = 5; }
+            else { c = 1; e = 1; }
+            const a = randomChoice([1, 3]);
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'mixed', num: c, den: d, whole: W2 };
+            const C = { type: 'fraction', num: e, den: f };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} - ${termToHTML(C)})`;
+            const ans = Fraction.fromValue(A).sub(Fraction.fromValue(B).sub(Fraction.fromValue(C)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q12
+        function generateQ12() {
+            const W1 = randomChoice([2, 3]);
+            const b = randomChoice([8, 10, 12]);
+            let c, d, e;
+            if (b === 8) { c = 2; d = 3; e = 4; }
+            else if (b === 10) { c = 2; d = 4; e = 5; }
+            else { c = 3; d = 3; e = 4; }
+            let a;
+            do {
+                a = randomRange(1, b - 1);
+            } while (!isCoprime(a, b));
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'fraction', num: c, den: b };
+            const C = { type: 'fraction', num: d, den: e };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = Fraction.fromValue(A).sub(new Fraction(1, 1));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q13
+        function generateQ13() {
+            const b = randomChoice([7, 9, 11]);
+            const d = 10;
+            const e = randomRange(1, 2);
+            const a = e + 5;
+            const f = randomChoice([3, 7]);
+            const c = f + 10;
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: b };
+            const D = { type: 'fraction', num: f, den: d };
+            const expr = `${termToHTML(A)} + ${termToHTML(B)} - (${termToHTML(C)} + ${termToHTML(D)})`;
+            const ans = (new Fraction(a, b).add(new Fraction(c, d))).sub(new Fraction(e, b).add(new Fraction(f, d)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q14
+        function generateQ14() {
+            const W = randomChoice([6, 8, 10, 11, 12, 15]);
+            const b = randomChoice([8, 10, 12, 15]);
+            const a = randomRange(1, b - 1);
+            const c = b - a;
+            const A = { type: 'integer', value: W };
+            const B = { type: 'fraction', num: a, den: b };
+            const C = { type: 'fraction', num: c, den: b };
+            const expr = `${termToHTML(A)} - ${termToHTML(B)} - ${termToHTML(C)}`;
+            const ans = new Fraction(W, 1).sub(new Fraction(1, 1));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q15
+        function generateQ15() {
+            const W1 = randomChoice([1, 2]);
+            const b = 2, a = 1;
+            const Dec = 0.5;
+            const d = 4, c = 3;
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'fraction', num: c, den: d };
+            const DecTerm = { type: 'decimal', value: Dec };
+            const expr = `${termToHTML(A)} - (${termToHTML(B)} - ${termToHTML(DecTerm)})`;
+            const ans = Fraction.fromValue(A).sub(new Fraction(c, d).sub(Fraction.fromValue(Dec)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q16
+        function generateQ16() {
+            const b = randomChoice([3, 5]);
+            const d = 12;
+            let c, e;
+            const diff = randomChoice([3, 4]);
+            if (diff === 3) { c = 9; e = 6; }
+            else { c = 7; e = 3; }
+            const W1 = randomChoice([1, 2]);
+            let a;
+            do {
+                a = randomRange(1, b - 1);
+            } while (!isCoprime(a, b));
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: d };
+            const expr = `${termToHTML(A)} + ${termToHTML(B)} - ${termToHTML(C)}`;
+            const ans = Fraction.fromValue(A).add(new Fraction(c, d).sub(new Fraction(e, d)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q17
+        function generateQ17() {
+            const b = 15, d = 12;
+            const e = 11, a = 4, c = 7;
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'fraction', num: e, den: b };
+            const D = { type: 'fraction', num: c, den: d };
+            const expr = `${termToHTML(A)} + ${termToHTML(B)} + (${termToHTML(C)} - ${termToHTML(D)})`;
+            const ans = new Fraction(1, 1);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q18
+        function generateQ18() {
+            const dec = randomChoice([0.8, 0.9, 1.2]);
+            let b, d, a, c;
+            const option = randomChoice([1, 2, 3]);
+            if (option === 1) { b = 3; d = 6; a = 1; c = 1; }
+            else if (option === 2) { b = 4; d = 8; a = 1; c = 2; }
+            else { b = 5; d = 10; a = 1; c = 3; }
+            const DecTerm = { type: 'decimal', value: dec };
+            const B = { type: 'fraction', num: a, den: b };
+            const C = { type: 'fraction', num: c, den: d };
+            const expr = `${termToHTML(DecTerm)} - (${termToHTML(B)} + ${termToHTML(C)})`;
+            const ans = Fraction.fromValue(dec).sub(new Fraction(1, 2));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q19
+        function generateQ19() {
+            const dec = randomChoice([1.4, 2.4, 3.4]);
+            const c = 3, d = 5;
+            const a = 3, b = 4;
+            const DecTerm = { type: 'decimal', value: dec };
+            const A = { type: 'fraction', num: a, den: b };
+            const B = { type: 'fraction', num: c, den: d };
+            const expr = `${termToHTML(DecTerm)} - (${termToHTML(A)} - ${termToHTML(B)})`;
+            const ans = Fraction.fromValue(dec).sub(new Fraction(a, b).sub(new Fraction(c, d)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q20
+        function generateQ20() {
+            const W1 = randomChoice([2, 3]);
+            const b = randomChoice([3, 5]);
+            let a;
+            do {
+                a = randomRange(1, b - 1);
+            } while (!isCoprime(a, b));
+            const d = randomChoice([4, 8]);
+            const c = randomRange(1, d - 1);
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'mixed', num: c, den: d, whole: 1 };
+            const C = { type: 'fraction', num: c, den: d };
+            const expr = `${termToHTML(A)} - ${termToHTML(B)} + ${termToHTML(C)}`;
+            const ans = Fraction.fromValue(A).sub(new Fraction(1, 1));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q21
+        function generateQ21() {
+            const b = randomChoice([8, 10, 12]);
+            const d = randomChoice([5, 9, 11]);
+            const a = randomRange(1, b - 1);
+            const e = b - a;
+            const c = randomRange(1, d - 1);
+            const g = d - c;
+            const terms = [
+                { type: 'fraction', num: a, den: b },
+                { type: 'fraction', num: c, den: d },
+                { type: 'fraction', num: e, den: b },
+                { type: 'fraction', num: g, den: d }
+            ];
+            for (let i = terms.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [terms[i], terms[j]] = [terms[j], terms[i]];
+            }
+            const expr = `${termToHTML(terms[0])} + ${termToHTML(terms[1])} + ${termToHTML(terms[2])} + ${termToHTML(terms[3])}`;
+            const ans = new Fraction(2, 1);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q22
+        function generateQ22() {
+            const dec = randomChoice([0.7, 0.8, 0.9]);
+            const dVal = Math.round(dec * 10);
+            const a = dVal - 1;
+            const c = randomChoice([12, 15, 20]);
+            const DecTerm = { type: 'decimal', value: dec };
+            const A = { type: 'fraction', num: a, den: 10 };
+            const B = { type: 'fraction', num: 1, den: c };
+            const expr = `${termToHTML(DecTerm)} - (${termToHTML(A)} - ${termToHTML(B)})`;
+            const ans = Fraction.fromValue(dec).sub(new Fraction(a, 10).sub(new Fraction(1, c)));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q23
+        function generateQ23() {
+            const W1 = randomChoice([2, 3]);
+            const b = randomChoice([3, 5]);
+            let a;
+            do {
+                a = randomRange(1, b - 1);
+            } while (!isCoprime(a, b));
+            const options = [
+                { whole: 1, num: 1, den: 4, dec: 1.25 },
+                { whole: 1, num: 1, den: 2, dec: 1.5 },
+                { whole: 1, num: 1, den: 5, dec: 1.2 },
+                { whole: 2, num: 1, den: 4, dec: 2.25 }
+            ];
+            const opt = randomChoice(options);
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const DecTerm = { type: 'decimal', value: opt.dec };
+            const C = { type: 'mixed', num: opt.num, den: opt.den, whole: opt.whole };
+            const expr = `${termToHTML(A)} + ${termToHTML(DecTerm)} - ${termToHTML(C)}`;
+            const ans = Fraction.fromValue(A);
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // Q24
+        function generateQ24() {
+            const b = 8, d = 12, f = 6;
+            const W1 = 1, W2 = 1;
+            const a = 3, c = 5, e = 1;
+            const A = { type: 'mixed', num: a, den: b, whole: W1 };
+            const B = { type: 'fraction', num: c, den: d };
+            const C = { type: 'mixed', num: e, den: f, whole: W2 };
+            const expr = `${termToHTML(A)} + ${termToHTML(B)} - ${termToHTML(C)}`;
+            const ans = Fraction.fromValue(A).add(new Fraction(c, d)).sub(Fraction.fromValue(C));
+            return { expressionHTML: expr, answerHTML: termToHTML(ans.toTerm()) };
+        }
+
+        // List of all generators
+        const generators = [
+            generateQ1, generateQ2, generateQ3, generateQ4,
+            generateQ5, generateQ6, generateQ7, generateQ8,
+            generateQ9, generateQ10, generateQ11, generateQ12,
+            generateQ13, generateQ14, generateQ15, generateQ16,
+            generateQ17, generateQ18, generateQ19, generateQ20,
+            generateQ21, generateQ22, generateQ23, generateQ24
+        ];
+
+        // Main Regeneration Logic
+        function generateNewPractices() {
+            const grid = document.getElementById('operations-grid');
+            grid.innerHTML = '';
+            
+            generators.forEach((gen, index) => {
+                const questionData = gen();
+                
+                const block = document.createElement('div');
+                block.className = 'equation-block';
+                
+                const mathZone = document.createElement('span');
+                mathZone.className = 'editable-math-zone';
+                mathZone.contentEditable = 'true';
+                mathZone.innerHTML = questionData.expressionHTML;
+                
+                const answerZone = document.createElement('span');
+                answerZone.className = 'answer-zone';
+                answerZone.innerHTML = `= ${questionData.answerHTML}`;
+                
+                block.appendChild(mathZone);
+                block.appendChild(answerZone);
+                grid.appendChild(block);
+            });
+        }
+
+        // Setup Button Listeners
+        document.getElementById('btn-generate').addEventListener('click', () => {
+            generateNewPractices();
+        });
+
+        const answersBtn = document.getElementById('btn-answers');
+        answersBtn.addEventListener('click', () => {
+            const body = document.body;
+            body.classList.toggle('show-answers');
+            if (body.classList.contains('show-answers')) {
+                answersBtn.textContent = '🙈 隐藏答案';
+                answersBtn.classList.remove('btn-secondary');
+            } else {
+                answersBtn.textContent = '👁️ 显示答案';
+                answersBtn.classList.add('btn-secondary');
+            }
+        });
+
+        document.getElementById('btn-print').addEventListener('click', () => {
+            window.print();
+        });
+
+        // Initialize with default or dynamic questions
+        // Let's keep the fallback original ones on load, or immediately generate dynamic ones.
+        // We'll generate a fresh dynamic set immediately so they are initialized with answers calculated.
+        window.addEventListener('DOMContentLoaded', () => {
+            generateNewPractices();
+        });
+    </script>
 </body>
 
 </html>
