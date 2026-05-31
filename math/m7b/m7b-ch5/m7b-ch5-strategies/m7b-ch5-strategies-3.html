@@ -1,0 +1,562 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>几何破题策略训练：角平分线模型与面积分割法</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: false // 我们将手动触发渲染
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-btn {
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+            border-color: #6366f1;
+        }
+
+        .correct-ans {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        .wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+
+        /* MathJax Mobile Responsiveness */
+        #explanation-content mjx-container,
+        #question-area mjx-container {
+            display: inline-block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        #explanation-content mjx-container[display="true"],
+        #question-area mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        #explanation-content mjx-container::-webkit-scrollbar,
+        #question-area mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+
+            #explanation-content mjx-container,
+            #question-area mjx-container {
+                font-size: 88% !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-3xl mx-auto space-y-8">
+
+        <div class="text-center space-y-3 relative">
+            <a href="index.html" class="absolute -top-10 left-0 md:top-0 md:left-4 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-slate-200 text-lg opacity-50 hover:opacity-100 hover:bg-slate-50 hover:shadow transition-all hover:scale-105" title="返回目录">
+                🏠
+            </a>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">破题策略：角平分线模型与面积分割</h1>
+            <p class="text-slate-500 font-medium">看透繁杂线段背后的隐性几何关系，实现“降维打击”</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-indigo-800">原题呈现</h2>
+                <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-bold">难度：★★★★★</span>
+            </div>
+            <div class="p-6 md:flex gap-8 items-center">
+                <div class="flex-1 space-y-4 text-slate-700 leading-relaxed text-sm md:text-base font-medium">
+                    <p>11. 如图，在 $\triangle ABC$ 中，点 $D$ 在边 $BC$ 的延长线上，$\angle ACB = 100^\circ$，$\angle ABC$ 的平分线交 $AD$
+                        于点 $E$，连接 $CE$，过点 $E$ 作 $EH \perp BD$，垂足为 $H$，$\angle CEH = 50^\circ$。</p>
+                    <p class="font-bold text-slate-900">(1) 求 $\angle ACE$ 的度数.</p>
+                    <p class="font-bold text-slate-900">(2) 若 $AC + CD = 14$，$AB = 8.5$，且 $S_{\triangle ACD} = 21$，求
+                        $\triangle ABE$ 的面积.</p>
+                </div>
+                <div
+                    class="w-56 h-48 flex-shrink-0 mx-auto mt-6 md:mt-0 relative bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center p-2">
+                    <svg viewBox="0 0 200 180" class="w-full h-full stroke-slate-800 fill-none" stroke-width="1.5">
+                        <line x1="10" y1="140" x2="180" y2="140" />
+                        <line x1="50" y1="40" x2="80" y2="140" />
+                        <line x1="50" y1="40" x2="10" y2="140" />
+                        <line x1="50" y1="40" x2="170" y2="140" />
+                        <line x1="10" y1="140" x2="110" y2="90" />
+                        <line x1="80" y1="140" x2="110" y2="90" />
+                        <line x1="110" y1="90" x2="110" y2="140" />
+
+                        <polyline points="110,135 105,135 105,140" stroke-width="1" stroke="#64748b" />
+
+                        <text x="45" y="35" class="fill-slate-800 stroke-none text-xs font-serif italic">A</text>
+                        <text x="5" y="155" class="fill-slate-800 stroke-none text-xs font-serif italic">B</text>
+                        <text x="75" y="155" class="fill-slate-800 stroke-none text-xs font-serif italic">C</text>
+                        <text x="105" y="155" class="fill-slate-800 stroke-none text-xs font-serif italic">H</text>
+                        <text x="170" y="155" class="fill-slate-800 stroke-none text-xs font-serif italic">D</text>
+                        <text x="115" y="85" class="fill-slate-800 stroke-none text-xs font-serif italic">E</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-container"
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative min-h-[400px]">
+
+            <div class="w-full bg-slate-100 h-1.5">
+                <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-500" style="width: 20%;">
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8" id="question-area">
+            </div>
+        </div>
+
+    </div>
+
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
+            onclick="closeModal()"></div>
+        <div id="modal-content-wrapper"
+            class="relative bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-800">策略详情</h3>
+                <button onclick="closeModal()"
+                    class="text-slate-400 hover:text-slate-600 focus:outline-none text-2xl font-light">&times;</button>
+            </div>
+            <div class="p-6">
+                <div id="modal-body" class="text-slate-600 text-base leading-relaxed space-y-4 font-medium">
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 text-right">
+                <button onclick="closeModal()"
+                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                step: "第一步：全局感知，挖掘隐性几何关系",
+                question: "在第 (1) 问中，已知 $\\angle ACB=100^\\circ$ 且点 $D$ 在 $BC$ 延长线上，同时 $EH \\perp BD$ 且 $\\angle CEH=50^\\circ$。通过计算角度，我们可以得出线段 $CE$ 具有什么特殊的几何身份？",
+                options: [
+                    { text: "$CE$ 是 $\\triangle ACD$ 的中线。", isCorrect: false },
+                    { text: "$CE$ 是 $\\triangle EHC$ 的斜边，无特殊作用。", isCorrect: false },
+                    { text: "$CE$ 是外角 $\\angle ACD$ 的角平分线。", isCorrect: true }
+                ],
+                explanation: "<strong>思维进阶：</strong> 这是一招经典的“由角定线”。<br>因为 $A, C, B$ 共线不成立，但 $B, C, D$ 共线，所以 $\\angle ACD$ 是外角。$\\angle ACD = 180^\\circ - \\angle ACB = 80^\\circ$。<br>在 $\\text{Rt}\\triangle EHC$ 中，$\\angle ECH = 90^\\circ - 50^\\circ = 40^\\circ$。<br>由此可知 $\\angle ECH = \\frac{1}{2} \\angle ACD$，这就意味着 $CE$ 平分了 $\\angle ACD$！这顺理成章地解决了第(1)问，得出 $\\angle ACE = 40^\\circ$，更为后续解题埋下了极具爆发力的伏笔。"
+            },
+            {
+                step: "第二步：模型识别，角平分线的“等距传递”",
+                question: "题目已知 $BE$ 是 $\\angle ABC$ 的平分线，而我们刚刚证出 $CE$ 是外角 $\\angle ACD$ 的平分线。根据角平分线定理，如果设点 $E$ 到直线 $BC$ 的距离（即 $EH$）为 $h$，那么点 $E$ 到 $AB$ 和 $AC$ 的距离会有什么绝妙的关系？",
+                options: [
+                    { text: "点 $E$ 到 $AB$、$AC$ 的距离都等于 $h$。", isCorrect: true },
+                    { text: "点 $E$ 到 $AB$ 的距离为 $h$，但到 $AC$ 的距离无法确定。", isCorrect: false },
+                    { text: "点 $E$ 到三个顶点的距离相等。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 这道题的灵魂在于识别出“旁心模型”（虽然初中不常提这个概念，但其性质是核心）。<br>根据角平分线性质定理：<br>① $BE$ 平分 $\\angle ABC \\implies E$ 到 $AB$ 的距离 $= E$ 到 $BC$ 的距离 $(EH) = h$。<br>② $CE$ 平分 $\\angle ACD \\implies E$ 到 $AC$ 的距离 $= E$ 到 $CD$ 的距离 $(EH) = h$。<br><strong>结论：</strong>点 $E$ 到三条直线 $AB$、$BC$、$AC$ 的距离统统相等，都是 $h$！这为我们架起了一座连接不同三角形面积的桥梁。"
+            },
+            {
+                step: "第三步：搭建桥梁，共线点的面积分割法",
+                question: "到了第 (2) 问，已知 $S_{\\triangle ACD} = 21$ 且 $AC + CD = 14$。注意观察，点 $E$ 在直线 $AD$ 上！我们如何利用刚才找到的“公共高 $h$”来拆解并利用 $\\triangle ACD$ 的面积？",
+                options: [
+                    { text: "尝试利用勾股定理求出 $AD$ 的长度。", isCorrect: false },
+                    { text: "将 $\\triangle ACD$ 分割为 $\\triangle ACE$ 和 $\\triangle CDE$，利用它们的底和公共高 $h$ 列方程。", isCorrect: true },
+                    { text: "假设 $\\triangle ACD$ 是等腰三角形进行特殊化处理。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 当点在三角形内部或边上时，“面积分割法”是破局神器。<br>因为点 $E$ 在线段 $AD$ 上，所以 $\\triangle ACD$ 被完美劈成两半：$S_{\\triangle ACD} = S_{\\triangle ACE} + S_{\\triangle CDE}$。<br>而我们刚刚得出，点 $E$ 到 $AC$ 的距离和到 $CD$ 的距离都是 $h$。<br>代入面积公式：$\\frac{1}{2} AC \\cdot h + \\frac{1}{2} CD \\cdot h = \\frac{1}{2} h (AC + CD) = 21$。<br>这不就把已知条件 $AC+CD=14$ 和面积 $21$ 完美缝合在一起了吗！"
+            },
+            {
+                step: "第四步：收官执行，锁定目标面积",
+                question: "根据刚才构建的方程 $\\frac{1}{2} h (14) = 21$，我们可以轻松解出高 $h = 3$。题目最终要求的是 $\\triangle ABE$ 的面积，并且已知 $AB = 8.5$。最后一步，应当如何计算？",
+                options: [
+                    { text: "由于无法求出 $AE$ 的长度，此题数据不足。", isCorrect: false },
+                    { text: "还需要先求出 $\\triangle ABC$ 的总面积才能作减法。", isCorrect: false },
+                    { text: "直接利用 $S = \\frac{1}{2} \\cdot AB \\cdot h$ 计算，因为 $E$ 到 $AB$ 的距离也是 $h$。", isCorrect: true }
+                ],
+                explanation: "<strong>思维进阶：</strong> 恭喜你，完美的闭环形成了！<br>在第二步中我们已经得出：点 $E$ 到 $AB$ 的距离同样是 $h$！<br>对于 $\\triangle ABE$ 而言，底边是 $AB = 8.5$，这条底边上的高恰好就是点 $E$ 到 $AB$ 的距离 $h = 3$。<br>所以，$S_{\\triangle ABE} = \\frac{1}{2} \\cdot AB \\cdot h = \\frac{1}{2} \\times 8.5 \\times 3 = 12.75$。<br>通过一条隐藏的高，我们跨越了空间，把毫不相干的线段和面积联系在了一起！"
+            }
+        ];
+
+        let currentStep = 0;
+
+        const renderQuestion = () => {
+            const container = document.getElementById('question-area');
+            const data = quizData[currentStep];
+
+            data.options.sort(() => Math.random() - 0.5);
+
+            const progress = ((currentStep + 1) / (quizData.length + 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            let optionsHtml = '';
+            data.options.forEach((opt, index) => {
+                optionsHtml += `
+                    <button onclick="handleAnswer(${index}, ${opt.isCorrect})" 
+                            id="opt-${index}"
+                            class="option-btn w-full text-left p-4 rounded-xl border-2 border-slate-100 bg-white text-slate-700 font-medium hover:bg-indigo-50 focus:outline-none mb-3 shadow-sm">
+                        ${String.fromCharCode(65 + index)}. ${opt.text}
+                    </button>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="fade-in space-y-6">
+                    <div>
+                        <span class="text-xs md:text-sm font-bold text-indigo-600 tracking-wider uppercase">${data.step}</span>
+                        <h3 class="text-base md:text-xl font-bold text-slate-900 mt-2 leading-relaxed">${data.question}</h3>
+                    </div>
+                    <div class="space-y-3" id="options-container">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-box" class="rounded-xl border border-slate-100 p-5 mt-6 transition-all duration-300 opacity-0 hidden">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <svg class="h-5 w-5 text-indigo-500 transition-colors duration-300" id="explanation-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3 text-sm text-indigo-900 leading-relaxed flex-1 min-w-0" id="explanation-content">
+                                </div>
+                        </div>
+                    </div>
+                    <div id="next-btn-container" class="mt-8 text-right opacity-0 hidden">
+                        <button onclick="nextStep()" id="next-btn" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-all hover:scale-105 active:scale-95 duration-200">
+                            ${currentStep === quizData.length - 1 ? '迎接终极挑战' : '掌握策略，进入下一步'} 
+                            <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([container]);
+            }
+        };
+
+        const handleAnswer = (selectedIndex, isCorrect) => {
+            const data = quizData[currentStep];
+
+            data.options.forEach((_, idx) => {
+                const btn = document.getElementById(`opt-${idx}`);
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed');
+
+                if (data.options[idx].isCorrect) {
+                    btn.classList.add('correct-ans');
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.add('wrong-ans');
+                } else {
+                    btn.classList.add('opacity-40');
+                }
+            });
+
+            const expBox = document.getElementById('explanation-box');
+            const expContent = document.getElementById('explanation-content');
+            const nextBtnContainer = document.getElementById('next-btn-container');
+
+            expContent.innerHTML = data.explanation;
+            expBox.classList.remove('hidden', 'opacity-0');
+            expBox.classList.add('bg-indigo-50', 'border-indigo-100', 'opacity-100', 'fade-in');
+
+            nextBtnContainer.classList.remove('hidden', 'opacity-0');
+            nextBtnContainer.classList.add('opacity-100', 'fade-in');
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([expBox]);
+            }
+        };
+
+        const nextStep = () => {
+            if (currentStep < quizData.length - 1) {
+                currentStep++;
+                renderQuestion();
+            } else {
+                showSortingChallenge();
+            }
+        };
+
+        const strategySteps = [
+            {
+                id: 1,
+                text: "由角定线，明确角平分线身份",
+                detail: "通过计算出 $\\angle ECH = 40^\\circ$，结合外角 $\\angle ACD = 80^\\circ$，精准推断出 $CE$ 实质上是外角平分线，解决第一问。"
+            },
+            {
+                id: 2,
+                text: "模型识别，构建等高体系",
+                detail: "结合 $BE$ 与 $CE$ 皆为角平分线的条件，利用角平分线性质定理，识别出点 $E$ 到三边距离相等的隐藏属性，设出公共高 $h$。"
+            },
+            {
+                id: 3,
+                text: "面积分割，关联代数方程",
+                detail: "利用点 $E$ 在 $AD$ 上的几何位置，将大三角形面积拆解为 $S_{\\triangle ACE} + S_{\\triangle CDE}$，代入已知和差关系，求出核心变量高 $h=3$。"
+            },
+            {
+                id: 4,
+                text: "等距代换，一击必杀求解",
+                detail: "回到目标 $\\triangle ABE$，运用步骤二中“点 $E$ 到三边距离相等”的结论，确定其高即为刚求出的 $h$，最终完成面积计算。"
+            }
+        ];
+
+        let availableSteps = [];
+        let selectedSteps = [];
+
+        const showSortingChallenge = () => {
+            availableSteps = [...strategySteps].sort(() => Math.random() - 0.5);
+            selectedSteps = [];
+            renderSortingUI(true);
+        };
+
+        const renderSortingUI = (isInitial = false, errorMsg = "") => {
+            const container = document.getElementById('question-area');
+            document.getElementById('progress-bar').style.width = '100%';
+
+            let selectedHtml = selectedSteps.length === 0 ?
+                `<p class="text-slate-400 text-sm italic py-4 text-center">请从下方列表依次点击，重构你的解题思维逻辑链条...</p>` : '';
+
+            selectedSteps.forEach((step, idx) => {
+                selectedHtml += `
+                    <div onclick="unselectStep(${idx})" class="cursor-pointer bg-indigo-100 text-indigo-900 border border-indigo-200 px-4 py-3 rounded-xl shadow-sm font-bold flex items-center justify-between mb-2 hover:bg-indigo-200 transition-colors">
+                        <span>步骤 ${idx + 1}：${step.text}</span>
+                        <span class="text-indigo-500 text-sm bg-white w-6 h-6 flex items-center justify-center rounded-full hover:bg-indigo-50 transition-colors">&times;</span>
+                    </div>`;
+            });
+
+            let availableHtml = '';
+            availableSteps.forEach((step, idx) => {
+                availableHtml += `
+                    <button onclick="selectStep(${idx})" class="w-full bg-white border-2 border-slate-200 text-slate-700 px-4 py-3 rounded-xl shadow-sm font-medium hover:border-indigo-400 hover:text-indigo-600 transition-colors mb-2 text-left flex justify-between items-center group">
+                        <span>${step.text}</span>
+                        <span onclick="event.stopPropagation(); showDetail(${step.id})" class="w-6 h-6 flex items-center justify-center bg-slate-100 text-slate-400 hover:bg-indigo-100 hover:text-indigo-600 rounded-full font-bold transition-all text-sm" title="查看策略详情">?</span>
+                    </button>`;
+            });
+
+            if (isInitial) {
+                container.innerHTML = `
+                    <div class="fade-in space-y-6">
+                        <div class="text-center bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+                            <span class="text-xs md:text-sm font-extrabold text-indigo-600 tracking-wider uppercase">终极挑战：梳理思维闭环</span>
+                            <h3 class="text-base md:text-lg font-bold text-slate-900 mt-2">请按正确的逻辑顺序，依次点击还原刚才的“降维打击”组合拳：</h3>
+                        </div>
+                        
+                        <div class="bg-slate-50 p-5 rounded-2xl border-2 border-dashed border-slate-300 min-h-[140px] transition-colors" id="selected-area-container">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider">你的逻辑流：</h4>
+                                <button id="reset-challenge-btn" onclick="resetChallenge()" disabled class="text-xs bg-white text-slate-400 border border-slate-200 font-bold px-3 py-1.5 rounded-lg transition-all cursor-not-allowed opacity-50">
+                                    清空重排
+                                </button>
+                            </div>
+                            <div id="selected-area-content">${selectedHtml}</div>
+                        </div>
+
+                        <div id="error-message-container" class="empty:hidden"></div>
+
+                        <div class="pt-2">
+                            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">待选思维碎片（点击选取）：</h4>
+                            <div id="available-area-content">${availableHtml}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const selectedContainer = document.getElementById('selected-area-container');
+                const selectedContent = document.getElementById('selected-area-content');
+                const availableContent = document.getElementById('available-area-content');
+                const errorContainer = document.getElementById('error-message-container');
+
+                if (selectedContainer) {
+                    selectedContainer.className = errorMsg
+                        ? "bg-red-50 p-5 rounded-2xl border-2 border-dashed border-red-300 min-h-[140px] transition-colors"
+                        : "bg-slate-50 p-5 rounded-2xl border-2 border-dashed border-slate-300 min-h-[140px] transition-colors";
+                }
+                if (selectedContent) selectedContent.innerHTML = selectedHtml;
+                if (availableContent) availableContent.innerHTML = availableHtml;
+                if (errorContainer) {
+                    errorContainer.innerHTML = errorMsg ? `<div class="text-red-600 bg-red-100 py-3 rounded-xl text-sm font-bold text-center animate-pulse">${errorMsg}</div>` : '';
+                }
+            }
+
+            const resetBtn = document.getElementById('reset-challenge-btn');
+            if (resetBtn) {
+                if (selectedSteps.length > 0) {
+                    resetBtn.disabled = false;
+                    resetBtn.className = "text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer shadow-sm";
+                } else {
+                    resetBtn.disabled = true;
+                    resetBtn.className = "text-xs bg-white text-slate-400 border border-slate-200 font-bold px-3 py-1.5 rounded-lg transition-all cursor-not-allowed opacity-50";
+                }
+            }
+        };
+
+        const selectStep = (idx) => {
+            selectedSteps.push(availableSteps[idx]);
+            availableSteps.splice(idx, 1);
+
+            if (availableSteps.length === 0) {
+                checkSorting();
+            } else {
+                renderSortingUI(false);
+            }
+        };
+
+        const unselectStep = (idx) => {
+            availableSteps.push(selectedSteps[idx]);
+            selectedSteps.splice(idx, 1);
+            renderSortingUI(false);
+        };
+
+        const resetChallenge = () => {
+            availableSteps = [...strategySteps].sort(() => Math.random() - 0.5);
+            selectedSteps = [];
+            renderSortingUI(false);
+        };
+
+        const checkSorting = () => {
+            const isCorrect = selectedSteps.every((step, idx) => step.id === idx + 1);
+            if (isCorrect) {
+                showFinalSuccess();
+            } else {
+                renderSortingUI(false, "逻辑好像出现了断层！请检查因果关系后重新排列。");
+            }
+        };
+
+        const showFinalSuccess = () => {
+            const container = document.getElementById('question-area');
+            container.innerHTML = `
+                <div class="text-center fade-in py-10">
+                    <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-emerald-100 mb-6 shadow-sm border border-emerald-200">
+                        <svg class="h-10 w-10 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">破题思维训练完成！</h2>
+                    <p class="text-base md:text-lg text-slate-600 mb-8 max-w-xl mx-auto leading-relaxed">
+                        太精彩了！你没有被繁复的线段迷惑，而是完美掌握了应对这种“已知条件满天飞”的终极策略：<br><br>
+                        <strong class="text-indigo-800 bg-indigo-50 px-5 py-4 rounded-xl block my-2 border border-indigo-100 shadow-sm text-base md:text-lg">
+                            寻根究底看角平分线 <br><span class="text-indigo-300 text-sm">▼</span><br>
+                            提取等距核心属性 <br><span class="text-indigo-300 text-sm">▼</span><br>
+                            利用共线点切块分流 <br><span class="text-indigo-300 text-sm">▼</span><br>
+                            合并转移计算目标面积
+                        </strong><br>
+                        以后再遇到任何看似无从下手的多线条几何题，记得回忆这套组合拳！
+                    </p>
+                    <button onclick="location.reload()" class="inline-flex items-center px-8 py-3 border border-transparent text-lg font-bold rounded-xl shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none transition-transform hover:scale-105 active:scale-95">
+                        再次挑战
+                    </button>
+                </div>
+            `;
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([container]);
+            }
+        };
+
+        const showDetail = (id) => {
+            const step = strategySteps.find(s => s.id === id);
+            if (step) {
+                showModal(step.text, step.detail);
+            }
+        };
+
+        const showModal = (title, content) => {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            const mTitle = document.getElementById('modal-title');
+            const mBody = document.getElementById('modal-body');
+
+            mTitle.textContent = title;
+            mBody.innerHTML = content;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                wrapper.classList.remove('scale-95', 'opacity-0');
+                wrapper.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([mBody]).catch(err => console.error(err));
+            }
+        };
+
+        const closeModal = () => {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+
+            wrapper.classList.remove('scale-100', 'opacity-100');
+            wrapper.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise().then(() => {
+                        renderQuestion();
+                    });
+                } else {
+                    renderQuestion();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
+
+```
