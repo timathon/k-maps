@@ -805,15 +805,15 @@
                     <h2 id="stats-heading" class="stats-title">资源统计清单</h2>
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-subjects">2</span>
+                            <span class="stat-val" id="stat-subjects">3</span>
                             <span class="stat-lbl">参与学科</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-total-files">24</span>
+                            <span class="stat-val" id="stat-total-files">25</span>
                             <span class="stat-lbl">HTML 资源</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-logic-challenges">8</span>
+                            <span class="stat-val" id="stat-logic-challenges">9</span>
                             <span class="stat-lbl">逻辑挑战</span>
                         </div>
                         <div class="stat-card">
@@ -846,7 +846,7 @@
                                 <span class="legend-dot" style="background: var(--badge-logic)"></span>
                                 <span>高阶思维逻辑 (Logic)</span>
                             </div>
-                            <span class="legend-count">8</span>
+                            <span class="legend-count">9</span>
                         </div>
                         <div class="legend-item" onclick="filterLegend('exam')">
                             <div class="legend-left">
@@ -875,7 +875,7 @@
                         </svg>
                         项目目录结构
                     </h2>
-                    <span id="results-count" class="results-info">共 24 个 HTML 页面</span>
+                    <span id="results-count" class="results-info">共 25 个 HTML 页面</span>
                 </div>
 
                 <!-- Tree Accordion -->
@@ -1371,6 +1371,52 @@
                         </div>
                     </div>
 
+                    <!-- Level 1: physics -->
+                    <div class="tree-node folder open" id="node-physics">
+                        <div class="node-header" onclick="toggleNode('node-physics')">
+                            <svg class="caret" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                            <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            <span class="node-name">physics</span>
+                        </div>
+                        <div class="node-children">
+                            
+                            <!-- Level 2: p8a -->
+                            <div class="tree-node folder open" id="node-p8a">
+                                <div class="node-header" onclick="toggleNode('node-p8a')">
+                                    <svg class="caret" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                    <svg class="icon folder-icon" viewBox="0 0 24 24">
+                                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    <span class="node-name">p8a</span>
+                                </div>
+                                <div class="node-children">
+                                    
+                                    <!-- p8a-optics-convex.html -->
+                                    <div class="tree-node file" data-title="凸透镜光学折射深度模拟器 - 八年级上册物理">
+                                        <a href="physics/p8a/p8a-optics-convex.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">p8a-optics-convex.html</span>
+                                                <span class="file-title">凸透镜光学折射深度模拟器 (Snell's Law)</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- No Results fallback -->
@@ -1523,8 +1569,10 @@
             document.getElementById('node-m7b-ch4-strategies').classList.add('open');
             document.getElementById('node-m7b-ch5').classList.add('open');
             document.getElementById('node-m7b-ch5-strategies').classList.add('open');
+            document.getElementById('node-physics').classList.add('open');
+            document.getElementById('node-p8a').classList.add('open');
 
-            resultsCountEl.textContent = "共 24 个 HTML 页面";
+            resultsCountEl.textContent = "共 25 个 HTML 页面";
             noResultsEl.style.display = 'none';
             treeRoot.style.display = 'block';
         }

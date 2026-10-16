@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凸透镜光学折射深度模拟器 (Snell's Law)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #090d16;
+            color: #e2e8f0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Custom Range Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1e293b;
+            height: 6px;
+            border-radius: 999px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #38bdf8;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #7dd3fc;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+
+        .btn-active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(56, 189, 248, 0.1));
+            border-color: #38bdf8 !important;
+            color: #38bdf8 !important;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+    </style>
+</head>
+
+<body class="h-screen w-screen flex flex-col">
+
+    <!-- Top Header -->
+    <header
+        class="h-14 border-b border-slate-800/80 bg-slate-950/90 px-4 flex items-center justify-between shrink-0 z-20">
+        <div class="flex items-center gap-3">
+            <a href="../../index.html" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 transition flex items-center gap-1.5 shadow-sm" title="返回课程资源地图">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="hidden sm:inline">返回主页</span>
+            </a>
+            <div
+                class="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 shadow-inner">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3c2.75 3.5 4.5 7.5 4.5 9s-1.75 5.5-4.5 9c-2.75-3.5-4.5-7.5-4.5-9s1.75-5.5 4.5-9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h18" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-sm md:text-base font-bold tracking-wide text-white flex items-center gap-2">
+                    凸透镜光学折射模拟实验室
+                    <span
+                        class="hidden sm:inline-block text-[11px] font-medium px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                        真实斯涅尔定律光线追踪
+                    </span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Quick Zoom & View Controls -->
+        <div class="flex items-center gap-2">
+            <button id="btnFocusInternal"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+                <span>一键放大观察内部折射</span>
+            </button>
+
+            <button id="btnResetView"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span class="hidden sm:inline">全局视图</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+
+        <!-- Left Control Sidebar -->
+        <aside
+            class="w-full lg:w-80 xl:w-88 bg-slate-900/95 border-b lg:border-b-0 lg:border-r border-slate-800/80 overflow-y-auto p-4 flex flex-col gap-5 shrink-0 z-10 max-h-[42vh] lg:max-h-full">
+
+            <!-- 1. Lens Type Selection -->
+            <div>
+                <div class="flex items-center justify-between mb-2.5">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">1. 选择凸透镜种类</label>
+                    <span id="lensTypeBadge" class="text-[11px] text-sky-400 font-medium">双凸透镜</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2" id="lensTypeGroup">
+                    <button data-type="biconvex"
+                        class="lens-btn btn-active p-2.5 rounded-xl border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition flex flex-col items-center gap-1.5 text-center group">
+                        <svg class="w-8 h-8 text-current" viewBox="0 0 40 40" fill="none">
+                            <path d="M20 4 C27 12 27 28 20 36 C13 28 13 12 20 4 Z" fill="currentColor"
+                                fill-opacity="0.2" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="text-xs font-medium">双凸透镜</span>
+                        <span class="text-[10px] text-slate-400 leading-tight">两侧球面均向外凸</span>
+                    </button>
+
+                    <button data-type="planoconvex"
+                        class="lens-btn p-2.5 rounded-xl border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition flex flex-col items-center gap-1.5 text-center text-slate-300">
+                        <svg class="w-8 h-8 text-current" viewBox="0 0 40 40" fill="none">
+                            <path d="M16 4 C26 12 26 28 16 36 L16 4 Z" fill="currentColor" fill-opacity="0.2"
+                                stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="text-xs font-medium">平凸透镜</span>
+                        <span class="text-[10px] text-slate-400 leading-tight">左平面 · 右凸面</span>
+                    </button>
+
+                    <button data-type="convex-plano"
+                        class="lens-btn p-2.5 rounded-xl border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition flex flex-col items-center gap-1.5 text-center text-slate-300">
+                        <svg class="w-8 h-8 text-current" viewBox="0 0 40 40" fill="none">
+                            <path d="M24 4 L24 36 C14 28 14 12 24 4 Z" fill="currentColor" fill-opacity="0.2"
+                                stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="text-xs font-medium">反平凸透镜</span>
+                        <span class="text-[10px] text-slate-400 leading-tight">左凸面 · 右平面</span>
+                    </button>
+
+                    <button data-type="meniscus"
+                        class="lens-btn p-2.5 rounded-xl border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition flex flex-col items-center gap-1.5 text-center text-slate-300">
+                        <svg class="w-8 h-8 text-current" viewBox="0 0 40 40" fill="none">
+                            <path d="M22 4 C10 12 10 28 22 36 C16 28 16 12 22 4 Z" fill="currentColor"
+                                fill-opacity="0.2" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="text-xs font-medium">正弯月透镜</span>
+                        <span class="text-[10px] text-slate-400 leading-tight">凹凸同向·中心更厚</span>
+                    </button>
+                </div>
+                <p id="lensDescText"
+                    class="mt-2 text-xs text-slate-400 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed">
+                    <strong class="text-sky-300">双凸透镜：</strong>光线在左表面进入玻璃时向法线偏折（第1次汇聚），在右表面离开玻璃进入空气时远离法线偏折（第2次汇聚）。
+                </p>
+            </div>
+
+            <!-- 2. Ray Source Mode -->
+            <div>
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">2.
+                    入射光源模式</label>
+                <div class="grid grid-cols-3 gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <button data-source="parallel"
+                        class="source-btn btn-active py-1.5 px-2 rounded-lg text-xs font-medium transition border border-transparent">
+                        平行光束
+                    </button>
+                    <button data-source="point"
+                        class="source-btn py-1.5 px-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition border border-transparent">
+                        点光源发散
+                    </button>
+                    <button data-source="single"
+                        class="source-btn py-1.5 px-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition border border-transparent">
+                        单束探针光
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>
+                    提示：可直接在画布中<strong>拖拽左侧光源圆点</strong>改变高度或角度
+                </p>
+            </div>
+
+            <!-- 3. Optical & Geometry Sliders -->
+            <div class="space-y-3.5 bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/80">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">3. 透镜物理参数调节</label>
+
+                <!-- Refractive Index -->
+                <div>
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-300">折射率 (<span class="mono text-sky-400">n</span>)</span>
+                        <span id="valIOR" class="mono text-sky-300 font-semibold">1.52 (光学玻璃)</span>
+                    </div>
+                    <input id="sliderIOR" type="range" min="1.20" max="2.42" step="0.02" value="1.52" class="w-full">
+                    <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                        <span>1.33 水</span>
+                        <span>1.52 冕牌玻璃</span>
+                        <span>1.90 重火石</span>
+                        <span>2.42 钻石</span>
+                    </div>
+                </div>
+
+                <!-- Curvature Radius -->
+                <div>
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-300">表面曲率半径 (<span class="mono text-sky-400">R</span>)</span>
+                        <span id="valRadius" class="mono text-sky-300 font-semibold">240 px</span>
+                    </div>
+                    <input id="sliderRadius" type="range" min="150" max="420" step="5" value="240" class="w-full">
+                </div>
+
+                <!-- Center Thickness -->
+                <div>
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-300">透镜中心厚度 (<span class="mono text-sky-400">d</span>)</span>
+                        <span id="valThickness" class="mono text-sky-300 font-semibold">95 px</span>
+                    </div>
+                    <input id="sliderThickness" type="range" min="45" max="150" step="5" value="95" class="w-full">
+                </div>
+
+                <!-- Ray Count / Density -->
+                <div id="rayCountContainer">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-300">光线数量 / 密度</span>
+                        <span id="valRays" class="mono text-sky-300 font-semibold">9 条</span>
+                    </div>
+                    <input id="sliderRays" type="range" min="1" max="21" step="2" value="9" class="w-full">
+                </div>
+            </div>
+
+            <!-- 4. Internal Refraction Observation Tools -->
+            <div class="space-y-2.5 bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/80">
+                <label
+                    class="text-xs font-semibold uppercase tracking-wider text-amber-400/90 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    4. 内部折射微观观察辅助
+                </label>
+
+                <label
+                    class="flex items-center justify-between text-xs text-slate-300 cursor-pointer py-1 hover:text-white">
+                    <span>显示交点法线 (Normal Lines)</span>
+                    <input type="checkbox" id="chkNormals" checked
+                        class="w-4 h-4 accent-sky-500 rounded cursor-pointer">
+                </label>
+
+                <label
+                    class="flex items-center justify-between text-xs text-slate-300 cursor-pointer py-1 hover:text-white">
+                    <span>标注入射角/折射角数值 (θ₁, θ₂)</span>
+                    <input type="checkbox" id="chkAngles" checked class="w-4 h-4 accent-sky-500 rounded cursor-pointer">
+                </label>
+
+                <label
+                    class="flex items-center justify-between text-xs text-slate-300 cursor-pointer py-1 hover:text-white">
+                    <span>开启右上角高倍显微放大镜</span>
+                    <input type="checkbox" id="chkLoupe" checked
+                        class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+                </label>
+
+                <label
+                    class="flex items-center justify-between text-xs text-slate-300 cursor-pointer py-1 hover:text-white">
+                    <span>显示无折射原路径虚线对比</span>
+                    <input type="checkbox" id="chkGhostRay" checked
+                        class="w-4 h-4 accent-sky-500 rounded cursor-pointer">
+                </label>
+
+                <label
+                    class="flex items-center justify-between text-xs text-slate-300 cursor-pointer py-1 hover:text-white">
+                    <span>色散模式 (白光分解彩虹色散)</span>
+                    <input type="checkbox" id="chkDispersion" class="w-4 h-4 accent-purple-500 rounded cursor-pointer">
+                </label>
+            </div>
+        </aside>
+
+        <!-- Main Interactive Canvas Area -->
+        <main class="flex-1 relative bg-[#070b12] overflow-hidden" id="canvasContainer">
+            <canvas id="opticsCanvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+            <!-- Top-Left Floating Optical Telemetry HUD -->
+            <div
+                class="absolute top-3 left-3 glass-panel rounded-xl p-3 text-xs pointer-events-none max-w-xs sm:max-w-sm shadow-xl">
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="font-semibold text-slate-200">实时光学参数与焦距分析</span>
+                </div>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] mono text-slate-300">
+                    <div>近轴焦距 <span class="text-amber-400">f</span>: <span id="hudFocal"
+                            class="text-white font-semibold">230.8 px</span></div>
+                    <div>放大倍率 <span class="text-sky-400">Zoom</span>: <span id="hudZoom"
+                            class="text-white font-semibold">1.00x</span></div>
+                    <div>左曲率 <span class="text-slate-400">R₁</span>: <span id="hudR1" class="text-slate-200">+240
+                            px</span></div>
+                    <div>右曲率 <span class="text-slate-400">R₂</span>: <span id="hudR2" class="text-slate-200">-240
+                            px</span></div>
+                </div>
+                <div id="hudRayDetail"
+                    class="mt-2 pt-2 border-t border-slate-700/70 text-[11px] text-slate-300 space-y-0.5">
+                    <div class="text-sky-300 font-medium">代表光线内部偏折追踪 (斯涅尔定律 n₁·sinθ₁ = n₂·sinθ₂)：</div>
+                    <div id="hudSurface1" class="mono text-[10px] text-emerald-300">入表面 (空气→透镜): θ₁ = 14.2° → θ₂ = 9.3°
+                        (偏向法线)</div>
+                    <div id="hudSurface2" class="mono text-[10px] text-amber-300">出表面 (透镜→空气): θ₃ = 9.3° → θ₄ = 14.2°
+                        (远离法线)</div>
+                </div>
+            </div>
+
+            <!-- Bottom Floating Zoom Slider & Legend Bar -->
+            <div
+                class="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                <!-- Legend -->
+                <div
+                    class="glass-panel px-3 py-2 rounded-xl flex flex-wrap items-center gap-3 text-[11px] text-slate-300 pointer-events-auto">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-0.5 bg-amber-400 inline-block"></span> 外部光线
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-1 bg-cyan-300 inline-block rounded"></span> 透镜内部折射光
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-0.5 border-b border-dashed border-emerald-400 inline-block"></span> 入表面法线 N₁
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-0.5 border-b border-dashed border-rose-400 inline-block"></span> 出表面法线 N₂
+                    </span>
+                </div>
+
+                <!-- Interactive Zoom Bar -->
+                <div class="glass-panel px-3.5 py-2 rounded-xl flex items-center gap-3 pointer-events-auto shadow-lg">
+                    <span class="text-xs text-slate-300 font-medium whitespace-nowrap">画布缩放:</span>
+                    <button id="btnZoomOut"
+                        class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center font-bold">-</button>
+                    <input id="sliderZoom" type="range" min="0.6" max="4.5" step="0.05" value="1.0"
+                        class="w-28 sm:w-36">
+                    <button id="btnZoomIn"
+                        class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center font-bold">+</button>
+                    <span class="text-[11px] text-slate-400 hidden sm:inline">(支持鼠标滚轮缩放 / 拖拽平移)</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * 凸透镜光学折射模拟实验室
+         * 核心特性：
+         * 1. 基于精确圆弧几何方程生成 4 类凸透镜（双凸、平凸、反平凸、正弯月）的真实截面。
+         * 2. 对每一条光线在透镜左表面（空气 -> 玻璃）和右表面（玻璃 -> 空气）进行精确求交与法线计算。
+         * 3. 严格依据 Snell's Law (n1 * sin(θ1) = n2 * sin(θ2)) 计算内部折射光线向量与出射光线向量，包含全反射 (TIR) 检测。
+         * 4. 支持无级放大平移画布 + 右上角高倍显微放大镜，直观展示透镜内部的两次折射偏折机理。
+         */
+
+        const canvas = document.getElementById('opticsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Application State
+        const state = {
+            lensType: 'biconvex',      // 'biconvex' | 'planoconvex' | 'convex-plano' | 'meniscus'
+            sourceMode: 'parallel',    // 'parallel' | 'point' | 'single'
+            ior: 1.52,                 // Index of refraction (n)
+            radius: 240,               // Base curvature radius R (px in world coords)
+            thickness: 95,             // Lens center thickness d (px in world coords)
+            rayCount: 9,               // Number of rays
+            beamSpread: 150,           // Total vertical span or angular spread
+
+            // Visual Aids
+            showNormals: true,
+            showAngles: true,
+            showLoupe: true,
+            showGhostRay: true,
+            dispersionMode: false,
+
+            // Interactive Source Handle (in World Coordinates relative to lens center (0,0))
+            sourcePos: { x: -320, y: -55 },
+            singleRayAngle: 0,         // Angle in radians for single ray mode
+
+            // Camera / Viewport Transform
+            camera: {
+                x: 0,                  // World X at screen center
+                y: 0,                  // World Y at screen center
+                zoom: 1.0,
+                targetZoom: 1.0,
+                targetX: 0,
+                targetY: 0,
+                animating: false
+            },
+
+            // Mouse / Pointer Interaction
+            pointer: {
+                worldX: 0,
+                worldY: 0,
+                screenX: 0,
+                screenY: 0,
+                isDown: false,
+                dragMode: null,        // 'pan' | 'source' | 'angleHandle' | 'loupeTarget'
+                lastScreenX: 0,
+                lastScreenY: 0
+            },
+
+            // Loupe Focus Target in World Coords (defaults to top-left refraction point)
+            loupeTarget: { x: -35, y: -55, autoTrack: true }
+        };
+
+        // Lens Type Descriptions
+        const LENS_DESCRIPTIONS = {
+            'biconvex': '<strong class="text-sky-300">双凸透镜 (Biconvex)：</strong>左右两侧均为向外凸出的球面。光线进入左表面时向法线偏折（第1次向下汇聚），在内部斜向穿过后，离开右表面时远离法线偏折（第2次向下汇聚），汇聚能力最强。',
+            'planoconvex': '<strong class="text-sky-300">平凸透镜 (Plano-Convex)：</strong>左侧为平面，右侧为凸球面。垂直入射左平面的平行光在进入透镜时<strong>入射角为0°不发生偏折</strong>，全部汇聚偏折均发生在右侧凸表面离开透镜时；斜入射时则在两个表面均发生折射。',
+            'convex-plano': '<strong class="text-sky-300">反平凸透镜 (Convex-Plano)：</strong>左侧为凸球面，右侧为平面。平行光在左表面进入透镜内部时即发生明显的向心折射，随后在透镜内部斜向传播，到达右侧平面离开空气时再次远离水平法线，进一步向下偏折汇聚。',
+            'meniscus': '<strong class="text-sky-300">正弯月透镜 (Positive Meniscus)：</strong>左右两个球面的球心在同一侧，左表面更凸（曲率半径小），右表面微凹（曲率半径大），中心厚于边缘。常用于减小球差，内部光线呈现出独特的折线过渡。'
+        };
+
+        const LENS_NAMES = {
+            'biconvex': '双凸透镜',
+            'planoconvex': '平凸透镜 (左平右凸)',
+            'convex-plano': '反平凸透镜 (左凸右平)',
+            'meniscus': '正弯月透镜'
+        };
+
+        // ============================================================================
+        // Vector & Optical Geometry Engine
+        // ============================================================================
+        const Vec2 = {
+            add: (a, b) => ({ x: a.x + b.x, y: a.y + b.y }),
+            sub: (a, b) => ({ x: a.x - b.x, y: a.y - b.y }),
+            mul: (a, s) => ({ x: a.x * s, y: a.y * s }),
+            dot: (a, b) => a.x * b.x + a.y * b.y,
+            cross: (a, b) => a.x * b.y - a.y * b.x,
+            len: (a) => Math.hypot(a.x, a.y),
+            norm: (a) => {
+                const l = Math.hypot(a.x, a.y);
+                return l > 1e-9 ? { x: a.x / l, y: a.y / l } : { x: 1, y: 0 };
+            }
+        };
+
+        /**
+         * Construct the geometric parameters for Left Surface (S1) and Right Surface (S2)
+         * Lens optical center is at (0, 0).
+         * Left vertex is at x = -d/2, Right vertex is at x = +d/2.
+         */
+        function getLensGeometry() {
+            const d = state.thickness;
+            const R = state.radius;
+            const halfD = d / 2;
+
+            let s1, s2;
+            // Surface descriptor:
+            // type: 'sphere' | 'plane'
+            // vertexX: x-coord where surface crosses optical axis (y=0)
+            // centerX, radius: for sphere
+            // sign: +1 if surface bulges left (centerX > vertexX), -1 if surface bulges right (centerX < vertexX)
+
+            if (state.lensType === 'biconvex') {
+                const r1 = R;
+                const r2 = R;
+                s1 = { type: 'sphere', vertexX: -halfD, centerX: -halfD + r1, R: r1, signedR: +r1 };
+                s2 = { type: 'sphere', vertexX: +halfD, centerX: +halfD - r2, R: r2, signedR: -r2 };
+            } else if (state.lensType === 'planoconvex') {
+                const r2 = R * 0.85;
+                s1 = { type: 'plane', vertexX: -halfD, signedR: Infinity };
+                s2 = { type: 'sphere', vertexX: +halfD, centerX: +halfD - r2, R: r2, signedR: -r2 };
+            } else if (state.lensType === 'convex-plano') {
+                const r1 = R * 0.85;
+                s1 = { type: 'sphere', vertexX: -halfD, centerX: -halfD + r1, R: r1, signedR: +r1 };
+                s2 = { type: 'plane', vertexX: +halfD, signedR: Infinity };
+            } else if (state.lensType === 'meniscus') {
+                // Positive meniscus: Left surface strongly convex (+R1), Right surface gently concave from right (+R2 > R1)
+                const r1 = R * 0.78;
+                const r2 = R * 1.65;
+                s1 = { type: 'sphere', vertexX: -halfD, centerX: -halfD + r1, R: r1, signedR: +r1 };
+                s2 = { type: 'sphere', vertexX: +halfD, centerX: +halfD + r2, R: r2, signedR: +r2 };
+            }
+
+            // Compute maximum valid aperture height (half-height H) where left & right surfaces meet or stay well-formed
+            let maxH = 115;
+            // Ensure y doesn't exceed circle radius
+            if (s1.type === 'sphere') maxH = Math.min(maxH, s1.R * 0.88);
+            if (s2.type === 'sphere') maxH = Math.min(maxH, s2.R * 0.88);
+
+            // Check intersection of s1 and s2 to prevent self-crossing edges
+            for (let testY = 10; testY <= 140; testY += 2) {
+                const x1 = getSurfaceXAtY(s1, testY);
+                const x2 = getSurfaceXAtY(s2, testY);
+                if (x1 === null || x2 === null || x2 - x1 < 8) {
+                    maxH = Math.min(maxH, testY - 2);
+                    break;
+                }
+            }
+
+            return { s1, s2, apertureRadius: Math.max(40, maxH), halfD };
+        }
+
+        function getSurfaceXAtY(surface, y) {
+            if (surface.type === 'plane') return surface.vertexX;
+            const dy2 = y * y;
+            const r2 = surface.R * surface.R;
+            if (dy2 >= r2) return null;
+            const dx = Math.sqrt(r2 - dy2);
+            return surface.signedR > 0 ? surface.centerX - dx : surface.centerX + dx;
+        }
+
+        /**
+         * Intersect a ray P + t*D (t > 1e-4) with a lens surface
+         * Returns { x, y, t, normal } where normal points OUTWARD from the surface
+         */
+        function intersectSurface(rayOrigin, rayDir, surface, apertureRadius) {
+            if (surface.type === 'plane') {
+                if (Math.abs(rayDir.x) < 1e-8) return null;
+                const t = (surface.vertexX - rayOrigin.x) / rayDir.x;
+                if (t <= 1e-3) return null;
+                const y = rayOrigin.y + t * rayDir.y;
+                if (Math.abs(y) > apertureRadius) return null;
+                return {
+                    x: surface.vertexX,
+                    y: y,
+                    t: t,
+                    normal: { x: -1, y: 0 } // Normal on plane
+                };
+            } else {
+                // Circle intersection: (x - cx)^2 + y^2 = R^2
+                const ocX = rayOrigin.x - surface.centerX;
+                const ocY = rayOrigin.y;
+                const b = 2 * (ocX * rayDir.x + ocY * rayDir.y);
+                const c = ocX * ocX + ocY * ocY - surface.R * surface.R;
+                const disc = b * b - 4 * c;
+                if (disc < 0) return null;
+
+                const sqrtDisc = Math.sqrt(disc);
+                const t1 = (-b - sqrtDisc) / 2;
+                const t2 = (-b + sqrtDisc) / 2;
+
+                const candidates = [t1, t2].filter(t => t > 1e-3);
+                for (let t of candidates) {
+                    const hitX = rayOrigin.x + t * rayDir.x;
+                    const hitY = rayOrigin.y + t * rayDir.y;
+                    if (Math.abs(hitY) > apertureRadius) continue;
+
+                    // Check if hitX is on the correct half of the sphere
+                    if (surface.signedR > 0 && hitX <= surface.centerX + 1e-3) {
+                        const n = Vec2.norm({ x: hitX - surface.centerX, y: hitY });
+                        return { x: hitX, y: hitY, t, normal: n };
+                    }
+                    if (surface.signedR < 0 && hitX >= surface.centerX - 1e-3) {
+                        const n = Vec2.norm({ x: hitX - surface.centerX, y: hitY });
+                        return { x: hitX, y: hitY, t, normal: n };
+                    }
+                }
+                return null;
+            }
+        }
+
+        /**
+         * Snell's Law Vector Refraction
+         * I: unit incident vector
+         * N: unit surface normal
+         * n1: incident refractive index, n2: transmitted refractive index
+         */
+        function refractRay(I, N, n1, n2) {
+            // Orient normal so it opposes the incident ray: dot(I, N_oriented) < 0
+            let norm = { x: N.x, y: N.y };
+            let cosTheta1 = -Vec2.dot(I, norm);
+            if (cosTheta1 < 0) {
+                norm = { x: -norm.x, y: -norm.y };
+                cosTheta1 = -Vec2.dot(I, norm);
+            }
+            cosTheta1 = Math.min(1, Math.max(-1, cosTheta1));
+            const theta1 = Math.acos(cosTheta1);
+
+            const eta = n1 / n2;
+            const sin2Theta2 = eta * eta * (1 - cosTheta1 * cosTheta1);
+
+            // Check Total Internal Reflection (TIR)
+            if (sin2Theta2 > 1.0) {
+                // Reflect: R = I + 2 * cosTheta1 * norm
+                const reflected = Vec2.norm({
+                    x: I.x + 2 * cosTheta1 * norm.x,
+                    y: I.y + 2 * cosTheta1 * norm.y
+                });
+                return {
+                    dir: reflected,
+                    normal: norm,
+                    theta1: theta1,
+                    theta2: theta1,
+                    tir: true
+                };
+            }
+
+            const cosTheta2 = Math.sqrt(1.0 - sin2Theta2);
+            const theta2 = Math.acos(cosTheta2);
+
+            const refracted = Vec2.norm({
+                x: eta * I.x + (eta * cosTheta1 - cosTheta2) * norm.x,
+                y: eta * I.y + (eta * cosTheta1 - cosTheta2) * norm.y
+            });
+
+            return {
+                dir: refracted,
+                normal: norm,
+                theta1: theta1,
+                theta2: theta2,
+                tir: false
+            };
+        }
+
+        /**
+         * Trace a complete ray through the lens (Front Surface -> Internal Path -> Back Surface -> Exit Ray)
+         */
+        function traceSingleRay(origin, dir, geom, ior, color = null) {
+            const unitDir = Vec2.norm(dir);
+            // 1. Intersect Left Surface (Air n=1.0 -> Lens n=ior)
+            const hit1 = intersectSurface(origin, unitDir, geom.s1, geom.apertureRadius);
+            if (!hit1) {
+                // Ray misses lens
+                return {
+                    missed: true,
+                    p0: origin,
+                    p1: Vec2.add(origin, Vec2.mul(unitDir, 1200)),
+                    color
+                };
+            }
+
+            const ref1 = refractRay(unitDir, hit1.normal, 1.0, ior);
+
+            // 2. Intersect Right Surface (Lens n=ior -> Air n=1.0)
+            const hit2 = intersectSurface({ x: hit1.x, y: hit1.y }, ref1.dir, geom.s2, geom.apertureRadius);
+            if (!hit2) {
+                // Ray exits through top/bottom edge of lens
+                return {
+                    missed: false,
+                    partial: true,
+                    p0: origin,
+                    p1: { x: hit1.x, y: hit1.y },
+                    p2: Vec2.add({ x: hit1.x, y: hit1.y }, Vec2.mul(ref1.dir, 120)),
+                    dir0: unitDir,
+                    dir1: ref1.dir,
+                    ref1,
+                    color
+                };
+            }
+
+            const ref2 = refractRay(ref1.dir, hit2.normal, ior, 1.0);
+            const p3 = Vec2.add({ x: hit2.x, y: hit2.y }, Vec2.mul(ref2.dir, 1200));
+
+            return {
+                missed: false,
+                partial: false,
+                p0: origin,
+                p1: { x: hit1.x, y: hit1.y },
+                p2: { x: hit2.x, y: hit2.y },
+                p3: p3,
+                dir0: unitDir,
+                dir1: ref1.dir,
+                dir2: ref2.dir,
+                ref1,
+                ref2,
+                color
+            };
+        }
+
+        /**
+         * Generate all rays according to current source mode and dispersion settings
+         */
+        function generateAllRays(geom) {
+            const rays = [];
+            const maxSpan = geom.apertureRadius * 0.82;
+            const count = state.sourceMode === 'single' ? 1 : state.rayCount;
+
+            const baseOriginsDirs = [];
+
+            if (state.sourceMode === 'parallel') {
+                // Parallel beam where state.sourcePos.y shifts the center or tilts if dragged
+                const tiltAngle = Math.atan2(-state.sourcePos.y * 0.25, 300) * 0; // Keep strictly horizontal or slightly adjustable
+                const dir = { x: 1, y: 0 };
+                if (count === 1) {
+                    baseOriginsDirs.push({
+                        origin: { x: state.sourcePos.x, y: state.sourcePos.y },
+                        dir,
+                        isHighlight: true
+                    });
+                } else {
+                    for (let i = 0; i < count; i++) {
+                        const frac = (i / (count - 1)) * 2 - 1; // -1 to +1
+                        const y = frac * maxSpan;
+                        baseOriginsDirs.push({
+                            origin: { x: state.sourcePos.x, y },
+                            dir,
+                            isHighlight: i === Math.floor(count * 0.15) || (count <= 3 && i === 0)
+                        });
+                    }
+                }
+            } else if (state.sourceMode === 'point') {
+                // Point source radiating from state.sourcePos toward the lens aperture
+                for (let i = 0; i < count; i++) {
+                    const frac = count === 1 ? 0 : (i / (count - 1)) * 2 - 1;
+                    const targetY = frac * maxSpan * 0.88;
+                    const targetX = -geom.halfD;
+                    const dir = Vec2.norm({
+                        x: targetX - state.sourcePos.x,
+                        y: targetY - state.sourcePos.y
+                    });
+                    baseOriginsDirs.push({
+                        origin: { x: state.sourcePos.x, y: state.sourcePos.y },
+                        dir,
+                        isHighlight: i === 0 || i === Math.floor(count * 0.2)
+                    });
+                }
+            } else if (state.sourceMode === 'single') {
+                const dir = {
+                    x: Math.cos(state.singleRayAngle),
+                    y: Math.sin(state.singleRayAngle)
+                };
+                baseOriginsDirs.push({
+                    origin: { x: state.sourcePos.x, y: state.sourcePos.y },
+                    dir,
+                    isHighlight: true
+                });
+            }
+
+            // Trace either monochromatic or chromatic dispersion rays
+            const dispersionChannels = [
+                { offset: -0.035, color: '#f43f5e', name: '红光 (n-)' },
+                { offset: 0.0, color: '#22c55e', name: '绿光 (n0)' },
+                { offset: +0.045, color: '#38bdf8', name: '蓝紫光 (n+)' }
+            ];
+
+            baseOriginsDirs.forEach((item, idx) => {
+                if (state.dispersionMode) {
+                    dispersionChannels.forEach((ch, cIdx) => {
+                        const traced = traceSingleRay(item.origin, item.dir, geom, state.ior + ch.offset, ch.color);
+                        traced.isHighlight = item.isHighlight && cIdx === 1;
+                        traced.rayIndex = idx;
+                        rays.push(traced);
+                    });
+                } else {
+                    const traced = traceSingleRay(item.origin, item.dir, geom, state.ior, null);
+                    traced.isHighlight = item.isHighlight;
+                    traced.rayIndex = idx;
+                    rays.push(traced);
+                }
+            });
+
+            return rays;
+        }
+
+        /**
+         * Compute thick-lens paraxial focal length using Lensmaker's Equation:
+         * 1/f = (n - 1) * [ 1/R1 - 1/R2 + ((n - 1)*d) / (n * R1 * R2) ]
+         */
+        function calculateFocalLength(geom) {
+            const n = state.ior;
+            const d = state.thickness;
+            const R1 = geom.s1.signedR;
+            const R2 = geom.s2.signedR;
+
+            const invR1 = Number.isFinite(R1) ? 1 / R1 : 0;
+            const invR2 = Number.isFinite(R2) ? 1 / R2 : 0;
+            const thickTerm = (Number.isFinite(R1) && Number.isFinite(R2))
+                ? ((n - 1) * d) / (n * R1 * R2)
+                : 0;
+
+            const power = (n - 1) * (invR1 - invR2 + thickTerm);
+            return power > 1e-6 ? 1 / power : Infinity;
+        }
+
+        // ============================================================================
+        // Coordinate Transformations & Rendering
+        // ============================================================================
+        function worldToScreen(wx, wy, width, height) {
+            return {
+                x: width / 2 + (wx - state.camera.x) * state.camera.zoom,
+                y: height / 2 + (wy - state.camera.y) * state.camera.zoom
+            };
+        }
+
+        function screenToWorld(sx, sy, width, height) {
+            return {
+                x: (sx - width / 2) / state.camera.zoom + state.camera.x,
+                y: (sy - height / 2) / state.camera.zoom + state.camera.y
+            };
+        }
+
+        /**
+         * Trace and fill the 2D cross-section path of the convex lens
+         */
+        function buildLensPath(targetCtx, geom) {
+            const H = geom.apertureRadius;
+            const steps = 60;
+
+            targetCtx.beginPath();
+            // Left surface from -H to +H
+            for (let i = 0; i <= steps; i++) {
+                const y = -H + (2 * H * i) / steps;
+                const x = getSurfaceXAtY(geom.s1, y);
+                if (i === 0) targetCtx.moveTo(x, y);
+                else targetCtx.lineTo(x, y);
+            }
+            // Right surface from +H back to -H
+            for (let i = steps; i >= 0; i--) {
+                const y = -H + (2 * H * i) / steps;
+                const x = getSurfaceXAtY(geom.s2, y);
+                targetCtx.lineTo(x, y);
+            }
+            targetCtx.closePath();
+        }
+
+        /**
+         * Draw angle arc and degree label at a refraction vertex
+         */
+        function drawRefractionDetails(targetCtx, vertex, normal, dirIn, dirOut, isEntry, scaleFactor) {
+            const invScale = 1 / scaleFactor;
+            const normLen = 46 * Math.max(0.45, Math.min(1.1, invScale * 1.4));
+
+            // 1. Draw Dashed Normal Line through the refraction point
+            if (state.showNormals) {
+                targetCtx.save();
+                targetCtx.strokeStyle = isEntry ? 'rgba(52, 211, 153, 0.85)' : 'rgba(251, 113, 133, 0.85)';
+                targetCtx.lineWidth = 1.4 * invScale;
+                targetCtx.setLineDash([4 * invScale, 3 * invScale]);
+                targetCtx.beginPath();
+                targetCtx.moveTo(vertex.x - normal.x * normLen, vertex.y - normal.y * normLen);
+                targetCtx.lineTo(vertex.x + normal.x * normLen, vertex.y + normal.y * normLen);
+                targetCtx.stroke();
+
+                // Normal label N1 / N2
+                targetCtx.fillStyle = isEntry ? '#6ee7b7' : '#fda4af';
+                targetCtx.font = `600 ${Math.round(10 * invScale)}px "JetBrains Mono", monospace`;
+                const labelPos = {
+                    x: vertex.x - normal.x * (normLen + 8 * invScale),
+                    y: vertex.y - normal.y * (normLen + 8 * invScale)
+                };
+                targetCtx.fillText(isEntry ? 'N₁' : 'N₂', labelPos.x - 6 * invScale, labelPos.y + 3 * invScale);
+                targetCtx.restore();
+            }
+
+            // 2. Draw Angle Arcs and Degree Badges
+            if (state.showAngles) {
+                const arcRadius = 22 * Math.max(0.4, Math.min(1.0, invScale * 1.3));
+                // Incident ray comes from -dirIn, normal on incident side is -normal
+                const angleIncRay = Math.atan2(-dirIn.y, -dirIn.x);
+                const angleIncNorm = Math.atan2(-normal.y, -normal.x);
+
+                // Refracted ray goes along +dirOut, normal on transmitted side is +normal
+                const angleRefRay = Math.atan2(dirOut.y, dirOut.x);
+                const angleRefNorm = Math.atan2(normal.y, normal.x);
+
+                targetCtx.save();
+                targetCtx.lineWidth = 1.5 * invScale;
+
+                // Incident Angle Arc
+                targetCtx.strokeStyle = 'rgba(251, 191, 36, 0.85)';
+                targetCtx.fillStyle = 'rgba(251, 191, 36, 0.18)';
+                drawMinorArc(targetCtx, vertex.x, vertex.y, arcRadius, angleIncNorm, angleIncRay);
+
+                // Refracted Angle Arc
+                targetCtx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
+                targetCtx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+                drawMinorArc(targetCtx, vertex.x, vertex.y, arcRadius * 0.85, angleRefNorm, angleRefRay);
+
+                // Angle numeric text
+                const deg1 = (Math.acos(Math.min(1, Math.max(-1, Vec2.dot(dirIn, normal)))) * 180 / Math.PI).toFixed(1);
+                const deg2 = (Math.acos(Math.min(1, Math.max(-1, Vec2.dot(dirOut, normal)))) * 180 / Math.PI).toFixed(1);
+
+                targetCtx.font = `600 ${Math.round(9.5 * invScale)}px "JetBrains Mono", monospace`;
+                targetCtx.fillStyle = '#fde68a';
+                targetCtx.fillText(
+                    `${deg1}°`,
+                    vertex.x + Math.cos((angleIncRay + angleIncNorm) / 2) * (arcRadius + 10 * invScale) - 10 * invScale,
+                    vertex.y + Math.sin((angleIncRay + angleIncNorm) / 2) * (arcRadius + 10 * invScale) + 3 * invScale
+                );
+
+                targetCtx.fillStyle = '#7dd3fc';
+                targetCtx.fillText(
+                    `${deg2}°`,
+                    vertex.x + Math.cos((angleRefRay + angleRefNorm) / 2) * (arcRadius + 8 * invScale) - 8 * invScale,
+                    vertex.y + Math.sin((angleRefRay + angleRefNorm) / 2) * (arcRadius + 8 * invScale) + 3 * invScale
+                );
+
+                targetCtx.restore();
+            }
+        }
+
+        function drawMinorArc(targetCtx, cx, cy, r, a1, a2) {
+            let diff = a2 - a1;
+            while (diff < -Math.PI) diff += 2 * Math.PI;
+            while (diff > Math.PI) diff -= 2 * Math.PI;
+            if (Math.abs(diff) < 0.02) return;
+
+            targetCtx.beginPath();
+            targetCtx.moveTo(cx, cy);
+            targetCtx.arc(cx, cy, r, a1, a1 + diff, diff < 0);
+            targetCtx.closePath();
+            targetCtx.fill();
+            targetCtx.beginPath();
+            targetCtx.arc(cx, cy, r, a1, a1 + diff, diff < 0);
+            targetCtx.stroke();
+        }
+
+        /**
+         * Draw small directional chevron arrow along a ray segment
+         */
+        function drawDirectionArrow(targetCtx, pStart, pEnd, fraction, color, size) {
+            const pos = {
+                x: pStart.x + (pEnd.x - pStart.x) * fraction,
+                y: pStart.y + (pEnd.y - pStart.y) * fraction
+            };
+            const angle = Math.atan2(pEnd.y - pStart.y, pEnd.x - pStart.x);
+            targetCtx.save();
+            targetCtx.translate(pos.x, pos.y);
+            targetCtx.rotate(angle);
+            targetCtx.fillStyle = color;
+            targetCtx.beginPath();
+            targetCtx.moveTo(size, 0);
+            targetCtx.lineTo(-size * 0.8, -size * 0.65);
+            targetCtx.lineTo(-size * 0.4, 0);
+            targetCtx.lineTo(-size * 0.8, size * 0.65);
+            targetCtx.closePath();
+            targetCtx.fill();
+            targetCtx.restore();
+        }
+
+        /**
+         * Core World Scene Renderer (used by both the main viewport and the magnifying loupe)
+         */
+        function renderOpticalWorld(targetCtx, geom, rays, fLength, scaleFactor, isLoupe = false) {
+            const invScale = 1 / scaleFactor;
+
+            // 1. Background Grid
+            targetCtx.save();
+            const gridStep = 40;
+            targetCtx.lineWidth = 1 * invScale;
+            targetCtx.strokeStyle = 'rgba(30, 41, 59, 0.55)';
+            targetCtx.beginPath();
+            for (let x = -1200; x <= 1200; x += gridStep) {
+                targetCtx.moveTo(x, -800);
+                targetCtx.lineTo(x, 800);
+            }
+            for (let y = -800; y <= 800; y += gridStep) {
+                targetCtx.moveTo(-1200, y);
+                targetCtx.lineTo(1200, y);
+            }
+            targetCtx.stroke();
+
+            // 2. Principal Optical Axis (主光轴)
+            targetCtx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+            targetCtx.lineWidth = 1.5 * invScale;
+            targetCtx.setLineDash([8 * invScale, 6 * invScale]);
+            targetCtx.beginPath();
+            targetCtx.moveTo(-1200, 0);
+            targetCtx.lineTo(1200, 0);
+            targetCtx.stroke();
+
+            // Vertical Center Plane of Lens
+            targetCtx.strokeStyle = 'rgba(148, 163, 184, 0.22)';
+            targetCtx.beginPath();
+            targetCtx.moveTo(0, -geom.apertureRadius * 1.25);
+            targetCtx.lineTo(0, geom.apertureRadius * 1.25);
+            targetCtx.stroke();
+            targetCtx.setLineDash([]);
+            targetCtx.restore();
+
+            // 3. Draw Glass Convex Lens Body
+            targetCtx.save();
+            buildLensPath(targetCtx, geom);
+
+            const lensGrad = targetCtx.createLinearGradient(-geom.halfD, -geom.apertureRadius, geom.halfD, geom.apertureRadius);
+            lensGrad.addColorStop(0, 'rgba(56, 189, 248, 0.20)');
+            lensGrad.addColorStop(0.5, 'rgba(14, 165, 233, 0.30)');
+            lensGrad.addColorStop(1, 'rgba(99, 102, 241, 0.22)');
+            targetCtx.fillStyle = lensGrad;
+            targetCtx.fill();
+
+            // Glass Specular Border
+            targetCtx.lineWidth = (isLoupe ? 2.4 : 2.0) * invScale;
+            targetCtx.strokeStyle = 'rgba(125, 211, 252, 0.85)';
+            targetCtx.stroke();
+            targetCtx.restore();
+
+            // 4. Focal Points F and 2F Markers
+            if (Number.isFinite(fLength) && fLength < 2000) {
+                targetCtx.save();
+                const focalPoints = [
+                    { x: -fLength, label: 'F₁' },
+                    { x: fLength, label: 'F₂ (焦点)' },
+                    { x: 2 * fLength, label: '2F' }
+                ];
+                focalPoints.forEach(fp => {
+                    targetCtx.fillStyle = '#f43f5e';
+                    targetCtx.beginPath();
+                    targetCtx.arc(fp.x, 0, 4.5 * invScale, 0, Math.PI * 2);
+                    targetCtx.fill();
+
+                    targetCtx.fillStyle = '#fda4af';
+                    targetCtx.font = `600 ${Math.round(11 * invScale)}px "Inter", sans-serif`;
+                    targetCtx.fillText(fp.label, fp.x - 10 * invScale, 18 * invScale);
+                });
+                targetCtx.restore();
+            }
+
+            // 5. Render Rays (External + Internal Refracted Path + Exit Path)
+            let highlightedRay = null;
+
+            rays.forEach((ray) => {
+                if (ray.isHighlight && !ray.missed && !ray.partial) {
+                    highlightedRay = ray;
+                }
+
+                if (ray.missed) {
+                    targetCtx.save();
+                    targetCtx.strokeStyle = ray.color || 'rgba(251, 191, 36, 0.35)';
+                    targetCtx.lineWidth = 1.4 * invScale;
+                    targetCtx.beginPath();
+                    targetCtx.moveTo(ray.p0.x, ray.p0.y);
+                    targetCtx.lineTo(ray.p1.x, ray.p1.y);
+                    targetCtx.stroke();
+                    targetCtx.restore();
+                    return;
+                }
+
+                // 5a. Ghost un-refracted reference lines (shows how much each surface bends the ray)
+                if (state.showGhostRay && (ray.isHighlight || state.rayCount <= 5 || isLoupe)) {
+                    targetCtx.save();
+                    targetCtx.setLineDash([4 * invScale, 4 * invScale]);
+                    targetCtx.lineWidth = 1.1 * invScale;
+
+                    // Extension of original incident ray inside the lens
+                    targetCtx.strokeStyle = 'rgba(251, 191, 36, 0.32)';
+                    targetCtx.beginPath();
+                    targetCtx.moveTo(ray.p1.x, ray.p1.y);
+                    targetCtx.lineTo(ray.p1.x + ray.dir0.x * 110, ray.p1.y + ray.dir0.y * 110);
+                    targetCtx.stroke();
+
+                    // Extension of internal refracted ray outside the right surface
+                    if (!ray.partial) {
+                        targetCtx.strokeStyle = 'rgba(34, 211, 238, 0.35)';
+                        targetCtx.beginPath();
+                        targetCtx.moveTo(ray.p2.x, ray.p2.y);
+                        targetCtx.lineTo(ray.p2.x + ray.dir1.x * 110, ray.p2.y + ray.dir1.y * 110);
+                        targetCtx.stroke();
+                    }
+                    targetCtx.restore();
+                }
+
+                // 5b. Segment 1: Incident Ray (Left of Lens)
+                targetCtx.save();
+                const extColor = ray.color || '#fbbf24';
+                targetCtx.strokeStyle = extColor;
+                targetCtx.lineWidth = (ray.isHighlight ? 2.4 : 1.7) * invScale;
+                targetCtx.beginPath();
+                targetCtx.moveTo(ray.p0.x, ray.p0.y);
+                targetCtx.lineTo(ray.p1.x, ray.p1.y);
+                targetCtx.stroke();
+                drawDirectionArrow(targetCtx, ray.p0, ray.p1, 0.55, extColor, 4.5 * invScale);
+
+                // 5c. Segment 2: INTERNAL REFRACTED RAY (Highlighted distinctly inside the lens)
+                const intColor = ray.color || '#22d3ee';
+                targetCtx.strokeStyle = intColor;
+                targetCtx.shadowColor = intColor;
+                targetCtx.shadowBlur = isLoupe ? 8 : 5;
+                targetCtx.lineWidth = (ray.isHighlight ? 3.2 : 2.3) * invScale;
+                targetCtx.beginPath();
+                targetCtx.moveTo(ray.p1.x, ray.p1.y);
+                targetCtx.lineTo(ray.p2.x, ray.p2.y);
+                targetCtx.stroke();
+                targetCtx.shadowBlur = 0;
+
+                // Internal direction arrow
+                drawDirectionArrow(targetCtx, ray.p1, ray.p2, 0.52, '#ffffff', 4.2 * invScale);
+
+                // 5d. Segment 3: Exit Refracted Ray (Right of Lens)
+                if (!ray.partial) {
+                    targetCtx.strokeStyle = extColor;
+                    targetCtx.lineWidth = (ray.isHighlight ? 2.4 : 1.7) * invScale;
+                    targetCtx.beginPath();
+                    targetCtx.moveTo(ray.p2.x, ray.p2.y);
+                    targetCtx.lineTo(ray.p3.x, ray.p3.y);
+                    targetCtx.stroke();
+                    drawDirectionArrow(targetCtx, ray.p2, ray.p3, 0.18, extColor, 4.5 * invScale);
+                }
+
+                // 5e. Surface Intersection Vertices (Entry Dot & Exit Dot)
+                targetCtx.fillStyle = '#34d399';
+                targetCtx.beginPath();
+                targetCtx.arc(ray.p1.x, ray.p1.y, 3.3 * invScale, 0, Math.PI * 2);
+                targetCtx.fill();
+
+                if (!ray.partial) {
+                    targetCtx.fillStyle = '#fb7185';
+                    targetCtx.beginPath();
+                    targetCtx.arc(ray.p2.x, ray.p2.y, 3.3 * invScale, 0, Math.PI * 2);
+                    targetCtx.fill();
+                }
+
+                targetCtx.restore();
+            });
+
+            // 6. Draw Normals & Angles on Highlighted Ray (or all rays when zoomed in / few rays)
+            rays.forEach((ray) => {
+                if (ray.missed || ray.partial) return;
+                const shouldAnnotate = ray.isHighlight || state.rayCount <= 3 || isLoupe;
+                if (shouldAnnotate) {
+                    drawRefractionDetails(targetCtx, ray.p1, ray.ref1.normal, ray.dir0, ray.dir1, true, scaleFactor);
+                    drawRefractionDetails(targetCtx, ray.p2, ray.ref2.normal, ray.dir1, ray.dir2, false, scaleFactor);
+                }
+            });
+
+            // 7. Interactive Light Source Handle
+            if (!isLoupe) {
+                targetCtx.save();
+                const sx = state.sourcePos.x;
+                const sy = state.sourcePos.y;
+
+                // Glow halo
+                const radGrad = targetCtx.createRadialGradient(sx, sy, 2 * invScale, sx, sy, 18 * invScale);
+                radGrad.addColorStop(0, 'rgba(251, 191, 36, 0.9)');
+                radGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+                targetCtx.fillStyle = radGrad;
+                targetCtx.beginPath();
+                targetCtx.arc(sx, sy, 18 * invScale, 0, Math.PI * 2);
+                targetCtx.fill();
+
+                // Core handle
+                targetCtx.fillStyle = '#fbbf24';
+                targetCtx.strokeStyle = '#ffffff';
+                targetCtx.lineWidth = 2 * invScale;
+                targetCtx.beginPath();
+                targetCtx.arc(sx, sy, 7 * invScale, 0, Math.PI * 2);
+                targetCtx.fill();
+                targetCtx.stroke();
+
+                targetCtx.fillStyle = '#fde68a';
+                targetCtx.font = `600 ${Math.round(11 * invScale)}px "Inter", sans-serif`;
+                targetCtx.fillText('可拖拽光源', sx - 28 * invScale, sy - 13 * invScale);
+
+                // If single ray mode, also provide an angle handle
+                if (state.sourceMode === 'single') {
+                    const handleDist = 90;
+                    const hx = sx + Math.cos(state.singleRayAngle) * handleDist;
+                    const hy = sy + Math.sin(state.singleRayAngle) * handleDist;
+                    targetCtx.fillStyle = '#38bdf8';
+                    targetCtx.strokeStyle = '#ffffff';
+                    targetCtx.beginPath();
+                    targetCtx.arc(hx, hy, 5.5 * invScale, 0, Math.PI * 2);
+                    targetCtx.fill();
+                    targetCtx.stroke();
+                }
+
+                targetCtx.restore();
+            }
+
+            return highlightedRay;
+        }
+
+        /**
+         * Render the High-Magnification Microscope Loupe in the Top-Right Corner
+         * Specifically focused on the internal refraction region of the convex lens
+         */
+        function renderMagnifyingLoupe(width, height, geom, rays, fLength, highlightedRay) {
+            if (!state.showLoupe) return;
+
+            // Update loupe target automatically to center on the highlighted ray's internal path if autoTrack is active
+            if (state.loupeTarget.autoTrack && highlightedRay) {
+                state.loupeTarget.x = (highlightedRay.p1.x + highlightedRay.p2.x) * 0.5;
+                state.loupeTarget.y = (highlightedRay.p1.y + highlightedRay.p2.y) * 0.5;
+            }
+
+            const loupeRadius = Math.min(width, height) < 640 ? 85 : 118;
+            const centerX = width - loupeRadius - 20;
+            const centerY = loupeRadius + 20;
+            const loupeZoom = 2.85; // High magnification factor for internal refraction inspection
+
+            // Draw dashed indicator box in main view showing where the loupe is looking
+            const targetScreen = worldToScreen(state.loupeTarget.x, state.loupeTarget.y, width, height);
+            ctx.save();
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.5)';
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.arc(targetScreen.x, targetScreen.y, (loupeRadius / loupeZoom) * state.camera.zoom, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            // Clip Circular Magnifier Window
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, loupeRadius, 0, Math.PI * 2);
+            ctx.clip();
+
+            // Loupe dark backdrop
+            ctx.fillStyle = '#060a11';
+            ctx.fillRect(centerX - loupeRadius, centerY - loupeRadius, loupeRadius * 2, loupeRadius * 2);
+
+            // Transform into Loupe World Coordinates
+            ctx.translate(centerX, centerY);
+            ctx.scale(loupeZoom, loupeZoom);
+            ctx.translate(-state.loupeTarget.x, -state.loupeTarget.y);
+
+            renderOpticalWorld(ctx, geom, rays, fLength, loupeZoom, true);
+
+            ctx.restore();
+
+            // Loupe Outer Ring & Label
+            ctx.save();
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, loupeRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // Crosshair inside loupe
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 12, centerY);
+            ctx.lineTo(centerX + 12, centerY);
+            ctx.moveTo(centerX, centerY - 12);
+            ctx.lineTo(centerX, centerY + 12);
+            ctx.stroke();
+
+            // Badge under Loupe
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+            ctx.lineWidth = 1;
+            const badgeW = 166;
+            const badgeH = 24;
+            ctx.beginPath();
+            ctx.roundRect(centerX - badgeW / 2, centerY + loupeRadius - 14, badgeW, badgeH, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#bae6fd';
+            ctx.font = '600 11px "Inter", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('内部折射显微放大镜 (2.85x)', centerX, centerY + loupeRadius + 2);
+            ctx.restore();
+        }
+
+        /**
+         * Update Floating HUD Telemetry values
+         */
+        function updateHUD(geom, fLength, highlightedRay) {
+            document.getElementById('hudFocal').textContent = Number.isFinite(fLength) ? `${fLength.toFixed(1)} px` : '∞';
+            document.getElementById('hudZoom').textContent = `${state.camera.zoom.toFixed(2)}x`;
+
+            const r1Text = Number.isFinite(geom.s1.signedR) ? `${geom.s1.signedR > 0 ? '+' : ''}${Math.round(geom.s1.signedR)} px` : '∞ (平面)';
+            const r2Text = Number.isFinite(geom.s2.signedR) ? `${geom.s2.signedR > 0 ? '+' : ''}${Math.round(geom.s2.signedR)} px` : '∞ (平面)';
+            document.getElementById('hudR1').textContent = r1Text;
+            document.getElementById('hudR2').textContent = r2Text;
+
+            const s1El = document.getElementById('hudSurface1');
+            const s2El = document.getElementById('hudSurface2');
+
+            if (highlightedRay && !highlightedRay.missed && !highlightedRay.partial) {
+                const t1 = (highlightedRay.ref1.theta1 * 180 / Math.PI).toFixed(1);
+                const t2 = (highlightedRay.ref1.theta2 * 180 / Math.PI).toFixed(1);
+                const t3 = (highlightedRay.ref2.theta1 * 180 / Math.PI).toFixed(1);
+                const t4 = (highlightedRay.ref2.theta2 * 180 / Math.PI).toFixed(1);
+
+                const s1Note = parseFloat(t1) < 0.1 ? '垂直入射无偏折' : '偏向法线 N₁';
+                const s2Note = highlightedRay.ref2.tir ? '发生全反射 (TIR)!' : (parseFloat(t3) < 0.1 ? '垂直出射无偏折' : '远离法线 N₂');
+
+                s1El.textContent = `入表面 (空气→玻璃): θ₁=${t1}° → θ₂=${t2}° (${s1Note})`;
+                s2El.textContent = `出表面 (玻璃→空气): θ₃=${t3}° → θ₄=${t4}° (${s2Note})`;
+            } else {
+                s1El.textContent = '入表面: 请调整光源使光线穿过透镜有效孔径';
+                s2El.textContent = '出表面: --';
+            }
+        }
+
+        /**
+         * Main Render Loop
+         */
+        function render() {
+            // Smooth camera interpolation when using quick-focus buttons
+            if (state.camera.animating) {
+                state.camera.zoom += (state.camera.targetZoom - state.camera.zoom) * 0.16;
+                state.camera.x += (state.camera.targetX - state.camera.x) * 0.16;
+                state.camera.y += (state.camera.targetY - state.camera.y) * 0.16;
+                document.getElementById('sliderZoom').value = state.camera.zoom;
+
+                if (
+                    Math.abs(state.camera.zoom - state.camera.targetZoom) < 0.005 &&
+                    Math.abs(state.camera.x - state.camera.targetX) < 0.5 &&
+                    Math.abs(state.camera.y - state.camera.targetY) < 0.5
+                ) {
+                    state.camera.zoom = state.camera.targetZoom;
+                    state.camera.x = state.camera.targetX;
+                    state.camera.y = state.camera.targetY;
+                    state.camera.animating = false;
+                }
+            }
+
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            if (canvas.width !== Math.floor(rect.width * dpr) || canvas.height !== Math.floor(rect.height * dpr)) {
+                canvas.width = Math.floor(rect.width * dpr);
+                canvas.height = Math.floor(rect.height * dpr);
+            }
+
+            const width = rect.width;
+            const height = rect.height;
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            // Clear Canvas
+            ctx.fillStyle = '#070b12';
+            ctx.fillRect(0, 0, width, height);
+
+            // Compute Lens & Rays
+            const geom = getLensGeometry();
+            const rays = generateAllRays(geom);
+            const fLength = calculateFocalLength(geom);
+
+            // Apply Main Viewport Camera Transform
+            ctx.save();
+            ctx.translate(width / 2, height / 2);
+            ctx.scale(state.camera.zoom, state.camera.zoom);
+            ctx.translate(-state.camera.x, -state.camera.y);
+
+            const highlightedRay = renderOpticalWorld(ctx, geom, rays, fLength, state.camera.zoom, false);
+            ctx.restore();
+
+            // Render Top-Right Magnifying Loupe
+            renderMagnifyingLoupe(width, height, geom, rays, fLength, highlightedRay);
+
+            // Update Telemetry HUD
+            updateHUD(geom, fLength, highlightedRay);
+
+            ctx.restore();
+            requestAnimationFrame(render);
+        }
+
+        // ============================================================================
+        // UI Event Listeners & Pointer Interactions
+        // ============================================================================
+        function initInteractions() {
+            // 1. Lens Type Buttons
+            const lensButtons = document.querySelectorAll('.lens-btn');
+            lensButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    lensButtons.forEach(b => b.classList.remove('btn-active'));
+                    btn.classList.add('btn-active');
+                    state.lensType = btn.dataset.type;
+                    document.getElementById('lensTypeBadge').textContent = LENS_NAMES[state.lensType];
+                    document.getElementById('lensDescText').innerHTML = LENS_DESCRIPTIONS[state.lensType];
+                    state.loupeTarget.autoTrack = true;
+                });
+            });
+
+            // 2. Light Source Mode Buttons
+            const sourceButtons = document.querySelectorAll('.source-btn');
+            sourceButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sourceButtons.forEach(b => b.classList.remove('btn-active'));
+                    btn.classList.add('btn-active');
+                    state.sourceMode = btn.dataset.source;
+                    if (state.sourceMode === 'point') {
+                        state.sourcePos = { x: -300, y: -35 };
+                    } else if (state.sourceMode === 'single') {
+                        state.sourcePos = { x: -280, y: -65 };
+                        state.singleRayAngle = 0.08;
+                    } else {
+                        state.sourcePos = { x: -320, y: -55 };
+                    }
+                    state.loupeTarget.autoTrack = true;
+                });
+            });
+
+            // 3. Parameter Sliders
+            const sliderIOR = document.getElementById('sliderIOR');
+            const valIOR = document.getElementById('valIOR');
+            sliderIOR.addEventListener('input', (e) => {
+                state.ior = parseFloat(e.target.value);
+                let mat = '光学玻璃';
+                if (state.ior < 1.38) mat = '水/液体';
+                else if (state.ior < 1.60) mat = '冕牌玻璃';
+                else if (state.ior < 1.95) mat = '重火石玻璃';
+                else mat = '高折钻石晶体';
+                valIOR.textContent = `${state.ior.toFixed(2)} (${mat})`;
+            });
+
+            const sliderRadius = document.getElementById('sliderRadius');
+            const valRadius = document.getElementById('valRadius');
+            sliderRadius.addEventListener('input', (e) => {
+                state.radius = parseFloat(e.target.value);
+                valRadius.textContent = `${state.radius} px`;
+            });
+
+            const sliderThickness = document.getElementById('sliderThickness');
+            const valThickness = document.getElementById('valThickness');
+            sliderThickness.addEventListener('input', (e) => {
+                state.thickness = parseFloat(e.target.value);
+                valThickness.textContent = `${state.thickness} px`;
+            });
+
+            const sliderRays = document.getElementById('sliderRays');
+            const valRays = document.getElementById('valRays');
+            sliderRays.addEventListener('input', (e) => {
+                state.rayCount = parseInt(e.target.value, 10);
+                valRays.textContent = `${state.rayCount} 条`;
+            });
+
+            // 4. Visual Aid Checkboxes
+            document.getElementById('chkNormals').addEventListener('change', e => state.showNormals = e.target.checked);
+            document.getElementById('chkAngles').addEventListener('change', e => state.showAngles = e.target.checked);
+            document.getElementById('chkLoupe').addEventListener('change', e => state.showLoupe = e.target.checked);
+            document.getElementById('chkGhostRay').addEventListener('change', e => state.showGhostRay = e.target.checked);
+            document.getElementById('chkDispersion').addEventListener('change', e => state.dispersionMode = e.target.checked);
+
+            // 5. Zoom & Quick Focus Buttons
+            const sliderZoom = document.getElementById('sliderZoom');
+            sliderZoom.addEventListener('input', (e) => {
+                state.camera.animating = false;
+                state.camera.zoom = parseFloat(e.target.value);
+            });
+
+            document.getElementById('btnZoomIn').addEventListener('click', () => {
+                state.camera.animating = false;
+                state.camera.zoom = Math.min(4.5, state.camera.zoom + 0.35);
+                sliderZoom.value = state.camera.zoom;
+            });
+
+            document.getElementById('btnZoomOut').addEventListener('click', () => {
+                state.camera.animating = false;
+                state.camera.zoom = Math.max(0.6, state.camera.zoom - 0.35);
+                sliderZoom.value = state.camera.zoom;
+            });
+
+            // One-click Zoom into Internal Lens Refraction
+            document.getElementById('btnFocusInternal').addEventListener('click', () => {
+                state.camera.targetX = 0;
+                state.camera.targetY = -45;
+                state.camera.targetZoom = 2.75;
+                state.camera.animating = true;
+            });
+
+            // Reset Global View
+            document.getElementById('btnResetView').addEventListener('click', () => {
+                state.camera.targetX = 20;
+                state.camera.targetY = 0;
+                state.camera.targetZoom = 1.0;
+                state.camera.animating = true;
+                state.loupeTarget.autoTrack = true;
+            });
+
+            // 6. Canvas Pointer Dragging & Wheel Zooming
+            const getPointerCoords = (evt) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+                const sx = clientX - rect.left;
+                const sy = clientY - rect.top;
+                const world = screenToWorld(sx, sy, rect.width, rect.height);
+                return { sx, sy, wx: world.x, wy: world.y, width: rect.width, height: rect.height };
+            };
+
+            const onPointerDown = (evt) => {
+                const pt = getPointerCoords(evt);
+                state.pointer.isDown = true;
+                state.pointer.lastScreenX = pt.sx;
+                state.pointer.lastScreenY = pt.sy;
+                state.camera.animating = false;
+
+                const hitRadius = 20 / state.camera.zoom;
+
+                // Check if clicking the single-ray angle handle
+                if (state.sourceMode === 'single') {
+                    const hx = state.sourcePos.x + Math.cos(state.singleRayAngle) * 90;
+                    const hy = state.sourcePos.y + Math.sin(state.singleRayAngle) * 90;
+                    if (Math.hypot(pt.wx - hx, pt.wy - hy) < hitRadius) {
+                        state.pointer.dragMode = 'angleHandle';
+                        return;
+                    }
+                }
+
+                // Check if clicking the light source handle
+                if (Math.hypot(pt.wx - state.sourcePos.x, pt.wy - state.sourcePos.y) < hitRadius * 1.2) {
+                    state.pointer.dragMode = 'source';
+                    return;
+                }
+
+                // Otherwise pan the canvas
+                state.pointer.dragMode = 'pan';
+            };
+
+            const onPointerMove = (evt) => {
+                const pt = getPointerCoords(evt);
+                if (!state.pointer.isDown) return;
+
+                if (state.pointer.dragMode === 'source') {
+                    state.sourcePos.x = Math.min(-90, Math.max(-550, pt.wx));
+                    state.sourcePos.y = Math.min(110, Math.max(-110, pt.wy));
+                } else if (state.pointer.dragMode === 'angleHandle') {
+                    state.singleRayAngle = Math.atan2(pt.wy - state.sourcePos.y, pt.wx - state.sourcePos.x);
+                    state.singleRayAngle = Math.max(-0.65, Math.min(0.65, state.singleRayAngle));
+                } else if (state.pointer.dragMode === 'pan') {
+                    const dx = (pt.sx - state.pointer.lastScreenX) / state.camera.zoom;
+                    const dy = (pt.sy - state.pointer.lastScreenY) / state.camera.zoom;
+                    state.camera.x -= dx;
+                    state.camera.y -= dy;
+                    state.pointer.lastScreenX = pt.sx;
+                    state.pointer.lastScreenY = pt.sy;
+                }
+            };
+
+            const onPointerUp = () => {
+                state.pointer.isDown = false;
+                state.pointer.dragMode = null;
+            };
+
+            canvas.addEventListener('mousedown', onPointerDown);
+            window.addEventListener('mousemove', onPointerMove);
+            window.addEventListener('mouseup', onPointerUp);
+
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) onPointerDown(e);
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (state.pointer.isDown && e.touches.length === 1) onPointerMove(e);
+            }, { passive: true });
+            window.addEventListener('touchend', onPointerUp);
+
+            // Mouse Wheel Zoom centered on cursor
+            canvas.addEventListener('wheel', (evt) => {
+                evt.preventDefault();
+                state.camera.animating = false;
+                const pt = getPointerCoords(evt);
+                const zoomFactor = evt.deltaY < 0 ? 1.12 : 0.89;
+                const newZoom = Math.min(4.5, Math.max(0.6, state.camera.zoom * zoomFactor));
+
+                // Keep cursor world point stationary while zooming
+                state.camera.x = pt.wx - (pt.sx - pt.width / 2) / newZoom;
+                state.camera.y = pt.wy - (pt.sy - pt.height / 2) / newZoom;
+                state.camera.zoom = newZoom;
+                sliderZoom.value = newZoom;
+            }, { passive: false });
+        }
+
+        // Start Application on Window Load
+        window.onload = function () {
+            initInteractions();
+            render();
+        };
+    </script>
+</body>
+
+</html>
