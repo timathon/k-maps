@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>为什么水在 4°C 时最重？—— 交互式物理可视化指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Custom range slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #38bdf8 0%, #2563eb 25%, #06b6d4 40%, #f59e0b 75%, #ef4444 100%);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 4px solid #0284c7;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .glow-4c {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.45);
+        }
+
+        @keyframes floatSlow {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .animate-float {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen selection:bg-cyan-500 selection:text-slate-950">
+
+    <header
+        class="relative border-b border-slate-800/80 bg-gradient-to-b from-slate-900/90 to-[#090d16] pt-10 pb-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto relative">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../../index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 transition shadow-sm" title="返回课程资源地图">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span>返回主页</span>
+                </a>
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    热力学与分子物理学 (Thermodynamics &amp; Molecular Physics)
+                </div>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+                为什么水在 <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">4°C
+                    时最重（密度最大）</span>？
+            </h1>
+            <p class="max-w-3xl text-slate-300 text-base sm:text-lg leading-relaxed">
+                宇宙中绝大多数物质都遵循“热胀冷缩”——温度越低，体积越小、密度越大。然而水在 <strong>4°C (39.2°F)</strong> 以下却打破了这一规律（反常膨胀）。在恰好 4°C
+                时，两种无形的分子力量在拉锯战中达到完美平衡，使单位体积内挤入的 <span class="mono text-cyan-300">H₂O</span> 分子比任何其他温度下都多。
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- Interactive Control Bar -->
+        <section class="glass-card rounded-2xl p-5 sm:p-6 sticky top-3 z-30 shadow-2xl border-cyan-500/30"
+            id="controlPanel">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <!-- Left: Temp Readout & Presets -->
+                <div class="flex flex-wrap items-center gap-4 justify-between sm:justify-start">
+                    <div class="flex items-center gap-3 bg-slate-950/90 border border-slate-800 px-4 py-2.5 rounded-xl">
+                        <div>
+                            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">当前温度</div>
+                            <div class="flex items-baseline gap-2">
+                                <span id="tempDisplay"
+                                    class="mono text-2xl sm:text-3xl font-bold text-cyan-400">4.0°C</span>
+                                <span id="tempFahrenheit" class="mono text-xs text-slate-400">(39.2°F)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-slate-950/90 border border-slate-800 px-4 py-2.5 rounded-xl">
+                        <div>
+                            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">密度 (质量 / 体积)
+                            </div>
+                            <div class="flex items-baseline gap-1.5">
+                                <span id="densityDisplay"
+                                    class="mono text-xl sm:text-2xl font-bold text-emerald-400">0.99997</span>
+                                <span class="mono text-xs text-slate-400">g/cm³</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="stateBadge"
+                        class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+                        ★ 密度峰值（水最重状态）
+                    </div>
+                </div>
+
+                <!-- Right: Quick Preset Buttons -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs text-slate-400 mr-1 font-medium">快速切换温度：</span>
+                    <button onclick="setTemperature(-2)"
+                        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 transition">
+                        ❄️ -2°C (固态冰晶格)
+                    </button>
+                    <button onclick="setTemperature(0.5)"
+                        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700 transition">
+                        💧 0.5°C (冰水微团簇)
+                    </button>
+                    <button onclick="setTemperature(4)"
+                        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/50 transition shadow-sm">
+                        🎯 4.0°C (最大密度)
+                    </button>
+                    <button onclick="setTemperature(25)"
+                        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition">
+                        ☀️ 25°C (常温水)
+                    </button>
+                    <button onclick="setTemperature(80)"
+                        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-rose-300 border border-slate-700 transition">
+                        🔥 80°C (高温热水)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slider Row -->
+            <div class="mt-5 pt-2">
+                <input type="range" id="tempSlider" min="-4" max="85" step="0.5" value="4" aria-label="水温调节滑块">
+                <div class="flex justify-between text-[11px] mono text-slate-400 mt-2 px-1">
+                    <span>-4°C (固态冰)</span>
+                    <span class="text-cyan-400 font-bold">4°C (密度最高点)</span>
+                    <span>25°C (室温)</span>
+                    <span>50°C</span>
+                    <span>85°C (热水)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Interactive Diagrams Grid -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+            <!-- Left Column: Animated Molecular Simulation (7 cols) -->
+            <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div>
+                            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                                1. 微观视角：H₂O 水分子与氢键动态模拟
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-400">
+                                观察固定体积采样框内，“六边形氢键笼”与“分子热运动”如何随温度相互博弈。
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs">
+                            <span class="flex items-center gap-1.5 text-slate-300">
+                                <span class="inline-block w-3 h-3 rounded-full bg-red-500"></span> 氧原子 (O)
+                            </span>
+                            <span class="flex items-center gap-1.5 text-slate-300">
+                                <span class="inline-block w-2 h-2 rounded-full bg-white"></span> 氢原子 (H)
+                            </span>
+                            <span class="flex items-center gap-1.5 text-cyan-300">
+                                <span class="inline-block w-4 border-b-2 border-dashed border-cyan-400"></span> 氢键
+                                (H-Bond)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Molecular Canvas Container -->
+                    <div
+                        class="relative w-full h-72 sm:h-80 rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+                        <canvas id="moleculeCanvas" class="w-full h-full block"></canvas>
+
+                        <!-- Overlay Readouts inside Canvas -->
+                        <div
+                            class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur px-3.5 py-2.5 rounded-lg border border-slate-700/80 text-xs space-y-1 pointer-events-none shadow-lg">
+                            <div class="text-slate-300 flex items-center gap-1.5">
+                                <span>固定体积框内分子数：</span>
+                                <span id="molCountLive" class="mono text-sm font-extrabold text-cyan-400">36 / 36 个
+                                    (100%)</span>
+                                <span id="molCountBadge" class="text-[11px] text-slate-400">(最高)</span>
+                            </div>
+                            <div class="text-slate-400">分子间空隙体积：<span id="voidSpaceBadge"
+                                    class="mono font-bold text-cyan-400">极小（排列最紧密）</span></div>
+                        </div>
+                        <div
+                            class="absolute bottom-2.5 right-3 bg-slate-900/80 backdrop-blur px-2.5 py-1 rounded text-[11px] text-slate-400 border border-slate-800 pointer-events-none">
+                            💡 33/36 (冰 ≈ 0.917 g/cm³) vs 36/36 (4°C = 1.000 g/cm³)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Two-Force Tug-of-War Meter -->
+                <div class="mt-5 bg-slate-900/90 rounded-xl p-4 border border-slate-800">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex justify-between">
+                        <span>决定水体积的“两大微观力量拉锯战”</span>
+                        <span id="dominantForceLabel" class="text-cyan-400">4°C 时达到完美平衡</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Force 1: Hydrogen Bond Cage Expansion -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-sky-300 font-medium">🧊 力量 A：氢键六边形冰笼膨胀效应</span>
+                                <span id="hBondForceVal" class="mono text-sky-300">35%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div id="hBondBar"
+                                    class="h-full bg-gradient-to-r from-sky-500 to-cyan-300 transition-all duration-300"
+                                    style="width: 35%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">
+                                在 4°C 以下，氢键将 H₂O 锁定成内部中空的六边形环状结构，把水分子<strong>撑开</strong>，导致体积变大、密度变小。
+                            </p>
+                        </div>
+
+                        <!-- Force 2: Thermal Kinetic Expansion -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-amber-300 font-medium">🔥 力量 B：分子热运动碰撞膨胀效应</span>
+                                <span id="thermalForceVal" class="mono text-amber-300">15%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div id="thermalBar"
+                                    class="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-300"
+                                    style="width: 15%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">
+                                在 4°C 以上，热量使水分子振动加快、剧烈碰撞，彼此把相邻分子<strong>撞开</strong>，同样导致体积膨胀、密度下降。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Density Curve & Explanation Card (5 cols) -->
+            <div class="lg:col-span-5 glass-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2 mb-1">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        2. 水的密度与温度关系曲线
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mb-3">
+                        注意曲线在 <strong>4°C</strong> 处的最高峰。密度越大，代表每 1 立方厘米（或 1 升）空间里装入的水质量越重。
+                    </p>
+
+                    <!-- Graph Canvas Container -->
+                    <div
+                        class="relative w-full h-60 sm:h-64 rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+                        <canvas id="graphCanvas" class="w-full h-full block"></canvas>
+                    </div>
+                </div>
+
+                <!-- Dynamic Explanation Box that updates with temperature -->
+                <div id="dynamicExplanationCard"
+                    class="mt-4 rounded-xl p-4 bg-cyan-950/40 border border-cyan-500/40 transition-colors">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <h3 id="expTitle" class="text-sm sm:text-base font-bold text-cyan-300">
+                            🎯 在 4°C 时：分子最紧密堆积的“黄金平衡点”
+                        </h3>
+                    </div>
+                    <p id="expBody" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                        在 <strong>4°C</strong> 时，水刚好拥有足够的热能，打碎了臃肿、中空的六边形冰晶笼，让游离的 H₂O
+                        分子得以滑入空隙内部；与此同时，温度依然足够低，分子不会剧烈乱撞。结果：<strong>每立方厘米容纳的水分子数量达到极限 = 此时水最重！</strong>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 3-Stage Side-by-Side Structural Diagram -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8">
+            <div class="max-w-3xl mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">
+                    3. 三阶段结构图解：为什么 4°C 能夺得“密度桂冠”？
+                </h2>
+                <p class="text-sm text-slate-400">
+                    做个形象的比喻：把水分子比作房间里的椅子。如果把椅子焊死成一个个大圆圈（<strong>0°C 冰晶</strong>），圆心就会浪费大量空地；如果拆开焊接并紧凑叠放（<strong>4°C
+                        冷水</strong>），房间里能塞进最多的椅子；如果人们坐在椅子上疯狂蹦迪乱撞（<strong>&gt;4°C 温水/热水</strong>），每个人占用的空间又会变大！
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Stage 1: 0°C Ice / Freezing -->
+                <div onclick="setTemperature(-2)"
+                    class="cursor-pointer group rounded-xl p-5 bg-slate-900/90 border border-slate-800 hover:border-sky-400/60 transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span
+                                class="px-2.5 py-1 rounded-md text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">0°C
+                                及以下</span>
+                            <span class="mono text-xs text-slate-400">~0.9167 g/cm³ (冰)</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white group-hover:text-sky-300 transition mb-2">
+                            中空的六边形网状冰笼
+                        </h3>
+                        <!-- SVG Diagram of Hexagonal Ice Ring -->
+                        <div class="my-4 bg-slate-950 rounded-lg p-3 border border-slate-800/80 flex justify-center">
+                            <svg viewBox="0 0 220 150" class="w-full h-36">
+                                <!-- Empty space highlight in center -->
+                                <polygon points="110,30 155,55 155,100 110,125 65,100 65,55"
+                                    fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.5"
+                                    stroke-dasharray="4 3" />
+                                <text x="110" y="80" text-anchor="middle" fill="#7dd3fc" font-size="10"
+                                    font-family="sans-serif" font-weight="bold">中空空隙 (VOID)</text>
+
+                                <!-- 6 H2O Molecules at hexagon vertices -->
+                                <g>
+                                    <!-- Top -->
+                                    <line x1="110" y1="30" x2="100" y2="20" stroke="#fff" stroke-width="2" />
+                                    <line x1="110" y1="30" x2="120" y2="20" stroke="#fff" stroke-width="2" />
+                                    <circle cx="110" cy="30" r="8" fill="#ef4444" />
+                                    <circle cx="100" cy="20" r="4" fill="#ffffff" />
+                                    <circle cx="120" cy="20" r="4" fill="#ffffff" />
+                                    <!-- Top Right -->
+                                    <line x1="155" y1="55" x2="167" y2="48" stroke="#fff" stroke-width="2" />
+                                    <line x1="155" y1="55" x2="165" y2="65" stroke="#fff" stroke-width="2" />
+                                    <circle cx="155" cy="55" r="8" fill="#ef4444" />
+                                    <circle cx="167" cy="48" r="4" fill="#ffffff" />
+                                    <circle cx="165" cy="65" r="4" fill="#ffffff" />
+                                    <!-- Bottom Right -->
+                                    <line x1="155" y1="100" x2="167" y2="95" stroke="#fff" stroke-width="2" />
+                                    <line x1="155" y1="100" x2="163" y2="112" stroke="#fff" stroke-width="2" />
+                                    <circle cx="155" cy="100" r="8" fill="#ef4444" />
+                                    <circle cx="167" cy="95" r="4" fill="#ffffff" />
+                                    <circle cx="163" cy="112" r="4" fill="#ffffff" />
+                                    <!-- Bottom -->
+                                    <line x1="110" y1="125" x2="100" y2="136" stroke="#fff" stroke-width="2" />
+                                    <line x1="110" y1="125" x2="120" y2="136" stroke="#fff" stroke-width="2" />
+                                    <circle cx="110" cy="125" r="8" fill="#ef4444" />
+                                    <circle cx="100" cy="136" r="4" fill="#ffffff" />
+                                    <circle cx="120" cy="136" r="4" fill="#ffffff" />
+                                    <!-- Bottom Left -->
+                                    <line x1="65" y1="100" x2="53" y2="95" stroke="#fff" stroke-width="2" />
+                                    <line x1="65" y1="100" x2="55" y2="112" stroke="#fff" stroke-width="2" />
+                                    <circle cx="65" cy="100" r="8" fill="#ef4444" />
+                                    <circle cx="53" cy="95" r="4" fill="#ffffff" />
+                                    <circle cx="55" cy="112" r="4" fill="#ffffff" />
+                                    <!-- Top Left -->
+                                    <line x1="65" y1="55" x2="53" y2="48" stroke="#fff" stroke-width="2" />
+                                    <line x1="65" y1="55" x2="55" y2="65" stroke="#fff" stroke-width="2" />
+                                    <circle cx="65" cy="55" r="8" fill="#ef4444" />
+                                    <circle cx="53" cy="48" r="4" fill="#ffffff" />
+                                    <circle cx="55" cy="65" r="4" fill="#ffffff" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            由于 <span class="mono">H₂O</span> 呈 V 字形且正负电荷分布不均，低温下氢键会将分子锁定成刚性的六边形环。中间产生约 9% 的多余空隙，导致冰和接近
+                            0°C 的水<strong>更轻</strong>，因此冰会浮在水面上。
+                        </p>
+                    </div>
+                    <div class="mt-3 text-xs text-sky-400 font-semibold group-hover:underline">点击模拟 -2°C 状态 →</div>
+                </div>
+
+                <!-- Stage 2: 4°C Peak Density -->
+                <div onclick="setTemperature(4)"
+                    class="cursor-pointer group rounded-xl p-5 bg-cyan-950/30 border-2 border-cyan-500/60 glow-4c transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-400 text-slate-950">★ 4.0°C
+                                黄金温度</span>
+                            <span class="mono text-xs text-cyan-300 font-bold">1.0000 g/cm³</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white group-hover:text-cyan-300 transition mb-2">
+                            冰笼坍塌 = 排列最紧密
+                        </h3>
+                        <!-- SVG Diagram of Collapsed Dense Packing -->
+                        <div class="my-4 bg-slate-950 rounded-lg p-3 border border-cyan-500/40 flex justify-center">
+                            <svg viewBox="0 0 220 150" class="w-full h-36">
+                                <!-- Subtle collapse arrows -->
+                                <circle cx="110" cy="77" r="48" fill="rgba(6, 182, 212, 0.12)" stroke="#06b6d4"
+                                    stroke-width="1" stroke-dasharray="2 2" />
+                                <!-- Tightly clustered H2O molecules filling the middle -->
+                                <g>
+                                    <!-- Center filler molecules -->
+                                    <circle cx="110" cy="75" r="8" fill="#ef4444" />
+                                    <circle cx="101" cy="69" r="4" fill="#fff" />
+                                    <circle cx="119" cy="69" r="4" fill="#fff" />
+
+                                    <circle cx="92" cy="90" r="8" fill="#ef4444" />
+                                    <circle cx="83" cy="85" r="4" fill="#fff" />
+                                    <circle cx="92" cy="100" r="4" fill="#fff" />
+
+                                    <circle cx="128" cy="90" r="8" fill="#ef4444" />
+                                    <circle cx="137" cy="85" r="4" fill="#fff" />
+                                    <circle cx="128" cy="100" r="4" fill="#fff" />
+
+                                    <circle cx="95" cy="53" r="8" fill="#ef4444" />
+                                    <circle cx="86" cy="48" r="4" fill="#fff" />
+                                    <circle cx="102" cy="44" r="4" fill="#fff" />
+
+                                    <circle cx="126" cy="53" r="8" fill="#ef4444" />
+                                    <circle cx="135" cy="48" r="4" fill="#fff" />
+                                    <circle cx="119" cy="44" r="4" fill="#fff" />
+
+                                    <circle cx="74" cy="70" r="8" fill="#ef4444" />
+                                    <circle cx="65" cy="65" r="4" fill="#fff" />
+                                    <circle cx="66" cy="77" r="4" fill="#fff" />
+
+                                    <circle cx="146" cy="70" r="8" fill="#ef4444" />
+                                    <circle cx="155" cy="65" r="4" fill="#fff" />
+                                    <circle cx="154" cy="77" r="4" fill="#fff" />
+
+                                    <circle cx="110" cy="108" r="8" fill="#ef4444" />
+                                    <circle cx="102" cy="116" r="4" fill="#fff" />
+                                    <circle cx="118" cy="116" r="4" fill="#fff" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-200 leading-relaxed">
+                            从 0°C 升温到 4°C
+                            时，刚性的六边形氢键支架断裂。中空的冰笼<strong>向内坍塌</strong>，自由水分子钻进原本的空隙中。同时热运动速度依然很慢，分子得以紧密挤在一起，达到最大密度。
+                        </p>
+                    </div>
+                    <div class="mt-3 text-xs text-cyan-300 font-bold group-hover:underline">点击模拟 4°C 最重状态 →</div>
+                </div>
+
+                <!-- Stage 3: >4°C Thermal Expansion -->
+                <div onclick="setTemperature(75)"
+                    class="cursor-pointer group rounded-xl p-5 bg-slate-900/90 border border-slate-800 hover:border-amber-400/60 transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span
+                                class="px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">4°C
+                                以上 → 100°C</span>
+                            <span class="mono text-xs text-slate-400">~0.9718 g/cm³ (80°C)</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white group-hover:text-amber-300 transition mb-2">
+                            高速热运动碰撞膨胀
+                        </h3>
+                        <!-- SVG Diagram of Thermal Expansion -->
+                        <div class="my-4 bg-slate-950 rounded-lg p-3 border border-slate-800/80 flex justify-center">
+                            <!-- Side-by-Side 3-Stage Diagram -->
+                            <div class="mt-3 text-xs text-amber-400 font-semibold group-hover:underline">点击模拟 75°C 状态 →
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep-Dive QA Banner: Do Ice Cages Still Exist Between 0°C and 4°C? -->
+                    <div
+                        class="mt-8 rounded-2xl bg-gradient-to-r from-sky-950/70 via-slate-900/90 to-cyan-950/70 border border-cyan-500/40 p-5 sm:p-6 shadow-lg">
+                        <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+                            <div class="space-y-2 max-w-3xl">
+                                <div
+                                    class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-cyan-500/20 text-cyan-300 text-xs font-bold">
+                                    💡 核心追问：0°C ~ 4°C 之间仍有冰笼存在吗？还是冰融化时就已经彻底坍塌了？
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">
+                                    答案：融化瞬间发生了“90% 的大坍塌”，但 0°C~4°C 仍残留着约 10% 的“瞬态类冰微团簇”！
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                    如果冰在 0°C 融化时六边形冰笼<strong>100% 彻底坍塌</strong>，那么 <strong>0°C
+                                        的液态水</strong>就应该是密度最大的状态，从 0°C 升温到 4°C 应该立刻开始热胀冷缩（变轻）。之所以从 0°C 到 4°C
+                                    水还在继续收缩变重，正是因为刚融化的 0°C 冷水中<strong>仍悬浮着大量局部的、纳米级的“类冰四面体微团簇”（Low-Density Liquid
+                                        clusters）</strong>，它们需要升温到 4°C 才能进一步瓦解！
+                                </p>
+                            </div>
+
+                            <!-- Two-Step Collapse Data Comparison -->
+                            <div class="w-full lg:w-auto grid grid-cols-1 sm:grid-cols-2 gap-3 shrink-0">
+                                <div class="bg-slate-950/90 border border-sky-500/30 rounded-xl p-3.5">
+                                    <div class="text-[11px] text-sky-400 font-bold uppercase">第一阶段：0°C 相变融化瞬间</div>
+                                    <div class="mono text-base font-extrabold text-white mt-1">0.9167 → 0.99984 <span
+                                            class="text-xs font-normal text-slate-400">g/cm³</span></div>
+                                    <div class="text-xs text-emerald-400 font-semibold mt-0.5">▲ 密度暴增 +9.07%</div>
+                                    <p class="text-[11px] text-slate-400 mt-1">
+                                        宏观长程六边形晶格<strong>主体崩塌</strong>，约 85%~90% 的氢键空腔在融化瞬间消失。
+                                    </p>
+                                </div>
+                                <div class="bg-slate-950/90 border border-cyan-400/50 rounded-xl p-3.5">
+                                    <div class="text-[11px] text-cyan-300 font-bold uppercase">第二阶段：0°C 升温至 4°C</div>
+                                    <div class="mono text-base font-extrabold text-white mt-1">0.99984 → 0.99997 <span
+                                            class="text-xs font-normal text-slate-400">g/cm³</span></div>
+                                    <div class="text-xs text-cyan-300 font-semibold mt-0.5">▲ 密度继续微增 +0.013%</div>
+                                    <p class="text-[11px] text-slate-400 mt-1">
+                                        残余的<strong>局部纳米级“类冰微团簇”</strong>继续瓦解，让体积再缩减万分之一点三，造就 4°C 峰值！
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </section>
+
+        <!-- Real-World Impact: Animated Frozen Lake Cross-Section -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Left Explanation (5 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider">
+                        为什么鱼类能在寒冬存活？
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white">
+                        4. 大自然的生命保温毯：湖底 4°C 避难所
+                    </h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        如果水像普通液体那样“越冷越重”，那么冬天 0°C 结冰的水就会沉入水底，湖泊和海洋将<strong>从湖底向上彻底冻成实心冰块</strong>，所有鱼类和水生生物都会在寒冬灭绝。
+                    </p>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        幸好<strong>4°C 的水最重</strong>！它会沉在湖底并保持液态；而低于 4°C 的冷水反而变轻上浮，在湖面结成一层 0°C
+                        的浮冰。这层冰像保温毯一样隔绝了上方的严寒，守护着湖底 4°C 的液态生命家园。
+                    </p>
+
+                    <!-- Interactive Season Toggle for the Lake Diagram -->
+                    <div class="pt-2">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">切换湖泊季节模拟：</div>
+                        <div class="inline-flex rounded-xl bg-slate-900 p-1 border border-slate-800">
+                            <button id="btnWinterLake" onclick="setLakeSeason('winter')"
+                                class="px-4 py-2 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition">
+                                ❄️ 严冬湖泊 (-10°C 寒风)
+                            </button>
+                            <button id="btnSummerLake" onclick="setLakeSeason('summer')"
+                                class="px-4 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">
+                                ☀️ 盛夏湖泊 (+25°C 暖阳)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Animated SVG Lake Diagram (7 cols) -->
+                <div class="lg:col-span-7">
+                    <div
+                        class="relative rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950 shadow-inner">
+                        <svg id="lakeSvg" viewBox="0 0 600 340" class="w-full h-auto block">
+                            <defs>
+                                <linearGradient id="winterWaterGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85" />
+                                    <stop offset="25%" stop-color="#0284c7" stop-opacity="0.9" />
+                                    <stop offset="65%" stop-color="#0369a1" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#083344" stop-opacity="1" />
+                                </linearGradient>
+                                <linearGradient id="summerWaterGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.75" />
+                                    <stop offset="35%" stop-color="#06b6d4" stop-opacity="0.85" />
+                                    <stop offset="75%" stop-color="#0284c7" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#083344" stop-opacity="1" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Sky Background -->
+                            <rect id="lakeSky" x="0" y="0" width="600" height="75" fill="#0f172a" />
+                            <text id="airTempLabel" x="30" y="42" fill="#7dd3fc" font-size="14" font-weight="bold"
+                                font-family="sans-serif">❄️ 冬季冷空气：-10°C（刺骨寒风）</text>
+
+                            <!-- Water Body -->
+                            <rect id="lakeWaterRect" x="0" y="75" width="600" height="235"
+                                fill="url(#winterWaterGrad)" />
+
+                            <!-- Floating Ice Layer (Visible in Winter) -->
+                            <g id="iceSheetGroup">
+                                <rect x="0" y="75" width="600" height="28" fill="#e0f2fe" opacity="0.92" />
+                                <path d="M0,103 L600,103" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 3" />
+                                <text x="300" y="93" text-anchor="middle" fill="#0f172a" font-size="12"
+                                    font-weight="bold" font-family="sans-serif">
+                                    🧊 0°C 固态浮冰层（0.917 g/cm³ —— 密度最小，浮在最顶层隔热）
+                                </text>
+                            </g>
+
+                            <!-- Depth Stratification Lines & Labels -->
+                            <g font-family="sans-serif" font-size="12" font-weight="600">
+                                <!-- Layer 1 -->
+                                <line x1="40" y1="135" x2="560" y2="135" stroke="rgba(255,255,255,0.18)"
+                                    stroke-dasharray="4 4" />
+                                <text id="layer1Text" x="45" y="127" fill="#e0f2fe">1°C 冷水 (0.99990 g/cm³) —— 比 4°C
+                                    轻，向上浮</text>
+
+                                <!-- Layer 2 -->
+                                <line x1="40" y1="180" x2="560" y2="180" stroke="rgba(255,255,255,0.18)"
+                                    stroke-dasharray="4 4" />
+                                <text id="layer2Text" x="45" y="170" fill="#bae6fd">2°C 冷水 (0.99994 g/cm³)</text>
+
+                                <!-- Layer 3 -->
+                                <line x1="40" y1="225" x2="560" y2="225" stroke="rgba(255,255,255,0.18)"
+                                    stroke-dasharray="4 4" />
+                                <text id="layer3Text" x="45" y="215" fill="#7dd3fc">3°C 冷水 (0.99996 g/cm³)</text>
+
+                                <!-- Bottom Layer (4°C Sanctuary) -->
+                                <rect x="35" y="245" width="530" height="45" rx="8" fill="rgba(6, 182, 212, 0.2)"
+                                    stroke="#22d3ee" stroke-width="1.5" />
+                                <text id="layer4Text" x="50" y="272" fill="#ffffff" font-size="13" font-weight="bold">
+                                    🎯 4°C 液态水 (1.00000 g/cm³) —— 密度最大（最重），稳居湖底！
+                                </text>
+                            </g>
+
+                            <!-- Animated Fish Swimming in the 4°C Bottom Zone -->
+                            <g class="animate-float">
+                                <!-- Fish 1 -->
+                                <g transform="translate(455, 260)">
+                                    <ellipse cx="0" cy="0" rx="14" ry="7" fill="#fb923c" />
+                                    <polygon points="12,0 22,-7 22,7" fill="#f97316" />
+                                    <circle cx="-7" cy="-2" r="1.8" fill="#0f172a" />
+                                </g>
+                                <!-- Fish 2 -->
+                                <g transform="translate(520, 273) scale(-1, 1)">
+                                    <ellipse cx="0" cy="0" rx="12" ry="6" fill="#38bdf8" />
+                                    <polygon points="10,0 18,-6 18,6" fill="#0284c7" />
+                                    <circle cx="-6" cy="-1.5" r="1.5" fill="#0f172a" />
+                                </g>
+                            </g>
+
+                            <!-- Lake Bed Earth -->
+                            <path d="M0,305 Q150,295 300,305 T600,300 L600,340 L0,340 Z" fill="#1e293b" />
+                            <text x="300" y="326" text-anchor="middle" fill="#94a3b8" font-size="11"
+                                font-family="sans-serif">
+                                湖底保温沉积泥土层
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. REAL-WORLD WATER DENSITY FORMULA & STATE
+        // ==========================================
+        let currentTemp = 4.0; // Default at 4°C peak density
+        let lakeSeason = 'winter';
+
+        // Empirical Kell formula approximation for density of liquid water (0°C to 100°C) in g/cm³
+        function getWaterDensity(tempC) {
+            if (tempC < 0) {
+                // Solid ice density (~0.9167 g/cm³ at 0°C, slightly denser as it gets colder)
+                return 0.9167 - (tempC * 0.0001);
+            }
+            // Standard liquid water formula peaking at ~3.984°C
+            const t = tempC;
+            const rho = (999.83952 + 16.945176 * t - 7.9870401e-3 * t * t - 46.170461e-6 * t * t * t + 105.56302e-9 * t * t * t * t - 280.54253e-12 * t * t * t * t * t) / (1 + 16.879850e-3 * t);
+            return rho / 1000; // convert kg/m³ to g/cm³
+        }
+
+        // ==========================================
+        // 2. MOLECULAR SIMULATION ENGINE
+        // ==========================================
+        const molCanvas = document.getElementById('moleculeCanvas');
+        const molCtx = molCanvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+
+        // Create 36 H2O molecules with both hexagonal lattice anchors and dense-pack anchors
+        const NUM_MOLECULES = 36;
+        const molecules = [];
+
+        function initMolecules() {
+            molecules.length = 0;
+            for (let i = 0; i < NUM_MOLECULES; i++) {
+                molecules.push({
+                    x: Math.random() * 500,
+                    y: Math.random() * 300,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    angle: Math.random() * Math.PI * 2,
+                    vAngle: (Math.random() - 0.5) * 0.05,
+                    // Lattice target and dense target computed dynamically on resize
+                    hexX: 0,
+                    hexY: 0,
+                    denseX: 0,
+                    denseY: 0
+                });
+            }
+            computeTargetPositions();
+        }
+
+        function computeTargetPositions() {
+            const w = molCanvas.width || 600;
+            const h = molCanvas.height || 320;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            // Fixed sampling box dimensions (represents a constant unit volume, e.g., 1 cm³)
+            const boxW = Math.min(w * 0.56, 310);
+            const boxH = Math.min(h * 0.58, 180);
+
+            // 1. Hexagonal Ice Rings (6 rings of 6 molecules = 36 molecules)
+            // Calibrated so that 33 / 36 molecules (91.67%, matching 0.9167 g/cm³) sit inside the box,
+            // and exactly 3 molecules (8.33%) are pushed outside the right edge of the fixed volume box.
+            const ringOffsetX = boxW * 0.28;
+            const ringOffsetY = boxH * 0.23;
+            const ringCenters = [
+                { x: cx - ringOffsetX, y: cy - ringOffsetY },
+                { x: cx, y: cy - ringOffsetY },
+                { x: cx + ringOffsetX, y: cy - ringOffsetY },
+                { x: cx - ringOffsetX, y: cy + ringOffsetY },
+                { x: cx, y: cy + ringOffsetY },
+                { x: cx + ringOffsetX, y: cy + ringOffsetY }
+            ];
+            const hexRadius = Math.min(boxW, boxH) * 0.19;
+
+            for (let i = 0; i < NUM_MOLECULES; i++) {
+                const ringIdx = Math.floor(i / 6);
+                const vertIdx = i % 6;
+                const theta = (vertIdx * Math.PI) / 3;
+                const rc = ringCenters[ringIdx];
+                let hx = rc.x + Math.cos(theta) * hexRadius;
+                let hy = rc.y + Math.sin(theta) * hexRadius;
+
+                // Ensure strictly 33 molecules inside and 3 molecules outside (indices 12, 13, 30)
+                // to accurately reflect 33 / 36 = 0.9167 g/cm³ vs 36 / 36 = 1.0000 g/cm³
+                if (i === 12 || i === 18 || i === 30) {
+                    hx = cx + boxW * 0.545;
+                } else {
+                    hx = Math.max(cx - boxW * 0.44, Math.min(cx + boxW * 0.44, hx));
+                    hy = Math.max(cy - boxH * 0.42, Math.min(cy + boxH * 0.42, hy));
+                }
+
+                molecules[i].hexX = hx;
+                molecules[i].hexY = hy;
+                molecules[i].hexAngle = theta + Math.PI / 2;
+
+                // 2. 4°C Collapsed Dense Packing:
+                // All 36 molecules collapse inward so that 100% of them (36/36) fit inside the fixed box!
+                const cols = 9;
+                const rows = 4;
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                const spacingX = (boxW * 0.80) / (cols - 1);
+                const spacingY = (boxH * 0.70) / (rows - 1);
+                const startX = cx - ((cols - 1) * spacingX) / 2 + (row % 2 === 0 ? -4 : 4);
+                const startY = cy - ((rows - 1) * spacingY) / 2;
+
+                molecules[i].denseX = startX + col * spacingX;
+                molecules[i].denseY = startY + row * spacingY;
+            }
+        }
+
+        function resizeCanvases() {
+            const molRect = molCanvas.parentElement.getBoundingClientRect();
+            molCanvas.width = molRect.width;
+            molCanvas.height = molRect.height;
+
+            const graphRect = graphCanvas.parentElement.getBoundingClientRect();
+            graphCanvas.width = graphRect.width;
+            graphCanvas.height = graphRect.height;
+
+            computeTargetPositions();
+            drawDensityGraph();
+        }
+
+        window.addEventListener('resize', resizeCanvases);
+
+        // Draw a single realistic V-shaped H2O molecule
+        function drawWaterMolecule(ctx, x, y, angle, isInsideBox = true) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.globalAlpha = isInsideBox ? 1.0 : 0.28;
+
+            const bondLen = 10;
+            const halfHOH = (104.5 * Math.PI / 180) / 2; // Real 104.5° bond angle
+            const h1x = Math.cos(-halfHOH) * bondLen;
+            const h1y = Math.sin(-halfHOH) * bondLen;
+            const h2x = Math.cos(halfHOH) * bondLen;
+            const h2y = Math.sin(halfHOH) * bondLen;
+
+            // Covalent bonds
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(h1x, h1y);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(h2x, h2y);
+            ctx.stroke();
+
+            // Oxygen atom (Red)
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(0, 0, 7.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Subtle highlight on Oxygen
+            ctx.fillStyle = '#fca5a5';
+            ctx.beginPath();
+            ctx.arc(-2, -2, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hydrogen atoms (White)
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.arc(h1x, h1y, 4.2, 0, Math.PI * 2);
+            ctx.arc(h2x, h2y, 4.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function animateMolecules() {
+            const w = molCanvas.width;
+            const h = molCanvas.height;
+            molCtx.clearRect(0, 0, w, h);
+
+            // Calculate physics parameters based on currentTemp
+            // - Below 0°C: Locked into hexagonal cages (expanded outside the fixed volume box)
+            // - 0°C to 4°C: Transition from hexagonal cages to collapsed dense pack (all 36 enter the box at 4°C)
+            // - 4°C to 85°C: Thermal expansion outward from center + rapid kinetic motion (outer molecules leave the box)
+            let cageWeight = 0;
+            let thermalSpread = 1.0;
+            let jitterSpeed = 0.25;
+
+            if (currentTemp <= 0) {
+                cageWeight = 1.0;
+                jitterSpeed = 0.06;
+            } else if (currentTemp > 0 && currentTemp <= 3.2) {
+                // Partially collapsed ice-like clusters between 0°C and 3.2°C (~35/36 molecules in box)
+                const tNorm = currentTemp / 4.0;
+                cageWeight = 0.72 * (1.0 - tNorm);
+                jitterSpeed = 0.10 + tNorm * 0.08;
+            } else if (currentTemp > 3.2 && currentTemp <= 4.8) {
+                // Peak density zone around 4°C: tightly packed inside the fixed box (36/36 molecules)
+                cageWeight = 0;
+                thermalSpread = 1.0;
+                jitterSpeed = 0.12;
+            } else {
+                // Above 4°C: Cages are gone, thermal expansion pushes 1 molecule out around 45°C (35/36 ≈ 97.2% at 80°C)
+                cageWeight = 0;
+                thermalSpread = 1.0 + ((currentTemp - 4) / 81) * 0.21;
+                jitterSpeed = 0.18 + ((currentTemp - 4) / 81) * 0.45;
+            }
+
+            const cx = w / 2;
+            const cy = h / 2;
+
+            // Fixed unit volume sampling box in center
+            const boxW = Math.min(w * 0.56, 310);
+            const boxH = Math.min(h * 0.58, 180);
+            const boxX = cx - boxW / 2;
+            const boxY = cy - boxH / 2;
+
+            const isPeak4C = Math.abs(currentTemp - 4) <= 0.8;
+
+            molCtx.save();
+            molCtx.fillStyle = isPeak4C ? 'rgba(6, 182, 212, 0.06)' : 'rgba(15, 23, 42, 0.35)';
+            molCtx.fillRect(boxX, boxY, boxW, boxH);
+            molCtx.strokeStyle = isPeak4C ? 'rgba(34, 211, 238, 0.85)' : 'rgba(148, 163, 184, 0.45)';
+            molCtx.lineWidth = isPeak4C ? 2.2 : 1.5;
+            molCtx.setLineDash([6, 4]);
+            molCtx.strokeRect(boxX, boxY, boxW, boxH);
+
+            // Label on top-right edge of the fixed volume box
+            molCtx.font = 'bold 11px "Noto Sans SC", Inter, sans-serif';
+            molCtx.fillStyle = isPeak4C ? '#22d3ee' : '#94a3b8';
+            molCtx.textAlign = 'right';
+            molCtx.fillText('固定单位体积采样框 (1 cm³)', boxX + boxW - 6, boxY - 6);
+            molCtx.restore();
+
+            let insideCount = 0;
+
+            // Update molecule positions
+            for (let i = 0; i < NUM_MOLECULES; i++) {
+                const m = molecules[i];
+
+                // Expanded target when hot (push index 8 slightly further right so 80°C reliably shows 35/36 = 97.2%)
+                const hotExtraX = (currentTemp > 20 && i === 8) ? ((currentTemp - 20) / 65) * (boxW * 0.14) : 0;
+                const expandedX = cx + (m.denseX - cx) * thermalSpread + hotExtraX;
+                const expandedY = cy + (m.denseY - cy) * thermalSpread;
+
+                const targetX = m.hexX * cageWeight + expandedX * (1 - cageWeight);
+                const targetY = m.hexY * cageWeight + expandedY * (1 - cageWeight);
+
+                // Spring pull toward structural target + thermal noise
+                const springStrength = 0.20;
+                m.vx = (m.vx + (targetX - m.x) * springStrength) * 0.72 + (Math.random() - 0.5) * jitterSpeed;
+                m.vy = (m.vy + (targetY - m.y) * springStrength) * 0.72 + (Math.random() - 0.5) * jitterSpeed;
+
+                m.x += m.vx;
+                m.y += m.vy;
+
+                // Keep within overall canvas bounds
+                const pad = 16;
+                if (m.x < pad) { m.x = pad; m.vx *= -1; }
+                if (m.x > w - pad) { m.x = w - pad; m.vx *= -1; }
+                if (m.y < pad) { m.y = pad; m.vy *= -1; }
+                if (m.y > h - pad) { m.y = h - pad; m.vy *= -1; }
+
+                // Check if this molecule is inside the fixed volume sampling box
+                m.insideBox = (m.x >= boxX && m.x <= boxX + boxW && m.y >= boxY && m.y <= boxY + boxH);
+                if (m.insideBox) insideCount++;
+
+                // Orientation: locked in ice, rotating faster with heat
+                if (currentTemp <= 0) {
+                    m.angle += (m.hexAngle - m.angle) * 0.15;
+                } else {
+                    m.angle += m.vAngle * (1 + Math.max(0, currentTemp) * 0.08);
+                }
+            }
+
+            // Update live molecule counter badge
+            const molCountLiveEl = document.getElementById('molCountLive');
+            if (molCountLiveEl) {
+                const pct = ((insideCount / NUM_MOLECULES) * 100).toFixed(1);
+                molCountLiveEl.textContent = `${insideCount} / ${NUM_MOLECULES} 个 (${pct}%)`;
+                molCountLiveEl.className = insideCount === NUM_MOLECULES
+                    ? 'mono text-sm font-extrabold text-cyan-400'
+                    : 'mono text-sm font-extrabold text-amber-300';
+            }
+
+            // Draw dashed Hydrogen Bonds between nearby molecules
+            const maxBondDist = currentTemp <= 0 ? 95 : Math.max(42, 78 - currentTemp * 0.45);
+            molCtx.save();
+            molCtx.lineWidth = 1.4;
+            molCtx.setLineDash([3, 3]);
+
+            for (let i = 0; i < NUM_MOLECULES; i++) {
+                for (let j = i + 1; j < NUM_MOLECULES; j++) {
+                    const dx = molecules[i].x - molecules[j].x;
+                    const dy = molecules[i].y - molecules[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < maxBondDist) {
+                        const alpha = (1 - dist / maxBondDist) * (currentTemp <= 4 ? 0.75 : Math.max(0.15, 0.6 - currentTemp * 0.006));
+                        molCtx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+                        molCtx.beginPath();
+                        molCtx.moveTo(molecules[i].x, molecules[i].y);
+                        molCtx.lineTo(molecules[j].x, molecules[j].y);
+                        molCtx.stroke();
+                    }
+                }
+            }
+            molCtx.restore();
+
+            // If at or below 2.5°C, highlight hollow hexagonal centers
+            if (currentTemp <= 2.5) {
+                const voidAlpha = Math.max(0, (2.5 - currentTemp) / 4.5) * 0.35;
+                molCtx.save();
+                molCtx.fillStyle = `rgba(56, 189, 248, ${voidAlpha})`;
+                const ringOffsetX = boxW * 0.28;
+                const ringOffsetY = boxH * 0.23;
+                const ringCenters = [
+                    { x: cx - ringOffsetX, y: cy - ringOffsetY },
+                    { x: cx, y: cy - ringOffsetY },
+                    { x: cx + ringOffsetX, y: cy - ringOffsetY },
+                    { x: cx - ringOffsetX, y: cy + ringOffsetY },
+                    { x: cx, y: cy + ringOffsetY },
+                    { x: cx + ringOffsetX, y: cy + ringOffsetY }
+                ];
+                ringCenters.forEach(rc => {
+                    molCtx.beginPath();
+                    molCtx.arc(rc.x, rc.y, 13, 0, Math.PI * 2);
+                    molCtx.fill();
+                });
+                molCtx.restore();
+            }
+
+            // Draw all H2O molecules on top (molecules pushed outside the fixed volume box are dimmed)
+            for (let i = 0; i < NUM_MOLECULES; i++) {
+                drawWaterMolecule(molCtx, molecules[i].x, molecules[i].y, molecules[i].angle, molecules[i].insideBox);
+            }
+
+            requestAnimationFrame(animateMolecules);
+        }
+
+        // ==========================================
+        // 3. DENSITY VS TEMPERATURE GRAPH RENDERER
+        // ==========================================
+        function drawDensityGraph() {
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+            if (!w || !h) return;
+
+            graphCtx.clearRect(0, 0, w, h);
+
+            const padLeft = 58;
+            const padRight = 24;
+            const padTop = 28;
+            const padBottom = 38;
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+
+            // Coordinate mappers:
+            // X-axis: -4°C to 85°C (non-linear zoom near 0-15°C so the 4°C peak is super clear!)
+            function tempToX(t) {
+                // Piecewise scale: give -4°C to 12°C 50% of the chart width so the 4°C hump is crystal clear
+                if (t <= 12) {
+                    return padLeft + ((t - (-4)) / 16) * (plotW * 0.52);
+                } else {
+                    return padLeft + (plotW * 0.52) + ((t - 12) / (85 - 12)) * (plotW * 0.48);
+                }
+            }
+
+            // Y-axis: Focus on liquid water range (0.9700 to 1.0005 g/cm³)
+            const minRho = 0.968;
+            const maxRho = 1.0015;
+            function rhoToY(rho) {
+                const clamped = Math.max(minRho, Math.min(maxRho, rho));
+                return padTop + plotH - ((clamped - minRho) / (maxRho - minRho)) * plotH;
+            }
+
+            // Grid lines
+            graphCtx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+            graphCtx.lineWidth = 1;
+            const yTicks = [1.0000, 0.9950, 0.9900, 0.9800, 0.9700];
+            graphCtx.fillStyle = '#94a3b8';
+            graphCtx.font = '10px JetBrains Mono, monospace';
+            graphCtx.textAlign = 'right';
+
+            yTicks.forEach(val => {
+                const y = rhoToY(val);
+                graphCtx.beginPath();
+                graphCtx.moveTo(padLeft, y);
+                graphCtx.lineTo(w - padRight, y);
+                graphCtx.stroke();
+                graphCtx.fillText(val.toFixed(4), padLeft - 6, y + 3);
+            });
+
+            // X-axis labels
+            const xTicks = [0, 4, 12, 40, 80];
+            graphCtx.textAlign = 'center';
+            xTicks.forEach(t => {
+                const x = tempToX(t);
+                graphCtx.beginPath();
+                graphCtx.moveTo(x, padTop);
+                graphCtx.lineTo(x, padTop + plotH);
+                graphCtx.stroke();
+                graphCtx.fillStyle = t === 4 ? '#22d3ee' : '#94a3b8';
+                graphCtx.font = t === 4 ? 'bold 11px JetBrains Mono, monospace' : '10px JetBrains Mono, monospace';
+                graphCtx.fillText(`${t}°C`, x, h - 12);
+            });
+
+            // Highlight vertical line at 4°C peak
+            const x4 = tempToX(4);
+            const y4 = rhoToY(getWaterDensity(4));
+            graphCtx.save();
+            graphCtx.strokeStyle = 'rgba(34, 211, 238, 0.45)';
+            graphCtx.setLineDash([4, 4]);
+            graphCtx.beginPath();
+            graphCtx.moveTo(x4, y4);
+            graphCtx.lineTo(x4, padTop + plotH);
+            graphCtx.stroke();
+            graphCtx.restore();
+
+            // Draw liquid density curve (0°C to 85°C)
+            graphCtx.save();
+            const grad = graphCtx.createLinearGradient(padLeft, 0, w - padRight, 0);
+            grad.addColorStop(0, '#38bdf8');
+            grad.addColorStop(0.25, '#22d3ee');
+            grad.addColorStop(0.6, '#f59e0b');
+            grad.addColorStop(1, '#ef4444');
+
+            graphCtx.strokeStyle = grad;
+            graphCtx.lineWidth = 3;
+            graphCtx.beginPath();
+            for (let t = 0; t <= 85; t += 0.5) {
+                const x = tempToX(t);
+                const y = rhoToY(getWaterDensity(t));
+                if (t === 0) graphCtx.moveTo(x, y);
+                else graphCtx.lineTo(x, y);
+            }
+            graphCtx.stroke();
+            graphCtx.restore();
+
+            // Draw Ice shelf indicator on left (-4°C to 0°C)
+            graphCtx.save();
+            graphCtx.strokeStyle = '#7dd3fc';
+            graphCtx.lineWidth = 3;
+            graphCtx.beginPath();
+            graphCtx.moveTo(tempToX(-4), padTop + plotH - 6);
+            graphCtx.lineTo(tempToX(0), padTop + plotH - 6);
+            graphCtx.stroke();
+            graphCtx.fillStyle = '#7dd3fc';
+            graphCtx.font = '10px "Noto Sans SC", Inter, sans-serif';
+            graphCtx.textAlign = 'left';
+            graphCtx.fillText('冰 (~0.917)', tempToX(-3.8), padTop + plotH - 12);
+            graphCtx.restore();
+
+            // Peak 4°C Label Callout
+            graphCtx.fillStyle = '#22d3ee';
+            graphCtx.font = 'bold 11px "Noto Sans SC", Inter, sans-serif';
+            graphCtx.textAlign = 'left';
+            graphCtx.fillText('★ 4°C 密度最高峰 (1.0000 g/cm³)', x4 + 8, y4 + 4);
+
+            // Draw active user temperature marker dot
+            const curX = tempToX(currentTemp);
+            const curRho = getWaterDensity(currentTemp);
+            const curY = currentTemp < 0 ? (padTop + plotH - 6) : rhoToY(curRho);
+
+            // Outer glow
+            graphCtx.fillStyle = 'rgba(34, 211, 238, 0.25)';
+            graphCtx.beginPath();
+            graphCtx.arc(curX, curY, 11, 0, Math.PI * 2);
+            graphCtx.fill();
+
+            // Inner dot
+            graphCtx.fillStyle = '#ffffff';
+            graphCtx.strokeStyle = '#06b6d4';
+            graphCtx.lineWidth = 3;
+            graphCtx.beginPath();
+            graphCtx.arc(curX, curY, 5.5, 0, Math.PI * 2);
+            graphCtx.fill();
+            graphCtx.stroke();
+        }
+
+        // ==========================================
+        // 4. UI UPDATES & INTERACTIVE CONTROLLERS
+        // ==========================================
+        const tempSlider = document.getElementById('tempSlider');
+        const tempDisplay = document.getElementById('tempDisplay');
+        const tempFahrenheit = document.getElementById('tempFahrenheit');
+        const densityDisplay = document.getElementById('densityDisplay');
+        const stateBadge = document.getElementById('stateBadge');
+
+        const hBondForceVal = document.getElementById('hBondForceVal');
+        const hBondBar = document.getElementById('hBondBar');
+        const thermalForceVal = document.getElementById('thermalForceVal');
+        const thermalBar = document.getElementById('thermalBar');
+        const dominantForceLabel = document.getElementById('dominantForceLabel');
+
+        const molCountBadge = document.getElementById('molCountBadge');
+        const voidSpaceBadge = document.getElementById('voidSpaceBadge');
+        const expTitle = document.getElementById('expTitle');
+        const expBody = document.getElementById('expBody');
+        const dynamicExplanationCard = document.getElementById('dynamicExplanationCard');
+
+        function updateUI(temp) {
+            currentTemp = parseFloat(temp);
+            tempSlider.value = currentTemp;
+
+            const fahr = (currentTemp * 9 / 5) + 32;
+            const rho = getWaterDensity(currentTemp);
+
+            tempDisplay.textContent = `${currentTemp.toFixed(1)}°C`;
+            tempFahrenheit.textContent = `(${fahr.toFixed(1)}°F)`;
+            densityDisplay.textContent = rho.toFixed(5);
+
+            // Calculate Tug-of-War Bars
+            let hBondExpansionPct = 0;
+            let thermalExpansionPct = 0;
+
+            if (currentTemp < 0) {
+                hBondExpansionPct = 95;
+                thermalExpansionPct = 5;
+            } else if (currentTemp <= 4) {
+                hBondExpansionPct = Math.round(75 - (currentTemp / 4) * 55); // drops from 75% to 20%
+                thermalExpansionPct = Math.round(8 + (currentTemp / 4) * 12); // rises from 8% to 20%
+            } else {
+                hBondExpansionPct = Math.max(5, Math.round(20 - (currentTemp - 4) * 0.4));
+                thermalExpansionPct = Math.min(95, Math.round(20 + ((currentTemp - 4) / 81) * 75));
+            }
+
+            hBondForceVal.textContent = `${hBondExpansionPct}%`;
+            hBondBar.style.width = `${hBondExpansionPct}%`;
+            thermalForceVal.textContent = `${thermalExpansionPct}%`;
+            thermalBar.style.width = `${thermalExpansionPct}%`;
+
+            // Update State Badges & Explanation Text
+            if (currentTemp < 0) {
+                stateBadge.textContent = '❄️ 固态冰晶格（密度小、较轻）';
+                stateBadge.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-400/40';
+                dominantForceLabel.textContent = '刚性六边形氢键冰笼占主导';
+                dominantForceLabel.className = 'text-sky-400 font-semibold';
+                molCountBadge.textContent = '(3个分子被挤出框外 ≈ 0.917 g/cm³)';
+                voidSpaceBadge.textContent = '存在约 9% 六边形中空孔洞';
+
+                dynamicExplanationCard.className = 'mt-4 rounded-xl p-4 bg-sky-950/40 border border-sky-500/40 transition-colors';
+                expTitle.className = 'text-sm sm:text-base font-bold text-sky-300';
+                expTitle.textContent = `❄️ 在 ${currentTemp.toFixed(1)}°C 时：被锁定在空旷的六边形冰晶中`;
+                expBody.innerHTML = `在 0°C 以下，水分子形成六边形氢键晶格，使体积膨胀约 9%。按真实密度比例（<strong>0.9167 g/cm³</strong> vs <strong>1.0000 g/cm³</strong>），<strong>36 个水分子中有 33 个留在框内（33 / 36 = 91.7%），3 个半透明分子被挤出右侧框外</strong>。`;
+            } else if (currentTemp >= 0 && currentTemp < 3.2) {
+                stateBadge.textContent = '💧 低温液态水（冰笼正在坍塌）';
+                stateBadge.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/40';
+                dominantForceLabel.textContent = '微小冰簇瓦解 → 密度正在上升！';
+                dominantForceLabel.className = 'text-blue-400 font-semibold';
+                molCountBadge.textContent = '(外围分子正退回框内)';
+                voidSpaceBadge.textContent = '空隙正在缩小';
+
+                dynamicExplanationCard.className = 'mt-4 rounded-xl p-4 bg-blue-950/40 border border-blue-500/40 transition-colors';
+                expTitle.className = 'text-sm sm:text-base font-bold text-blue-300';
+                expTitle.textContent = `💧 在 ${currentTemp.toFixed(1)}°C 时：残余“类冰微团簇”继续瓦解`;
+                expBody.innerHTML = `在 0°C 融化瞬间，宏观冰晶格虽已大体崩塌（使密度从 0.9167 跃升至 0.99984 g/cm³），但 <strong>0°C~4°C 的冷水中仍残留着局部的纳米级“类冰六边形微团簇”</strong>。随着温度升向 4°C，这些残余微团簇继续向内坍塌，使密度再微增 0.013% 达到峰值！`;
+            } else if (currentTemp >= 3.2 && currentTemp <= 4.8) {
+                stateBadge.textContent = '★ 密度最高峰（水最重状态）';
+                stateBadge.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-sm';
+                dominantForceLabel.textContent = '★ 总膨胀效应最小 = 分子排列最紧密！';
+                dominantForceLabel.className = 'text-cyan-400 font-bold';
+                molCountBadge.textContent = '(全部挤入框内，密度最大！)';
+                voidSpaceBadge.textContent = '极小（最紧密堆积）';
+
+                dynamicExplanationCard.className = 'mt-4 rounded-xl p-4 bg-cyan-950/50 border-2 border-cyan-400/60 transition-colors';
+                expTitle.className = 'text-sm sm:text-base font-bold text-cyan-300';
+                expTitle.textContent = `🎯 在 ${currentTemp.toFixed(1)}°C 时：达到最大密度（水最重）！`;
+                expBody.innerHTML = `在 <strong>4°C</strong> 时，中空的六边形冰笼彻底瓦解，同时分子热运动依然温和——请看左侧采样框：<strong>全部 36 / 36 个水分子都紧密地收拢在固定体积框内部！</strong>单位体积内容纳的水分子数量达到最高峰，因此 4°C 的水最重。`;
+            } else {
+                stateBadge.textContent = '🔥 热膨胀状态（变轻）';
+                stateBadge.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/40';
+                dominantForceLabel.textContent = '分子热运动剧烈碰撞占主导';
+                dominantForceLabel.className = 'text-amber-400 font-semibold';
+                molCountBadge.textContent = '(热碰撞将外围分子推到框外)';
+                voidSpaceBadge.textContent = '因高速碰撞而扩大';
+
+                dynamicExplanationCard.className = 'mt-4 rounded-xl p-4 bg-amber-950/30 border border-amber-500/40 transition-colors';
+                expTitle.className = 'text-sm sm:text-base font-bold text-amber-300';
+                expTitle.textContent = `🔥 在 ${currentTemp.toFixed(1)}°C 时：正常的热胀冷缩阶段`;
+                expBody.innerHTML = `超过 4°C 后，继续加热使 H₂O 分子剧烈振动碰撞，彼此推挤出更大的间距——可以看到<strong>外围的水分子（半透明）被热运动撞出了固定体积采样框之外</strong>，框内剩余分子数减少，密度下降至 <strong>${rho.toFixed(5)} g/cm³</strong>。`;
+            }
+
+            drawDensityGraph();
+        }
+
+        function setTemperature(val) {
+            updateUI(val);
+        }
+
+        tempSlider.addEventListener('input', (e) => {
+            updateUI(e.target.value);
+        });
+
+        // ==========================================
+        // 5. LAKE SEASON DIAGRAM CONTROLLER
+        // ==========================================
+        function setLakeSeason(season) {
+            lakeSeason = season;
+            const btnWinter = document.getElementById('btnWinterLake');
+            const btnSummer = document.getElementById('btnSummerLake');
+            const iceSheetGroup = document.getElementById('iceSheetGroup');
+            const lakeWaterRect = document.getElementById('lakeWaterRect');
+            const airTempLabel = document.getElementById('airTempLabel');
+            const layer1Text = document.getElementById('layer1Text');
+            const layer2Text = document.getElementById('layer2Text');
+            const layer3Text = document.getElementById('layer3Text');
+            const layer4Text = document.getElementById('layer4Text');
+
+            if (season === 'winter') {
+                btnWinter.className = 'px-4 py-2 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition';
+                btnSummer.className = 'px-4 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition';
+                iceSheetGroup.style.display = 'block';
+                lakeWaterRect.setAttribute('fill', 'url(#winterWaterGrad)');
+                airTempLabel.textContent = '❄️ 冬季冷空气：-10°C（刺骨寒风）';
+                airTempLabel.setAttribute('fill', '#7dd3fc');
+
+                layer1Text.textContent = '1°C 冷水 (0.99990 g/cm³) —— 比 4°C 轻，向上浮';
+                layer2Text.textContent = '2°C 冷水 (0.99994 g/cm³)';
+                layer3Text.textContent = '3°C 冷水 (0.99996 g/cm³)';
+                layer4Text.textContent = '🎯 4°C 液态水 (1.00000 g/cm³) —— 密度最大（最重），稳居湖底！';
+            } else {
+                btnSummer.className = 'px-4 py-2 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 transition';
+                btnWinter.className = 'px-4 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition';
+                iceSheetGroup.style.display = 'none';
+                lakeWaterRect.setAttribute('fill', 'url(#summerWaterGrad)');
+                airTempLabel.textContent = '☀️ 夏季暖空气：+25°C（阳光照射）';
+                airTempLabel.setAttribute('fill', '#fcd34d');
+
+                layer1Text.textContent = '22°C 表层温水 (0.99777 g/cm³) —— 温暖且较轻，留在表层';
+                layer2Text.textContent = '15°C 湖水 (0.99910 g/cm³)';
+                layer3Text.textContent = '8°C 湖水 (0.99985 g/cm³)';
+                layer4Text.textContent = '🎯 4°C 液态水 (1.00000 g/cm³) —— 依然最重，留在深水湖底';
+            }
+        }
+
+        // Start everything on window load
+        window.onload = function () {
+            initMolecules();
+            resizeCanvases();
+            updateUI(4.0);
+            animateMolecules();
+        };
+    </script>
+</body>
+
+</html>

@@ -809,11 +809,11 @@
                             <span class="stat-lbl">参与学科</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-total-files">25</span>
+                            <span class="stat-val" id="stat-total-files">26</span>
                             <span class="stat-lbl">HTML 资源</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-logic-challenges">9</span>
+                            <span class="stat-val" id="stat-logic-challenges">10</span>
                             <span class="stat-lbl">逻辑挑战</span>
                         </div>
                         <div class="stat-card">
@@ -846,7 +846,7 @@
                                 <span class="legend-dot" style="background: var(--badge-logic)"></span>
                                 <span>高阶思维逻辑 (Logic)</span>
                             </div>
-                            <span class="legend-count">9</span>
+                            <span class="legend-count">10</span>
                         </div>
                         <div class="legend-item" onclick="filterLegend('exam')">
                             <div class="legend-left">
@@ -875,7 +875,7 @@
                         </svg>
                         项目目录结构
                     </h2>
-                    <span id="results-count" class="results-info">共 25 个 HTML 页面</span>
+                    <span id="results-count" class="results-info">共 26 个 HTML 页面</span>
                 </div>
 
                 <!-- Tree Accordion -->
@@ -1411,6 +1411,20 @@
                                         </a>
                                     </div>
 
+                                    <!-- p8a-thermo-water.html -->
+                                    <div class="tree-node file" data-title="水的反常膨胀与4°C最大密度深度可视化 - 八年级上册物理">
+                                        <a href="physics/p8a/p8a-thermo-water.html" class="node-link">
+                                            <svg class="icon file-icon" viewBox="0 0 24 24">
+                                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                            </svg>
+                                            <span class="file-info">
+                                                <span class="file-name">p8a-thermo-water.html</span>
+                                                <span class="file-title">水在4°C密度最大反常膨胀交互式可视化指南</span>
+                                            </span>
+                                            <span class="badge badge-logic">Logic</span>
+                                        </a>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -1572,7 +1586,7 @@
             document.getElementById('node-physics').classList.add('open');
             document.getElementById('node-p8a').classList.add('open');
 
-            resultsCountEl.textContent = "共 25 个 HTML 页面";
+            resultsCountEl.textContent = "共 26 个 HTML 页面";
             noResultsEl.style.display = 'none';
             treeRoot.style.display = 'block';
         }
