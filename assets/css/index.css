@@ -373,6 +373,38 @@
             margin-bottom: 1.5rem;
         }
 
+        .explorer-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-last-viewed {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.65rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-last-viewed:hover {
+            background: rgba(99, 102, 241, 0.22);
+            border-color: rgba(99, 102, 241, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .btn-last-viewed svg {
+            flex-shrink: 0;
+        }
+
         .explorer-title {
             font-size: 1.25rem;
             font-weight: 600;

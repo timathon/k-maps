@@ -19,13 +19,13 @@ const COURSE_TREE_DATA = [
     "type": "folder",
     "id": "node-math",
     "name": "math",
-    "open": true,
+    "open": false,
     "children": [
       {
         "type": "folder",
         "id": "node-m5b",
         "name": "m5b",
-        "open": true,
+        "open": false,
         "children": [
           {
             "type": "file",
@@ -258,19 +258,19 @@ const COURSE_TREE_DATA = [
         "type": "folder",
         "id": "node-m7b",
         "name": "m7b",
-        "open": true,
+        "open": false,
         "children": [
           {
             "type": "folder",
             "id": "node-m7b-ch4",
             "name": "m7b-ch4",
-            "open": true,
+            "open": false,
             "children": [
               {
                 "type": "folder",
                 "id": "node-m7b-ch4-strategies",
                 "name": "m7b-ch4-strategies",
-                "open": true,
+                "open": false,
                 "children": [
                   {
                     "type": "file",
@@ -291,13 +291,13 @@ const COURSE_TREE_DATA = [
             "type": "folder",
             "id": "node-m7b-ch5",
             "name": "m7b-ch5",
-            "open": true,
+            "open": false,
             "children": [
               {
                 "type": "folder",
                 "id": "node-m7b-ch5-strategies",
                 "name": "m7b-ch5-strategies",
-                "open": true,
+                "open": false,
                 "children": [
                   {
                     "type": "file",
@@ -355,13 +355,13 @@ const COURSE_TREE_DATA = [
     "type": "folder",
     "id": "node-physics",
     "name": "physics",
-    "open": true,
+    "open": false,
     "children": [
       {
         "type": "folder",
         "id": "node-p8a",
         "name": "p8a",
-        "open": true,
+        "open": false,
         "children": [
           {
             "type": "file",
@@ -380,6 +380,50 @@ const COURSE_TREE_DATA = [
             "href": "physics/p8a/p8a-optics-taillight.html",
             "name": "p8a-optics-taillight.html",
             "title": "自行车尾灯反光原理 (角反射器互成90°反射)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
+            "dataTitle": "光的折射与波前偏折模拟器 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-refraction.html",
+            "name": "p8a-optics-refraction.html",
+            "title": "光的折射与波前偏折 (Huygens' Principle)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
+            "dataTitle": "海市蜃楼与波前连续偏转原理交互图 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-mirage.html",
+            "name": "p8a-optics-mirage.html",
+            "title": "海市蜃楼与波前连续偏转原理 (Mirage Wavefront)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
+            "dataTitle": "三棱镜色散与光的折射模拟器 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-dispersion.html",
+            "name": "p8a-optics-dispersion.html",
+            "title": "三棱镜色散与光的折射 (Prism Dispersion)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
+            "dataTitle": "彩虹形成与雨滴色散折射反射原理模拟器 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-rainbow.html",
+            "name": "p8a-optics-rainbow.html",
+            "title": "彩虹形成与雨滴色散折射 (Rainbow Dispersion)",
             "badge": {
               "text": "Logic",
               "class": "badge-logic"

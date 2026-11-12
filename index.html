@@ -12,8 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Modular Stylesheet -->
-    <link rel="stylesheet" href="assets/css/index.css">
+    <!-- Modular Stylesheet with Cache Busting -->
+    <link rel="stylesheet" href="assets/css/index.css?v=4">
 </head>
 
 <body>
@@ -71,11 +71,11 @@
                             <span class="stat-lbl">参与学科</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-total-files">27</span>
+                            <span class="stat-val" id="stat-total-files">31</span>
                             <span class="stat-lbl">HTML 资源</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-val" id="stat-logic-challenges">11</span>
+                            <span class="stat-val" id="stat-logic-challenges">15</span>
                             <span class="stat-lbl">逻辑挑战</span>
                         </div>
                         <div class="stat-card">
@@ -108,7 +108,7 @@
                                 <span class="legend-dot" style="background: var(--badge-logic)"></span>
                                 <span>高阶思维逻辑 (Logic)</span>
                             </div>
-                            <span class="legend-count">11</span>
+                            <span class="legend-count">15</span>
                         </div>
                         <div class="legend-item" onclick="filterLegend('exam')">
                             <div class="legend-left">
@@ -137,7 +137,16 @@
                         </svg>
                         项目目录结构
                     </h2>
-                    <span id="results-count" class="results-info">共 27 个 HTML 页面</span>
+                    <div class="explorer-header-actions">
+                        <span id="results-count" class="results-info">共 31 个 HTML 页面</span>
+                        <button id="btn-show-last" class="btn-last-viewed" style="display: none;" title="快速定位上次访问的资源">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>上次访问</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Tree Accordion dynamically generated -->
@@ -166,9 +175,9 @@
         </footer>
     </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/tree-data.js"></script>
-    <script src="assets/js/app.js"></script>
+    <!-- Scripts with Cache Busting -->
+    <script src="assets/js/tree-data.js?v=6"></script>
+    <script src="assets/js/app.js?v=6"></script>
 </body>
 
 </html>

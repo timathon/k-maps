@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>海市蜃楼的成因 · Superior Mirage Interactive Diagram</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Noto Sans SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .svg-text-outline {
+      paint-order: stroke;
+      stroke: rgba(255, 255, 255, 0.92);
+      stroke-width: 3.5px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .svg-text-outline-dark {
+      paint-order: stroke;
+      stroke: rgba(15, 23, 42, 0.85);
+      stroke-width: 3px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    /* Custom subtle range slider styling */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      margin-top: -6px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+    }
+    #diagramViewport {
+      touch-action: none;
+      cursor: grab;
+    }
+    #diagramViewport.is-panning {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col items-center py-4 px-3 sm:px-6">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex flex-col">
+
+    <!-- Header Bar -->
+    <header class="bg-gradient-to-r from-sky-900 via-sky-800 to-cyan-800 text-white px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-sky-400/20 border border-sky-300/40 text-sky-200 font-bold text-sm">图</span>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight">海市蜃楼与波前连续偏转原理 <span class="font-normal text-sky-200 text-sm sm:text-base ml-1">Wavefront Turning & Mirage Formation</span></h1>
+        </div>
+        <p id="headerSubtitle" class="text-xs sm:text-sm text-sky-100/90 mt-1">
+          核心机制：无论光线处于<strong>上升、最高点还是下降</strong>阶段，波前<strong>上方</strong>始终处于更暖的空气中（<span class="italic font-serif">v</span><sub>上</sub> &gt; <span class="italic font-serif">v</span><sub>下</sub>），因此波前始终逆时针<strong>持续向下偏转</strong>，从不反向！
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2 self-start sm:self-center shrink-0">
+        <a href="../../index.html" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs sm:text-sm font-medium border border-white/25 transition cursor-pointer" title="返回课程资源地图">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span>返回主页</span>
+        </a>
+        <!-- Download SVG Button -->
+        <button id="btnDownloadSvg" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs sm:text-sm font-medium border border-white/25 transition cursor-pointer shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+          </svg>
+          <span>导出矢量图 (SVG)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Interactive Control Panel -->
+    <div class="bg-slate-50 border-b border-slate-200 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
+
+      <!-- Mirage Type Switcher: Superior (Cold Sea) vs Inferior (Hot Road) -->
+      <div class="flex items-center gap-2">
+        <div class="inline-flex rounded-xl bg-slate-200/80 p-1 border border-slate-300/70" role="group">
+          <button id="mirageSuperior" class="px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-sky-700 text-white shadow-sm transition cursor-pointer">
+            海市蜃楼 · 海面逆温 (上快下慢 → 向下弯)
+          </button>
+          <button id="mirageInferior" class="px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer">
+            对比：炎热路面下现蜃景 (下快上慢 → 向上弯)
+          </button>
+        </div>
+      </div>
+
+      <!-- Layer Mode Switcher -->
+      <div class="flex items-center gap-2">
+        <div class="inline-flex rounded-xl bg-slate-200/80 p-1 border border-slate-300/70" role="group">
+          <button id="modeLayered" class="px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-sky-800 shadow-sm transition cursor-pointer">
+            分层折射
+          </button>
+          <button id="modeContinuous" class="px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer">
+            连续渐变
+          </button>
+        </div>
+      </div>
+
+      <!-- Temperature Inversion Slider -->
+      <div class="flex items-center gap-2.5 flex-1 min-w-[205px] max-w-[250px]">
+        <label for="inversionSlider" class="text-xs sm:text-sm font-medium text-slate-700 whitespace-nowrap">
+          温差 (|ΔT|):
+        </label>
+        <input id="inversionSlider" type="range" min="3" max="15" step="0.5" value="9.5" class="w-full" />
+        <span id="inversionValue" class="text-xs font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-md min-w-[50px] text-center">9.5°C</span>
+      </div>
+
+      <!-- Checkboxes for Pedagogical Overlays -->
+      <div class="flex flex-wrap items-center gap-3.5 text-xs sm:text-sm">
+        <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-medium">
+          <input id="chkWavefronts" type="checkbox" checked class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 cursor-pointer" />
+          <span>三阶段波前偏转</span>
+        </label>
+        <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-medium">
+          <input id="chkNormals" type="checkbox" checked class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 cursor-pointer" />
+          <span>法线</span>
+        </label>
+        <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-700 font-medium">
+          <input id="chkVirtualSight" type="checkbox" checked class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 cursor-pointer" />
+          <span>逆向视线</span>
+        </label>
+        <button id="btnTogglePulse" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold border border-amber-300 transition cursor-pointer">
+          <span id="pulseIcon">⏸</span>
+          <span id="pulseText">波前动画</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Interactive SVG Diagram Canvas -->
+    <div id="diagramViewport" class="relative w-full bg-white flex justify-center items-center overflow-hidden">
+      <svg id="mirageSvg" viewBox="0 0 1100 620" class="w-full h-auto max-h-[75vh] select-none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Continuous Sky Gradient (Superior Mirage: warm top -> cold bottom) -->
+          <linearGradient id="continuousSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fed7aa" stop-opacity="0.78" />
+            <stop offset="28%" stop-color="#fef3c7" stop-opacity="0.7" />
+            <stop offset="58%" stop-color="#e0f2fe" stop-opacity="0.85" />
+            <stop offset="85%" stop-color="#bae6fd" />
+            <stop offset="100%" stop-color="#7dd3fc" />
+          </linearGradient>
+
+          <!-- Continuous Sky Gradient (Inferior Mirage: cool top -> hot road bottom) -->
+          <linearGradient id="inferiorSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.6" />
+            <stop offset="55%" stop-color="#fef9c3" stop-opacity="0.65" />
+            <stop offset="82%" stop-color="#fed7aa" stop-opacity="0.85" />
+            <stop offset="100%" stop-color="#fdba74" stop-opacity="0.95" />
+          </linearGradient>
+
+          <!-- Ocean Water Gradient -->
+          <radialGradient id="oceanGrad" cx="50%" cy="15%" r="85%">
+            <stop offset="0%" stop-color="#0284c7" />
+            <stop offset="45%" stop-color="#0369a1" />
+            <stop offset="100%" stop-color="#0c4a6e" />
+          </radialGradient>
+
+          <!-- Hot Asphalt Road Gradient -->
+          <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#334155" />
+            <stop offset="35%" stop-color="#1e293b" />
+            <stop offset="100%" stop-color="#0f172a" />
+          </linearGradient>
+
+          <!-- Mirage Ghost Shimmer Filter -->
+          <filter id="mirageGlow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur stdDeviation="1.4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          <!-- Arrowhead Markers -->
+          <marker id="rayArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="#e11d48" />
+          </marker>
+          <marker id="virtualArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 1 2 L 9 5 L 1 8 z" fill="#475569" />
+          </marker>
+          <marker id="speedFastArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 1 2 L 9 5 L 1 8 z" fill="#ea580c" />
+          </marker>
+          <marker id="speedSlowArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 1 2 L 9 5 L 1 8 z" fill="#0284c7" />
+          </marker>
+          <marker id="turnTorqueArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto">
+            <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="#7c3aed" />
+          </marker>
+
+          <!-- Clip path for diagram area -->
+          <clipPath id="canvasClip">
+            <rect x="0" y="0" width="1100" height="620" />
+          </clipPath>
+        </defs>
+
+        <g clip-path="url(#canvasClip)">
+          <!-- Background Sky -->
+          <rect x="0" y="0" width="1100" height="620" fill="#f8fafc" />
+
+          <!-- Continuous Gradient Backdrop (Shown in Continuous Mode) -->
+          <rect id="continuousBackdrop" x="0" y="0" width="1100" height="580" fill="url(#continuousSkyGrad)" opacity="0" />
+
+          <!-- Concentric Atmospheric Layers Group (Populated via JS) -->
+          <g id="atmosphereLayersGroup"></g>
+
+          <!-- Curved Ocean / Road Surface (Populated via JS) -->
+          <g id="earthSeaGroup"></g>
+
+          <!-- Geometric Horizon & Blocked Direct Sightline -->
+          <g id="geometryGuidesGroup"></g>
+
+          <!-- Real Distant City & Virtual Mirage Image -->
+          <g id="cityObjectsGroup"></g>
+
+          <!-- Light Rays, Normals, Angles & Wavefront Ticks (Populated via JS) -->
+          <g id="raysAndNormalsGroup"></g>
+
+          <!-- Animated Traveling Wavefront Pulse Group -->
+          <g id="travelingPulseGroup"></g>
+
+          <!-- Observer on Left Coast / Boat -->
+          <g id="observerGroup"></g>
+
+          <!-- Layer Density & Refractive Index Annotations -->
+          <g id="annotationsGroup"></g>
+
+          <!-- Pedagogical Inset Callout Box (Top-Left: Why It Never Reverses!) -->
+          <g id="insetCalloutGroup" transform="translate(22, 18)">
+            <rect x="0" y="0" width="382" height="168" rx="12" fill="rgba(255,255,255,0.95)" stroke="#cbd5e1" stroke-width="1.5" />
+            <rect x="0" y="0" width="382" height="30" rx="12" fill="#f1f5f9" />
+            <rect x="0" y="18" width="382" height="12" fill="#f1f5f9" />
+            <line x1="0" y1="30" x2="382" y2="30" stroke="#e2e8f0" stroke-width="1" />
+            <text id="insetTitle" x="14" y="20" font-size="13" font-weight="700" fill="#0f172a">核心解答：为什么光线过最高点后仍向下弯，不会反向？</text>
+
+            <!-- Mini Car/Wavefront Analogy Diagram inside Inset -->
+            <g id="insetVisualSuperior">
+              <rect x="14" y="38" width="154" height="56" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1" />
+              <text x="22" y="53" font-size="10.5" font-weight="700" fill="#9a3412">空气层分布始终不变：</text>
+              <text x="22" y="68" font-size="10" fill="#ea580c">▲ 上方（暖空气）：v_上 快</text>
+              <text x="22" y="83" font-size="10" fill="#0284c7">▼ 下方（冷空气）：v_下 慢</text>
+
+              <!-- 3-Stage Mini Arc inside Inset -->
+              <path d="M 152 146 Q 90 104 26 146" fill="none" stroke="#e11d48" stroke-width="2.2" marker-end="url(#rayArrow)" />
+              <!-- 3 tiny wavefront bars showing continuous counter-clockwise turn -->
+              <line x1="130" y1="125" x2="122" y2="137" stroke="#0f172a" stroke-width="2" />
+              <line x1="90" y1="117" x2="90" y2="131" stroke="#0f172a" stroke-width="2" />
+              <line x1="50" y1="125" x2="58" y2="137" stroke="#0f172a" stroke-width="2" />
+              <text x="140" y="121" font-size="9" font-weight="700" fill="#7c3aed">① ↺</text>
+              <text x="90" y="112" text-anchor="middle" font-size="9" font-weight="700" fill="#7c3aed">② ↺</text>
+              <text x="38" y="121" font-size="9" font-weight="700" fill="#7c3aed">③ ↺</text>
+              <text x="90" y="157" text-anchor="middle" font-size="9.5" font-weight="600" fill="#475569">全程逆时针(↺)向下持续偏转</text>
+            </g>
+
+            <!-- Right side bullet explanation inside inset -->
+            <g id="insetBullets" transform="translate(180, 48)">
+              <text x="0" y="4" font-size="11" font-weight="700" fill="#1e293b">1. 波前上下速度差从未反转：</text>
+              <text x="0" y="20" font-size="10.2" fill="#334155">无论是上升①、平飞②还是下降③，</text>
+              <text x="0" y="34" font-size="10.2" font-weight="600" fill="#c2410c">波前高处始终在暖空气中跑得更快！</text>
+
+              <text x="0" y="54" font-size="11" font-weight="700" fill="#1e293b">2. 持续同向旋转（像单侧快轮）：</text>
+              <text x="0" y="70" font-size="10.2" fill="#334155">上轮快、下轮慢 → 全程向海面偏转：</text>
+              <text x="0" y="85" font-size="10.2" font-weight="600" fill="#7c3aed">斜向上 → 变水平 → 斜向下（不反向）</text>
+              <text x="0" y="102" font-size="10" fill="#64748b">（只有地面比高空热时才会反向向上弯）</text>
+            </g>
+          </g>
+        </g>
+      </svg>
+
+      <!-- Floating Zoom & Stage Focus Presets -->
+      <div class="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        <!-- Quick Focus Presets for the 3 Stages -->
+        <div class="pointer-events-auto inline-flex flex-wrap items-center gap-1.5 bg-white/95 backdrop-blur-xs p-1.5 rounded-xl shadow-md border border-slate-200/90 text-xs">
+          <button id="presetFull" class="px-2.5 py-1.5 rounded-lg font-semibold bg-sky-600 text-white shadow-xs transition cursor-pointer">
+            全局视图
+          </button>
+          <button id="presetStage1" class="px-2.5 py-1.5 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            放大 ① 上升段
+          </button>
+          <button id="presetStage2" class="px-2.5 py-1.5 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            放大 ② 最高点(平行)
+          </button>
+          <button id="presetStage3" class="px-2.5 py-1.5 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            放大 ③ 下降段
+          </button>
+          <button id="presetMirage" class="px-2.5 py-1.5 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            放大：虚像
+          </button>
+        </div>
+
+        <!-- Zoom Step Controls & Percentage Readout -->
+        <div class="pointer-events-auto inline-flex items-center gap-1 bg-white/95 backdrop-blur-xs p-1.5 rounded-xl shadow-md border border-slate-200/90 text-xs">
+          <span class="hidden md:inline text-slate-400 px-1.5 select-none">滚轮缩放 / 拖拽平移</span>
+          <button id="btnZoomOut" title="缩小 (Zoom Out)" class="w-7 h-7 inline-flex items-center justify-center rounded-lg font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition cursor-pointer text-base">
+            −
+          </button>
+          <span id="zoomBadge" class="px-2 py-1 font-mono font-bold text-sky-800 bg-sky-50 rounded-md min-w-[52px] text-center">
+            100%
+          </span>
+          <button id="btnZoomIn" title="放大 (Zoom In)" class="w-7 h-7 inline-flex items-center justify-center rounded-lg font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition cursor-pointer text-base">
+            +
+          </button>
+          <div class="w-px h-4 bg-slate-200 mx-0.5"></div>
+          <button id="btnZoomReset" title="重置视图 (1:1)" class="px-2.5 py-1 rounded-lg font-semibold text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition cursor-pointer">
+            重置 1:1
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Pedagogical Summary Cards -->
+    <div class="bg-slate-50 border-t border-slate-200 px-5 py-4 grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs sm:text-sm">
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-xs">
+        <div class="flex items-center gap-2 font-bold text-amber-800 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-800 text-xs font-extrabold">①</span>
+          <span>上升段：为什么斜向上却被压平？</span>
+        </div>
+        <p class="text-slate-600 leading-relaxed">
+          光线刚离开远处物体时略微斜向上进入暖空气。此时波前的<strong>左上端</strong>进入暖层跑得更快（<span class="text-orange-700 font-semibold">v<sub>上</sub> &gt; v<sub>下</sub></span>），把波前<strong>逆时针向下压</strong>，使光线逐渐变平。
+        </p>
+      </div>
+
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-xs">
+        <div class="flex items-center gap-2 font-bold text-purple-800 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-xs font-extrabold">②</span>
+          <span>最高点：平行海面后为何继续向下拐？</span>
+        </div>
+        <p class="text-slate-600 leading-relaxed">
+          当光线在最高点恰好<strong>平行于海面</strong>时，上层空气依然比下层暖（<span class="text-orange-700 font-semibold">v<sub>上</sub> &gt; v<sub>下</sub></span> 没变）。上端继续比下端跑得快，波前继续<strong>逆时针偏转</strong>，于是光路越过水平线开始向下倾斜！
+        </p>
+      </div>
+
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-xs">
+        <div class="flex items-center gap-2 font-bold text-sky-900 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-100 text-sky-900 text-xs font-extrabold">③</span>
+          <span>下降段：速度差会反转吗？不会！</span>
+        </div>
+        <p class="text-slate-600 leading-relaxed">
+          光线斜向下飞向人眼时，波前的<strong>右上端</strong>仍然比<strong>左下端</strong>高（仍在更暖的空气里），所以依旧是<strong>上快下慢</strong>、继续向下弯曲。只有切换为<strong>“炎热路面”</strong>（下暖上冷）时，速度差才会反转使光线向上弯。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Superior & Inferior Mirage Wavefront Turning Physics Engine
+     * Demonstrates why wavefront velocity gradient (v_top > v_bottom) produces a
+     * continuous counter-clockwise downward turn across Rising, Peak, and Descending stages.
+     */
+    (function () {
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const BASE_W = 1100;
+      const BASE_H = 620;
+
+      // State
+      const state = {
+        mirageType: "superior", // 'superior' (cold sea, bends down) | 'inferior' (hot road, bends up)
+        mode: "layered",        // 'layered' | 'continuous'
+        deltaT: 9.5,            // 3.0°C to 15.0°C
+        showNormals: true,
+        showWavefronts: true,
+        showVirtualSight: true,
+        pulsePlaying: true
+      };
+
+      // Interactive SVG ViewBox Zoom & Pan State
+      const view = {
+        x: 0,
+        y: 0,
+        w: BASE_W,
+        h: BASE_H,
+        minZoom: 0.8,
+        maxZoom: 5.0
+      };
+      let animFrameId = null;
+      let pulsePhase = 0;
+      let currentPts = [];
+      let stageCoords = { s1: { x: 660, y: 310 }, s2: { x: 520, y: 295 }, s3: { x: 380, y: 315 } };
+
+      // DOM Elements
+      const viewport = document.getElementById("diagramViewport");
+      const svg = document.getElementById("mirageSvg");
+      const layersGroup = document.getElementById("atmosphereLayersGroup");
+      const earthSeaGroup = document.getElementById("earthSeaGroup");
+      const geometryGuidesGroup = document.getElementById("geometryGuidesGroup");
+      const cityObjectsGroup = document.getElementById("cityObjectsGroup");
+      const raysAndNormalsGroup = document.getElementById("raysAndNormalsGroup");
+      const travelingPulseGroup = document.getElementById("travelingPulseGroup");
+      const observerGroup = document.getElementById("observerGroup");
+      const annotationsGroup = document.getElementById("annotationsGroup");
+      const continuousBackdrop = document.getElementById("continuousBackdrop");
+      const headerSubtitle = document.getElementById("headerSubtitle");
+      const insetTitle = document.getElementById("insetTitle");
+      const insetBullets = document.getElementById("insetBullets");
+
+      const btnMirageSuperior = document.getElementById("mirageSuperior");
+      const btnMirageInferior = document.getElementById("mirageInferior");
+      const btnLayered = document.getElementById("modeLayered");
+      const btnContinuous = document.getElementById("modeContinuous");
+      const inversionSlider = document.getElementById("inversionSlider");
+      const inversionValue = document.getElementById("inversionValue");
+      const chkNormals = document.getElementById("chkNormals");
+      const chkWavefronts = document.getElementById("chkWavefronts");
+      const chkVirtualSight = document.getElementById("chkVirtualSight");
+      const btnTogglePulse = document.getElementById("btnTogglePulse");
+      const pulseIcon = document.getElementById("pulseIcon");
+      const btnDownloadSvg = document.getElementById("btnDownloadSvg");
+
+      const zoomBadge = document.getElementById("zoomBadge");
+      const btnZoomIn = document.getElementById("btnZoomIn");
+      const btnZoomOut = document.getElementById("btnZoomOut");
+      const btnZoomReset = document.getElementById("btnZoomReset");
+      const presetFull = document.getElementById("presetFull");
+      const presetStage1 = document.getElementById("presetStage1");
+      const presetStage2 = document.getElementById("presetStage2");
+      const presetStage3 = document.getElementById("presetStage3");
+      const presetMirage = document.getElementById("presetMirage");
+
+      function clampViewBox(vx, vy, vw, vh) {
+        const marginX = vw * 0.35;
+        const marginY = vh * 0.35;
+        return {
+          x: Math.max(-marginX, Math.min(BASE_W - vw + marginX, vx)),
+          y: Math.max(-marginY, Math.min(BASE_H - vh + marginY, vy)),
+          w: vw,
+          h: vh
+        };
+      }
+
+      function applyViewBox() {
+        const clamped = clampViewBox(view.x, view.y, view.w, view.h);
+        view.x = clamped.x;
+        view.y = clamped.y;
+        view.w = clamped.w;
+        view.h = clamped.h;
+        svg.setAttribute("viewBox", `${view.x.toFixed(2)} ${view.y.toFixed(2)} ${view.w.toFixed(2)} ${view.h.toFixed(2)}`);
+        zoomBadge.textContent = `${Math.round((BASE_W / view.w) * 100)}%`;
+      }
+
+      function animateToView(targetX, targetY, targetZoom) {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        const clampedZoom = Math.max(view.minZoom, Math.min(view.maxZoom, targetZoom));
+        const targetW = BASE_W / clampedZoom;
+        const targetH = BASE_H / clampedZoom;
+
+        const startX = view.x;
+        const startY = view.y;
+        const startW = view.w;
+        const startH = view.h;
+        const duration = 340;
+        const startTime = performance.now();
+
+        function step(now) {
+          const t = Math.min(1, (now - startTime) / duration);
+          const ease = 1 - Math.pow(1 - t, 3);
+          view.x = startX + (targetX - startX) * ease;
+          view.y = startY + (targetY - startY) * ease;
+          view.w = startW + (targetW - startW) * ease;
+          view.h = startH + (targetH - startH) * ease;
+          applyViewBox();
+          if (t < 1) {
+            animFrameId = requestAnimationFrame(step);
+          } else {
+            animFrameId = null;
+          }
+        }
+        animFrameId = requestAnimationFrame(step);
+      }
+
+      function focusOnPoint(cx, cy, zoom) {
+        const w = BASE_W / zoom;
+        const h = BASE_H / zoom;
+        animateToView(cx - w / 2, cy - h / 2, zoom);
+      }
+
+      function clientToSvgPoint(clientX, clientY) {
+        const rect = svg.getBoundingClientRect();
+        const normX = (clientX - rect.left) / rect.width;
+        const normY = (clientY - rect.top) / rect.height;
+        return {
+          x: view.x + normX * view.w,
+          y: view.y + normY * view.h
+        };
+      }
+
+      function zoomAtPoint(factor, svgPtX, svgPtY) {
+        if (animFrameId) {
+          cancelAnimationFrame(animFrameId);
+          animFrameId = null;
+        }
+        const currentZoom = BASE_W / view.w;
+        const nextZoom = Math.max(view.minZoom, Math.min(view.maxZoom, currentZoom * factor));
+        const nextW = BASE_W / nextZoom;
+        const nextH = BASE_H / nextZoom;
+
+        const ratioX = (svgPtX - view.x) / view.w;
+        const ratioY = (svgPtY - view.y) / view.h;
+
+        view.x = svgPtX - ratioX * nextW;
+        view.y = svgPtY - ratioY * nextH;
+        view.w = nextW;
+        view.h = nextH;
+        applyViewBox();
+      }
+
+      function setActivePreset(activeBtn) {
+        [presetFull, presetStage1, presetStage2, presetStage3, presetMirage].forEach((btn) => {
+          if (btn === activeBtn) {
+            btn.className = "px-2.5 py-1.5 rounded-lg font-semibold bg-sky-600 text-white shadow-xs transition cursor-pointer";
+          } else {
+            btn.className = "px-2.5 py-1.5 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition cursor-pointer";
+          }
+        });
+      }
+
+      // Mouse Wheel / Trackpad Zoom
+      viewport.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const pt = clientToSvgPoint(e.clientX, e.clientY);
+        const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+        zoomAtPoint(factor, pt.x, pt.y);
+      }, { passive: false });
+
+      // Pointer Drag Pan + Touch Pinch-to-Zoom
+      const activePointers = new Map();
+      let isDragging = false;
+      let dragStartClient = { x: 0, y: 0 };
+      let dragStartView = { x: 0, y: 0 };
+      let pinchStartDist = 0;
+      let pinchStartZoom = 1;
+      let pinchMidSvg = { x: 0, y: 0 };
+
+      viewport.addEventListener("pointerdown", (e) => {
+        if (e.target.closest("button")) return;
+        viewport.setPointerCapture(e.pointerId);
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 1) {
+          if (animFrameId) {
+            cancelAnimationFrame(animFrameId);
+            animFrameId = null;
+          }
+          isDragging = true;
+          viewport.classList.add("is-panning");
+          dragStartClient = { x: e.clientX, y: e.clientY };
+          dragStartView = { x: view.x, y: view.y };
+        } else if (activePointers.size === 2) {
+          isDragging = false;
+          viewport.classList.remove("is-panning");
+          const pts = Array.from(activePointers.values());
+          pinchStartDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          pinchStartZoom = BASE_W / view.w;
+          const midClientX = (pts[0].x + pts[1].x) / 2;
+          const midClientY = (pts[0].y + pts[1].y) / 2;
+          pinchMidSvg = clientToSvgPoint(midClientX, midClientY);
+        }
+      });
+
+      viewport.addEventListener("pointermove", (e) => {
+        if (!activePointers.has(e.pointerId)) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          if (pinchStartDist > 0) {
+            const scale = dist / pinchStartDist;
+            const targetZoom = Math.max(view.minZoom, Math.min(view.maxZoom, pinchStartZoom * scale));
+            const nextW = BASE_W / targetZoom;
+            const nextH = BASE_H / targetZoom;
+            const rect = svg.getBoundingClientRect();
+            const midClientX = (pts[0].x + pts[1].x) / 2;
+            const midClientY = (pts[0].y + pts[1].y) / 2;
+            const normX = (midClientX - rect.left) / rect.width;
+            const normY = (midClientY - rect.top) / rect.height;
+            view.x = pinchMidSvg.x - normX * nextW;
+            view.y = pinchMidSvg.y - normY * nextH;
+            view.w = nextW;
+            view.h = nextH;
+            applyViewBox();
+          }
+        } else if (isDragging && activePointers.size === 1) {
+          const rect = svg.getBoundingClientRect();
+          const dxPx = e.clientX - dragStartClient.x;
+          const dyPx = e.clientY - dragStartClient.y;
+          view.x = dragStartView.x - (dxPx / rect.width) * view.w;
+          view.y = dragStartView.y - (dyPx / rect.height) * view.h;
+          applyViewBox();
+        }
+      });
+
+      function endPointer(e) {
+        activePointers.delete(e.pointerId);
+        if (activePointers.size === 0) {
+          isDragging = false;
+          viewport.classList.remove("is-panning");
+        }
+      }
+      viewport.addEventListener("pointerup", endPointer);
+      viewport.addEventListener("pointercancel", endPointer);
+
+      // Zoom & Stage Preset Buttons
+      btnZoomIn.addEventListener("click", () => zoomAtPoint(1.25, view.x + view.w / 2, view.y + view.h / 2));
+      btnZoomOut.addEventListener("click", () => zoomAtPoint(1 / 1.25, view.x + view.w / 2, view.y + view.h / 2));
+      btnZoomReset.addEventListener("click", () => {
+        setActivePreset(presetFull);
+        animateToView(0, 0, 1.0);
+      });
+      presetFull.addEventListener("click", () => {
+        setActivePreset(presetFull);
+        animateToView(0, 0, 1.0);
+      });
+      presetStage1.addEventListener("click", () => {
+        setActivePreset(presetStage1);
+        focusOnPoint(stageCoords.s1.x, stageCoords.s1.y - 10, 2.35);
+      });
+      presetStage2.addEventListener("click", () => {
+        setActivePreset(presetStage2);
+        focusOnPoint(stageCoords.s2.x, stageCoords.s2.y - 12, 2.45);
+      });
+      presetStage3.addEventListener("click", () => {
+        setActivePreset(presetStage3);
+        focusOnPoint(stageCoords.s3.x, stageCoords.s3.y - 10, 2.35);
+      });
+      presetMirage.addEventListener("click", () => {
+        setActivePreset(presetMirage);
+        animateToView(130, 30, 1.45);
+      });
+
+      function el(tag, attrs = {}, parent = null) {
+        const node = document.createElementNS(SVG_NS, tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          node.setAttribute(k, v);
+        }
+        if (parent) parent.appendChild(node);
+        return node;
+      }
+
+      // Earth Geometry Constants
+      const CX = 530;
+      const CY = 1880;
+      const R_EARTH = 1430;
+
+      function polarToXY(angleDeg, altitude = 0) {
+        const rad = (angleDeg * Math.PI) / 180;
+        const r = R_EARTH + altitude;
+        return {
+          x: CX + r * Math.sin(rad),
+          y: CY - r * Math.cos(rad)
+        };
+      }
+
+      // Draw a skyline silhouette
+      function drawSkyline(parent, baseX, baseY, tiltDeg, scale, isMirage, flipVertical = false) {
+        const sy = flipVertical ? -scale : scale;
+        const g = el("g", {
+          transform: `translate(${baseX.toFixed(1)}, ${baseY.toFixed(1)}) rotate(${tiltDeg.toFixed(2)}) scale(${scale}, ${sy})`,
+          opacity: isMirage ? "0.78" : "1"
+        }, parent);
+
+        if (isMirage) g.setAttribute("filter", "url(#mirageGlow)");
+
+        const buildings = [
+          { x: -46, w: 14, h: 26, c1: "#64748b", c2: "#94a3b8" },
+          { x: -31, w: 16, h: 42, c1: "#475569", c2: "#64748b" },
+          { x: -13, w: 18, h: 58, c1: "#334155", c2: "#475569", spire: true },
+          { x: 7,   w: 15, h: 46, c1: "#475569", c2: "#64748b" },
+          { x: 24,  w: 17, h: 33, c1: "#64748b", c2: "#94a3b8" }
+        ];
+
+        el("rect", {
+          x: -52, y: -3, width: 100, height: 4, rx: 1.5,
+          fill: isMirage ? "#38bdf8" : "#1e293b"
+        }, g);
+
+        buildings.forEach((b) => {
+          const fillMain = isMirage ? "#0284c7" : b.c1;
+          const fillSide = isMirage ? "#38bdf8" : b.c2;
+
+          el("rect", {
+            x: b.x, y: -b.h, width: b.w, height: b.h, rx: 1,
+            fill: fillMain,
+            stroke: isMirage ? "#bae6fd" : "#1e293b",
+            "stroke-width": "0.8"
+          }, g);
+
+          el("rect", {
+            x: b.x + b.w * 0.62, y: -b.h + 1, width: b.w * 0.34, height: b.h - 2,
+            fill: fillSide, opacity: "0.75"
+          }, g);
+
+          if (b.spire) {
+            el("line", {
+              x1: b.x + b.w / 2, y1: -b.h,
+              x2: b.x + b.w / 2, y2: -b.h - 12,
+              stroke: isMirage ? "#0284c7" : "#334155",
+              "stroke-width": "1.6"
+            }, g);
+          }
+
+          for (let wy = -b.h + 6; wy < -6; wy += 7) {
+            el("rect", {
+              x: b.x + 3, y: wy, width: b.w - 6, height: 2.2,
+              fill: isMirage ? "#e0f2fe" : "#fef08a",
+              opacity: isMirage ? "0.85" : "0.75"
+            }, g);
+          }
+        });
+
+        if (isMirage) {
+          el("path", {
+            d: "M -54 4 Q -25 1, 0 4 T 52 4",
+            fill: "none", stroke: "#38bdf8", "stroke-width": "1.5", "stroke-dasharray": "4,3"
+          }, g);
+        }
+      }
+
+      function drawObserver(obsAngleDeg, isInferior) {
+        observerGroup.innerHTML = "";
+        const pos = polarToXY(obsAngleDeg, 0);
+        const g = el("g", {
+          transform: `translate(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}) rotate(${obsAngleDeg.toFixed(2)})`
+        }, observerGroup);
+
+        if (!isInferior) {
+          // Small boat hull on sea
+          el("path", {
+            d: "M -28 -2 L 30 -2 L 22 9 L -20 9 Z",
+            fill: "#78350f", stroke: "#451a03", "stroke-width": "1.2"
+          }, g);
+          el("line", { x1: -25, y1: 2, x2: 26, y2: 2, stroke: "#d97706", "stroke-width": "1.2" }, g);
+        } else {
+          // Roadside curb pad
+          el("rect", { x: -24, y: -3, width: 48, height: 5, rx: 2, fill: "#64748b" }, g);
+        }
+
+        // Person
+        el("line", { x1: -2, y1: -2, x2: -4, y2: -17, stroke: "#1e293b", "stroke-width": "3.2", "stroke-linecap": "round" }, g);
+        el("line", { x1: 3,  y1: -2, x2: 4,  y2: -17, stroke: "#1e293b", "stroke-width": "3.2", "stroke-linecap": "round" }, g);
+        el("rect", { x: -5, y: -33, width: 11, height: 17, rx: 3, fill: "#0f172a" }, g);
+        el("circle", { cx: 1, cy: -39, r: 5, fill: "#f59e0b" }, g);
+        el("path", {
+          d: "M 4 -29 L 15 -37 L 26 -41",
+          fill: "none", stroke: "#b45309", "stroke-width": "3", "stroke-linecap": "round"
+        }, g);
+        el("line", {
+          x1: 5, y1: -38, x2: 27, y2: isInferior ? -34 : -43,
+          stroke: "#334155", "stroke-width": "3.5", "stroke-linecap": "round"
+        }, g);
+        el("circle", { cx: 5, cy: -38, r: 2.8, fill: "#e11d48", stroke: "#fff", "stroke-width": "1" }, g);
+
+        const lbl = el("text", {
+          x: 0, y: 27,
+          "text-anchor": "middle",
+          "font-size": "13.5",
+          "font-weight": "700",
+          fill: "#ffffff",
+          class: "svg-text-outline-dark"
+        }, g);
+        lbl.textContent = "观察者 (Observer)";
+      }
+
+      // Draw a detailed Wavefront + Speed Arrows + Rotational Torque Arc
+      function drawWavefrontDiag(parent, pMid, ux, uy, fastLen, slowLen, topIsFaster, stageBadge, stageDesc, isPeak = false) {
+        // Right-to-left propagation: upward unit vector (toward higher altitude, smaller SVG y) is (-uy, ux)
+        const nxUp = -uy;
+        const nyUp = ux;
+        const halfW = 19;
+
+        const wLowX = pMid.x - nxUp * halfW;
+        const wLowY = pMid.y - nyUp * halfW;
+        const wHighX = pMid.x + nxUp * halfW;
+        const wHighY = pMid.y + nyUp * halfW;
+
+        const lenHigh = topIsFaster ? fastLen : slowLen;
+        const lenLow = topIsFaster ? slowLen : fastLen;
+
+        // Wavefront bar perpendicular to propagation
+        el("line", {
+          x1: wLowX.toFixed(1), y1: wLowY.toFixed(1),
+          x2: wHighX.toFixed(1), y2: wHighY.toFixed(1),
+          stroke: "#0f172a",
+          "stroke-width": "2.8",
+          "stroke-linecap": "round"
+        }, parent);
+
+        // End dots
+        el("circle", { cx: wHighX.toFixed(1), cy: wHighY.toFixed(1), r: "2.6", fill: topIsFaster ? "#ea580c" : "#0284c7" }, parent);
+        el("circle", { cx: wLowX.toFixed(1), cy: wLowY.toFixed(1), r: "2.6", fill: topIsFaster ? "#0284c7" : "#ea580c" }, parent);
+
+        // Upper velocity arrow
+        const tipHighX = wHighX + ux * lenHigh;
+        const tipHighY = wHighY + uy * lenHigh;
+        el("line", {
+          x1: wHighX.toFixed(1), y1: wHighY.toFixed(1),
+          x2: tipHighX.toFixed(1), y2: tipHighY.toFixed(1),
+          stroke: topIsFaster ? "#ea580c" : "#0284c7",
+          "stroke-width": "2.4",
+          "marker-end": topIsFaster ? "url(#speedFastArrow)" : "url(#speedSlowArrow)"
+        }, parent);
+
+        // Lower velocity arrow
+        const tipLowX = wLowX + ux * lenLow;
+        const tipLowY = wLowY + uy * lenLow;
+        el("line", {
+          x1: wLowX.toFixed(1), y1: wLowY.toFixed(1),
+          x2: tipLowX.toFixed(1), y2: tipLowY.toFixed(1),
+          stroke: topIsFaster ? "#0284c7" : "#ea580c",
+          "stroke-width": "2.4",
+          "marker-end": topIsFaster ? "url(#speedSlowArrow)" : "url(#speedFastArrow)"
+        }, parent);
+
+        // Dashed tilted next-wavefront line connecting arrow tips
+        el("line", {
+          x1: tipLowX.toFixed(1), y1: tipLowY.toFixed(1),
+          x2: tipHighX.toFixed(1), y2: tipHighY.toFixed(1),
+          stroke: "#7c3aed",
+          "stroke-width": "1.6",
+          "stroke-dasharray": "3,2.5"
+        }, parent);
+
+        // Curved Rotational Turn Arrow showing direction of wavefront tilt
+        // If topIsFaster (right-to-left), rotation is counter-clockwise (downward); if bottomIsFaster, clockwise (upward)
+        const arcCenterX = pMid.x + ux * (fastLen * 0.52);
+        const arcCenterY = pMid.y + uy * (fastLen * 0.52);
+        const rArc = 14;
+        const aStartX = arcCenterX + nxUp * rArc;
+        const aStartY = arcCenterY + nyUp * rArc;
+        const aEndX = arcCenterX - nxUp * rArc;
+        const aEndY = arcCenterY - nyUp * rArc;
+
+        if (topIsFaster) {
+          // Counter-clockwise arc from top to bottom (turning downward)
+          el("path", {
+            d: `M ${aStartX.toFixed(1)} ${aStartY.toFixed(1)} A ${rArc} ${rArc} 0 0 0 ${aEndX.toFixed(1)} ${aEndY.toFixed(1)}`,
+            fill: "none",
+            stroke: "#7c3aed",
+            "stroke-width": "1.7",
+            "marker-end": "url(#turnTorqueArrow)"
+          }, parent);
+        } else {
+          // Clockwise arc from bottom to top (turning upward)
+          el("path", {
+            d: `M ${aEndX.toFixed(1)} ${aEndY.toFixed(1)} A ${rArc} ${rArc} 0 0 1 ${aStartX.toFixed(1)} ${aStartY.toFixed(1)}`,
+            fill: "none",
+            stroke: "#7c3aed",
+            "stroke-width": "1.7",
+            "marker-end": "url(#turnTorqueArrow)"
+          }, parent);
+        }
+
+        // Speed tags
+        const lblHigh = el("text", {
+          x: (tipHighX - 5).toFixed(1),
+          y: (tipHighY - 6).toFixed(1),
+          "text-anchor": "end",
+          "font-size": "9.8",
+          "font-weight": "700",
+          fill: topIsFaster ? "#c2410c" : "#0369a1",
+          class: "svg-text-outline"
+        }, parent);
+        lblHigh.textContent = topIsFaster ? "v_上 (快)" : "v_上 (慢)";
+
+        const lblLow = el("text", {
+          x: (tipLowX - 4).toFixed(1),
+          y: (tipLowY + 13).toFixed(1),
+          "text-anchor": "end",
+          "font-size": "9.8",
+          "font-weight": "700",
+          fill: topIsFaster ? "#0369a1" : "#c2410c",
+          class: "svg-text-outline"
+        }, parent);
+        lblLow.textContent = topIsFaster ? "v_下 (慢)" : "v_下 (快)";
+
+        // Stage Callout Pill above/below the wavefront
+        const pillY = topIsFaster ? (wHighY - 26) : (wHighY - 24);
+        const badgeG = el("g", {
+          transform: `translate(${pMid.x.toFixed(1)}, ${pillY.toFixed(1)})`
+        }, parent);
+
+        const pillW = isPeak ? 168 : 138;
+        el("rect", {
+          x: -pillW / 2, y: -15, width: pillW, height: 26, rx: 8,
+          fill: "rgba(255, 255, 255, 0.94)",
+          stroke: "#7c3aed",
+          "stroke-width": "1.3"
+        }, badgeG);
+
+        const t1 = el("text", {
+          x: 0, y: -3.5, "text-anchor": "middle", "font-size": "10.2", "font-weight": "700",
+          fill: "#5b21b6"
+        }, badgeG);
+        t1.textContent = stageBadge;
+
+        const t2 = el("text", {
+          x: 0, y: 7.5, "text-anchor": "middle", "font-size": "9", "font-weight": "600",
+          fill: "#334155"
+        }, badgeG);
+        t2.textContent = stageDesc;
+      }
+
+      // Update header & inset text when switching Superior vs Inferior mirage
+      function updatePedagogicalCopy(isInferior) {
+        if (!isInferior) {
+          headerSubtitle.innerHTML = `核心机制：无论光线处于<strong>上升、最高点还是下降</strong>阶段，波前<strong>上方</strong>始终处于更暖的空气中（<span class="italic font-serif">v</span><sub>上</sub> &gt; <span class="italic font-serif">v</span><sub>下</sub>），因此波前始终逆时针<strong>持续向下偏转</strong>，从不反向！`;
+          insetTitle.textContent = "核心解答：为什么光线过最高点后仍向下弯，不会反向？";
+          insetBullets.innerHTML = `
+            <text x="0" y="4" font-size="11" font-weight="700" fill="#1e293b">1. 波前上下速度差从未反转：</text>
+            <text x="0" y="20" font-size="10.2" fill="#334155">无论是上升①、平飞②还是下降③，</text>
+            <text x="0" y="34" font-size="10.2" font-weight="600" fill="#c2410c">波前高处始终在暖空气中跑得更快！</text>
+            <text x="0" y="54" font-size="11" font-weight="700" fill="#1e293b">2. 持续同向旋转（像单侧快轮）：</text>
+            <text x="0" y="70" font-size="10.2" fill="#334155">上轮快、下轮慢 → 全程向海面偏转：</text>
+            <text x="0" y="85" font-size="10.2" font-weight="600" fill="#7c3aed">斜向上 → 变水平 → 斜向下（不反向）</text>
+            <text x="0" y="102" font-size="10" fill="#64748b">（点击上方“炎热路面”可对比反向情况）</text>
+          `;
+        } else {
+          headerSubtitle.innerHTML = `对比模式（炎热路面 / 沙漠下现蜃景）：近地面空气被烤热，导致<strong>下方空气更暖更快</strong>（<span class="italic font-serif">v</span><sub>下</sub> &gt; <span class="italic font-serif">v</span><sub>上</sub>），此时波前速度差反转，光线<strong>向上弯曲</strong>形成倒影！`;
+          insetTitle.textContent = "对比模式：当“下快上慢”时，光线才会向上弯曲！";
+          insetBullets.innerHTML = `
+            <text x="0" y="4" font-size="11" font-weight="700" fill="#1e293b">1. 温度分布与海面完全相反：</text>
+            <text x="0" y="20" font-size="10.2" fill="#334155">柏油路/沙漠表面暴晒极热、空气稀疏，</text>
+            <text x="0" y="34" font-size="10.2" font-weight="600" fill="#c2410c">波前下方光速更快（v_下 &gt; v_上）！</text>
+            <text x="0" y="54" font-size="11" font-weight="700" fill="#1e293b">2. 顺时针向上偏转（U型上弯）：</text>
+            <text x="0" y="70" font-size="10.2" fill="#334155">下轮快、上轮慢 → 全程远离地面上翘，</text>
+            <text x="0" y="85" font-size="10.2" font-weight="600" fill="#7c3aed">在地面下方形成倒立虚像（如路面水影）</text>
+            <text x="0" y="102" font-size="10" fill="#64748b">（切回“海面逆温”可对比向下弯曲）</text>
+          `;
+        }
+      }
+
+      // Main Render Function
+      function render() {
+        layersGroup.innerHTML = "";
+        earthSeaGroup.innerHTML = "";
+        geometryGuidesGroup.innerHTML = "";
+        cityObjectsGroup.innerHTML = "";
+        raysAndNormalsGroup.innerHTML = "";
+        annotationsGroup.innerHTML = "";
+
+        const isLayered = state.mode === "layered";
+        const isInferior = state.mirageType === "inferior";
+        updatePedagogicalCopy(isInferior);
+
+        continuousBackdrop.setAttribute("fill", isInferior ? "url(#inferiorSkyGrad)" : "url(#continuousSkyGrad)");
+        continuousBackdrop.setAttribute("opacity", isLayered ? "0" : "1");
+
+        // 1. Stratified Atmospheric Layers
+        const layerSpecs = !isInferior ? [
+          { h0: 0,   h1: 42,  fill: "#bae6fd", stroke: "#38bdf8", name: "第1层（底层冷空气）", desc: "冷 · 稠密 · 光速 v 慢", textColor: "#0369a1" },
+          { h0: 42,  h1: 86,  fill: "#e0f2fe", stroke: "#7dd3fc", name: "第2层（较冷空气）", desc: "温度升高 · 光速变快", textColor: "#0284c7" },
+          { h0: 86,  h1: 132, fill: "#fef9c3", stroke: "#fde047", name: "第3层（较暖空气）", desc: "更暖稀疏 · 光速更快", textColor: "#a16207" },
+          { h0: 132, h1: 185, fill: "#ffedd5", stroke: "#fdba74", name: "第4层（上层暖空气）", desc: "热 · 稀薄 · 光速 v 最快", textColor: "#c2410c" }
+        ] : [
+          { h0: 0,   h1: 36,  fill: "#fed7aa", stroke: "#fb923c", name: "第1层（贴地极热空气）", desc: "滚烫 · 稀薄 · 光速 v 最快", textColor: "#c2410c" },
+          { h0: 36,  h1: 76,  fill: "#fef9c3", stroke: "#fde047", name: "第2层（近地暖空气）", desc: "较热 · 光速较快", textColor: "#a16207" },
+          { h0: 76,  h1: 120, fill: "#e0f2fe", stroke: "#7dd3fc", name: "第3层（中层较凉空气）", desc: "变凉 · 光速变慢", textColor: "#0284c7" },
+          { h0: 120, h1: 175, fill: "#bae6fd", stroke: "#38bdf8", name: "第4层（上层冷空气）", desc: "冷 · 稠密 · 光速 v 慢", textColor: "#0369a1" }
+        ];
+
+        const aStart = -26;
+        const aEnd = 26;
+
+        layerSpecs.forEach((layer, idx) => {
+          const p0L = polarToXY(aStart, layer.h0);
+          const p0R = polarToXY(aEnd, layer.h0);
+          const p1R = polarToXY(aEnd, layer.h1);
+          const p1L = polarToXY(aStart, layer.h1);
+
+          const rInner = R_EARTH + layer.h0;
+          const rOuter = R_EARTH + layer.h1;
+
+          const dBand = [
+            `M ${p0L.x.toFixed(1)} ${p0L.y.toFixed(1)}`,
+            `A ${rInner} ${rInner} 0 0 1 ${p0R.x.toFixed(1)} ${p0R.y.toFixed(1)}`,
+            `L ${p1R.x.toFixed(1)} ${p1R.y.toFixed(1)}`,
+            `A ${rOuter} ${rOuter} 0 0 0 ${p1L.x.toFixed(1)} ${p1L.y.toFixed(1)}`,
+            "Z"
+          ].join(" ");
+
+          el("path", {
+            d: dBand,
+            fill: layer.fill,
+            opacity: isLayered ? "0.78" : "0.0"
+          }, layersGroup);
+
+          if (idx > 0) {
+            const dArc = `M ${p0L.x.toFixed(1)} ${p0L.y.toFixed(1)} A ${rInner} ${rInner} 0 0 1 ${p0R.x.toFixed(1)} ${p0R.y.toFixed(1)}`;
+            el("path", {
+              d: dArc,
+              fill: "none",
+              stroke: isLayered ? layer.stroke : "#94a3b8",
+              "stroke-width": isLayered ? "1.6" : "0.9",
+              "stroke-dasharray": isLayered ? "none" : "5,5",
+              opacity: isLayered ? "0.95" : "0.45"
+            }, layersGroup);
+          }
+        });
+
+        // 2. Curved Ocean or Hot Asphalt Surface
+        const seaL = polarToXY(-28, 0);
+        const seaR = polarToXY(28, 0);
+        const dSea = `M ${seaL.x.toFixed(1)} ${seaL.y.toFixed(1)} A ${R_EARTH} ${R_EARTH} 0 0 1 ${seaR.x.toFixed(1)} ${seaR.y.toFixed(1)} L 1120 650 L -20 650 Z`;
+        el("path", {
+          d: dSea,
+          fill: isInferior ? "url(#roadGrad)" : "url(#oceanGrad)",
+          stroke: isInferior ? "#f97316" : "#0369a1",
+          "stroke-width": "2.5"
+        }, earthSeaGroup);
+
+        if (!isInferior) {
+          [-35, -75, -115].forEach((offset, i) => {
+            const wL = polarToXY(-22 + i * 2, offset);
+            const wR = polarToXY(22 - i * 2, offset);
+            const rW = R_EARTH + offset;
+            el("path", {
+              d: `M ${wL.x.toFixed(1)} ${wL.y.toFixed(1)} A ${rW} ${rW} 0 0 1 ${wR.x.toFixed(1)} ${wR.y.toFixed(1)}`,
+              fill: "none",
+              stroke: "#38bdf8",
+              "stroke-width": "1.2",
+              "stroke-dasharray": "14,10,4,10",
+              opacity: "0.28"
+            }, earthSeaGroup);
+          });
+        } else {
+          // Road centerline dashes
+          const wL = polarToXY(-22, -16);
+          const wR = polarToXY(22, -16);
+          const rW = R_EARTH - 16;
+          el("path", {
+            d: `M ${wL.x.toFixed(1)} ${wL.y.toFixed(1)} A ${rW} ${rW} 0 0 1 ${wR.x.toFixed(1)} ${wR.y.toFixed(1)}`,
+            fill: "none",
+            stroke: "#facc15",
+            "stroke-width": "2.5",
+            "stroke-dasharray": "18,16",
+            opacity: "0.7"
+          }, earthSeaGroup);
+        }
+
+        // 3. Key Positions
+        const obsAngle = -14.5;
+        const cityAngle = isInferior ? 12.8 : 15.8;
+
+        drawObserver(obsAngle, isInferior);
+
+        const eyePos = polarToXY(obsAngle, 38);
+        const cityBasePos = polarToXY(cityAngle, 0);
+        const cityTopPos = polarToXY(cityAngle, 46);
+
+        drawSkyline(cityObjectsGroup, cityBasePos.x, cityBasePos.y, cityAngle, 0.85, false, false);
+
+        const realCityLabelG = el("g", {
+          transform: `translate(${(cityBasePos.x - 10).toFixed(1)}, ${(cityBasePos.y + 34).toFixed(1)})`
+        }, annotationsGroup);
+        const tReal1 = el("text", {
+          x: 0, y: 0, "text-anchor": "middle", "font-size": "13.5", "font-weight": "700",
+          fill: "#ffffff", class: "svg-text-outline-dark"
+        }, realCityLabelG);
+        tReal1.textContent = "远处物体（实际位置）";
+        const tReal2 = el("text", {
+          x: 0, y: 17, "text-anchor": "middle", "font-size": "11.5", "font-weight": "500",
+          fill: isInferior ? "#fed7aa" : "#bae6fd", class: "svg-text-outline-dark"
+        }, realCityLabelG);
+        tReal2.textContent = isInferior ? "炎热路面远端物体" : "位于几何地平线以下";
+
+        // 4. Direct Straight Sightline
+        el("line", {
+          x1: eyePos.x, y1: eyePos.y,
+          x2: cityTopPos.x, y2: cityTopPos.y,
+          stroke: "#64748b",
+          "stroke-width": "1.5",
+          "stroke-dasharray": "4,4",
+          opacity: "0.75"
+        }, geometryGuidesGroup);
+
+        if (!isInferior) {
+          const midBlock = {
+            x: (eyePos.x + cityTopPos.x) * 0.52,
+            y: (eyePos.y + cityTopPos.y) * 0.52
+          };
+          const blockBadge = el("g", { transform: `translate(${midBlock.x.toFixed(1)}, ${(midBlock.y + 16).toFixed(1)})` }, geometryGuidesGroup);
+          el("rect", { x: -58, y: -11, width: 116, height: 20, rx: 10, fill: "rgba(15, 23, 42, 0.78)", stroke: "#38bdf8", "stroke-width": "1" }, blockBadge);
+          const tBlock = el("text", { x: 0, y: 3, "text-anchor": "middle", "font-size": "10.5", "font-weight": "600", fill: "#f8fafc" }, blockBadge);
+          tBlock.textContent = "✕ 直线视线被海面遮挡";
+        }
+
+        // 5. Calculate Ray Path (Superior bends downward over sea; Inferior dips close to hot road and bends upward)
+        const inv = 0.55 + ((state.deltaT - 3) / 12) * 0.80;
+        let waypointsPolar;
+
+        if (!isInferior) {
+          const hPeak = 114 + (inv - 1.0) * 58;
+          waypointsPolar = [
+            { a: cityAngle, h: 42 },
+            { a: 10.6,      h: 86 },
+            { a: 4.8,       h: Math.min(132, hPeak) },
+            { a: -0.6,      h: hPeak },
+            { a: -5.8,      h: Math.min(132, hPeak) },
+            { a: -10.5,     h: 86 },
+            { a: obsAngle,  h: 38 }
+          ];
+          if (hPeak < 132) {
+            waypointsPolar[2].h = 86 + (hPeak - 86) * 0.78;
+            waypointsPolar[4].h = 86 + (hPeak - 86) * 0.78;
+          }
+        } else {
+          // Inferior mirage: ray starts downward toward hot surface, grazes hot layer at hMin, and bends UPWARD into eye
+          const hMin = Math.max(6, 16 - (inv - 1.0) * 14);
+          waypointsPolar = [
+            { a: cityAngle, h: 46 },
+            { a: 7.5,       h: 36 },
+            { a: 2.2,       h: hMin + 12 },
+            { a: -2.0,      h: hMin },
+            { a: -6.2,      h: hMin + 12 },
+            { a: -10.5,     h: 26 },
+            { a: obsAngle,  h: 38 }
+          ];
+        }
+
+        const pts = waypointsPolar.map((wp) => ({
+          ...polarToXY(wp.a, wp.h),
+          a: wp.a,
+          h: wp.h
+        }));
+        currentPts = pts;
+
+        // Store stage focus coordinates for zoom presets
+        stageCoords = {
+          s1: pts[1],
+          s2: pts[3],
+          s3: pts[5]
+        };
+
+        // Draw Ray Path
+        if (isLayered) {
+          for (let i = 0; i < pts.length - 1; i++) {
+            const pA = pts[i];
+            const pB = pts[i + 1];
+            const midX = (pA.x + pB.x) / 2;
+            const midY = (pA.y + pB.y) / 2;
+
+            el("line", {
+              x1: pA.x.toFixed(1), y1: pA.y.toFixed(1),
+              x2: midX.toFixed(1), y2: midY.toFixed(1),
+              stroke: "#e11d48", "stroke-width": "3",
+              "marker-end": "url(#rayArrow)"
+            }, raysAndNormalsGroup);
+
+            el("line", {
+              x1: midX.toFixed(1), y1: midY.toFixed(1),
+              x2: pB.x.toFixed(1), y2: pB.y.toFixed(1),
+              stroke: "#e11d48", "stroke-width": "3"
+            }, raysAndNormalsGroup);
+          }
+
+          [1, 2, 4, 5].forEach((idx) => {
+            const p = pts[idx];
+            el("circle", {
+              cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: "4",
+              fill: "#ffffff", stroke: "#e11d48", "stroke-width": "2"
+            }, raysAndNormalsGroup);
+          });
+        } else {
+          let dSmooth = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[Math.max(0, i - 1)];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[Math.min(pts.length - 1, i + 2)];
+
+            const cp1x = p1.x + (p2.x - p0.x) / 6;
+            const cp1y = p1.y + (p2.y - p0.y) / 6;
+            const cp2x = p2.x - (p3.x - p1.x) / 6;
+            const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+            dSmooth += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+          }
+
+          el("path", {
+            d: dSmooth,
+            fill: "none",
+            stroke: "#e11d48",
+            "stroke-width": "3.4",
+            "stroke-linecap": "round"
+          }, raysAndNormalsGroup);
+
+          [1, 3, 5].forEach((idx) => {
+            const pA = pts[idx];
+            const pB = pts[idx + 1];
+            const ang = Math.atan2(pB.y - pA.y, pB.x - pA.x) * (180 / Math.PI);
+            const mx = (pA.x + pB.x) / 2;
+            const my = (pA.y + pB.y) / 2;
+            el("path", {
+              d: "M -5 -4 L 5 0 L -5 4 z",
+              fill: "#e11d48",
+              transform: `translate(${mx.toFixed(1)}, ${my.toFixed(1)}) rotate(${ang.toFixed(1)})`
+            }, raysAndNormalsGroup);
+          });
+        }
+
+        // 6. Local Radial Normals
+        if (state.showNormals) {
+          [pts[1], pts[5]].forEach((np, i) => {
+            const dx = np.x - CX;
+            const dy = np.y - CY;
+            const len = Math.hypot(dx, dy);
+            const ux = dx / len;
+            const uy = dy / len;
+
+            const nLen = 44;
+            el("line", {
+              x1: (np.x - ux * nLen).toFixed(1), y1: (np.y - uy * nLen).toFixed(1),
+              x2: (np.x + ux * nLen).toFixed(1), y2: (np.y + uy * nLen).toFixed(1),
+              stroke: "#1e293b",
+              "stroke-width": "1.5",
+              "stroke-dasharray": "4,3"
+            }, raysAndNormalsGroup);
+
+            const tNorm = el("text", {
+              x: (np.x - ux * (nLen + 11)).toFixed(1),
+              y: (np.y - uy * (nLen + 11)).toFixed(1),
+              "text-anchor": "middle",
+              "font-size": "10.5",
+              "font-weight": "700",
+              fill: "#1e293b",
+              class: "svg-text-outline"
+            }, raysAndNormalsGroup);
+            tNorm.textContent = i === 0 ? "法线" : "法线";
+          });
+        }
+
+        // 7. Three-Stage Wavefront Speed-Differential & Continuous Turn Visualization
+        if (state.showWavefronts) {
+          const fastLen = 24 + ((state.deltaT - 3) / 12) * 11;
+          const slowLen = 9;
+          const topIsFaster = !isInferior;
+
+          const stageMeta = !isInferior ? [
+            { idx: 1, badge: "① 上升段 (Rising)", desc: "v_上 > v_下 → 逆时针压平(↺)", isPeak: false },
+            { idx: 3, badge: "② 最高点 (Parallel)", desc: "仍 v_上 > v_下 → 继续向下拐(↺)", isPeak: true },
+            { idx: 5, badge: "③ 下降段 (Descending)", desc: "速度差未反转 → 仍向下弯(↺)", isPeak: false }
+          ] : [
+            { idx: 1, badge: "① 下降段 (Approaching)", desc: "v_下 > v_上 → 顺时针压平(↻)", isPeak: false },
+            { idx: 3, badge: "② 最低点 (Parallel)", desc: "仍 v_下 > v_上 → 继续向上翘(↻)", isPeak: true },
+            { idx: 5, badge: "③ 上升段 (Rising to Eye)", desc: "速度差未反转 → 仍向上弯(↻)", isPeak: false }
+          ];
+
+          stageMeta.forEach((st) => {
+            const pA = pts[st.idx - 1];
+            const pB = pts[st.idx + 1];
+            const pMid = pts[st.idx];
+
+            const tx = pB.x - pA.x;
+            const ty = pB.y - pA.y;
+            const tLen = Math.hypot(tx, ty);
+            const ux = tx / tLen;
+            const uy = ty / tLen;
+
+            drawWavefrontDiag(
+              raysAndNormalsGroup,
+              pMid,
+              ux,
+              uy,
+              fastLen,
+              slowLen,
+              topIsFaster,
+              st.badge,
+              st.desc,
+              st.isPeak
+            );
+          });
+        }
+
+        // 8. Backward Tangent Extension -> Virtual Mirage Image
+        const pLast = pts[pts.length - 1];
+        const pPrev = pts[pts.length - 2];
+
+        const bx = pPrev.x - pLast.x;
+        const by = pPrev.y - pLast.y;
+        const bLen = Math.hypot(bx, by);
+        const bux = bx / bLen;
+        const buy = by / bLen;
+
+        const distToMirage = isInferior ? 640 : 710;
+        const mirageTop = {
+          x: pLast.x + bux * distToMirage,
+          y: pLast.y + buy * distToMirage
+        };
+
+        if (!isInferior) {
+          mirageTop.y = Math.max(58, Math.min(225, mirageTop.y));
+        } else {
+          mirageTop.y = Math.max(465, Math.min(545, mirageTop.y));
+        }
+
+        if (state.showVirtualSight) {
+          el("line", {
+            x1: pLast.x.toFixed(1), y1: pLast.y.toFixed(1),
+            x2: mirageTop.x.toFixed(1), y2: mirageTop.y.toFixed(1),
+            stroke: "#334155",
+            "stroke-width": "2.2",
+            "stroke-dasharray": "7,5",
+            "marker-end": "url(#virtualArrow)"
+          }, raysAndNormalsGroup);
+
+          const extDist = isInferior ? 330 : 390;
+          const extMidX = pLast.x + bux * extDist;
+          const extMidY = pLast.y + buy * extDist - 11;
+          const extAngle = Math.atan2(buy, bux) * (180 / Math.PI);
+          const tExt = el("text", {
+            x: extMidX.toFixed(1),
+            y: extMidY.toFixed(1),
+            "text-anchor": "middle",
+            "font-size": "12",
+            "font-weight": "700",
+            fill: isInferior ? "#f8fafc" : "#1e293b",
+            transform: `rotate(${extAngle.toFixed(1)}, ${extMidX.toFixed(1)}, ${extMidY.toFixed(1)})`,
+            class: isInferior ? "svg-text-outline-dark" : "svg-text-outline"
+          }, raysAndNormalsGroup);
+          tExt.textContent = "人眼逆着光线方向望去（虚线延长线）";
+        }
+
+        // Draw Floating Upright (Superior) or Inverted Ground (Inferior) Mirage Image
+        drawSkyline(
+          cityObjectsGroup,
+          mirageTop.x + 12,
+          isInferior ? mirageTop.y - 6 : mirageTop.y + 42,
+          0,
+          0.9,
+          true,
+          isInferior
+        );
+
+        const mirageLabelG = el("g", {
+          transform: `translate(${(mirageTop.x + 12).toFixed(1)}, ${(isInferior ? mirageTop.y + 62 : mirageTop.y + 66).toFixed(1)})`
+        }, annotationsGroup);
+        const tMir1 = el("text", {
+          x: 0, y: 0, "text-anchor": "middle", "font-size": "14", "font-weight": "700",
+          fill: isInferior ? "#38bdf8" : "#0369a1",
+          class: isInferior ? "svg-text-outline-dark" : "svg-text-outline"
+        }, mirageLabelG);
+        tMir1.textContent = isInferior ? "下现蜃景（倒立虚像）" : "海市蜃楼（正立虚像）";
+        const tMir2 = el("text", {
+          x: 0, y: 17, "text-anchor": "middle", "font-size": "11.5", "font-weight": "600",
+          fill: isInferior ? "#bae6fd" : "#0284c7",
+          class: isInferior ? "svg-text-outline-dark" : "svg-text-outline"
+        }, mirageLabelG);
+        tMir2.textContent = isInferior ? "Inferior Mirage (Inverted Image)" : "Superior Mirage (Upright Image)";
+
+        // 9. Atmospheric Layer Labels on Right Side
+        const rightLabelAngle = 21.8;
+        layerSpecs.forEach((layer, idx) => {
+          const midH = (layer.h0 + layer.h1) / 2;
+          const pos = polarToXY(rightLabelAngle, midH);
+          const g = el("g", {
+            transform: `translate(${(pos.x - 16).toFixed(1)}, ${(pos.y + 4).toFixed(1)})`
+          }, annotationsGroup);
+
+          if (isLayered) {
+            const t1 = el("text", {
+              x: 0, y: -3, "text-anchor": "end", "font-size": "11", "font-weight": "700",
+              fill: layer.textColor, class: "svg-text-outline"
+            }, g);
+            t1.textContent = layer.name;
+
+            const t2 = el("text", {
+              x: 0, y: 10, "text-anchor": "end", "font-size": "9.8", "font-weight": "500",
+              fill: "#334155", class: "svg-text-outline"
+            }, g);
+            t2.textContent = layer.desc;
+          } else if (idx === 0 || idx === 3) {
+            const tMain = el("text", {
+              x: 0, y: 2, "text-anchor": "end", "font-size": "12", "font-weight": "700",
+              fill: layer.textColor, class: "svg-text-outline"
+            }, g);
+            if (!isInferior) {
+              tMain.textContent = idx === 3 ? "上层暖空气（v_上 快）" : "底层冷空气（v_下 慢）";
+            } else {
+              tMain.textContent = idx === 3 ? "上层冷空气（v_上 慢）" : "贴地热空气（v_下 快）";
+            }
+          }
+        });
+      }
+
+      // Continuous Traveling Wavefront Pulse Animation Loop
+      function animateTravelingPulse() {
+        travelingPulseGroup.innerHTML = "";
+        if (state.pulsePlaying && state.showWavefronts && currentPts.length >= 2) {
+          pulsePhase = (pulsePhase + 0.0045) % 1;
+          const totalSegs = currentPts.length - 1;
+          const scaled = pulsePhase * totalSegs;
+          const segIdx = Math.min(totalSegs - 1, Math.floor(scaled));
+          const localT = scaled - segIdx;
+
+          const pA = currentPts[segIdx];
+          const pB = currentPts[segIdx + 1];
+          const px = pA.x + (pB.x - pA.x) * localT;
+          const py = pA.y + (pB.y - pA.y) * localT;
+
+          const tx = pB.x - pA.x;
+          const ty = pB.y - pA.y;
+          const tLen = Math.hypot(tx, ty);
+          const ux = tx / tLen;
+          const uy = ty / tLen;
+          const nxUp = -uy;
+          const nyUp = ux;
+
+          const halfW = 16;
+          el("line", {
+            x1: (px - nxUp * halfW).toFixed(1),
+            y1: (py - nyUp * halfW).toFixed(1),
+            x2: (px + nxUp * halfW).toFixed(1),
+            y2: (py + nyUp * halfW).toFixed(1),
+            stroke: "#f59e0b",
+            "stroke-width": "3.2",
+            "stroke-linecap": "round",
+            opacity: "0.92"
+          }, travelingPulseGroup);
+
+          el("circle", {
+            cx: px.toFixed(1),
+            cy: py.toFixed(1),
+            r: "4.2",
+            fill: "#f59e0b",
+            stroke: "#ffffff",
+            "stroke-width": "1.5"
+          }, travelingPulseGroup);
+        }
+        requestAnimationFrame(animateTravelingPulse);
+      }
+
+      // Event Listeners
+      btnMirageSuperior.addEventListener("click", () => {
+        state.mirageType = "superior";
+        btnMirageSuperior.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-sky-700 text-white shadow-sm transition cursor-pointer";
+        btnMirageInferior.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
+        render();
+      });
+
+      btnMirageInferior.addEventListener("click", () => {
+        state.mirageType = "inferior";
+        btnMirageInferior.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-amber-600 text-white shadow-sm transition cursor-pointer";
+        btnMirageSuperior.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
+        render();
+      });
+
+      btnLayered.addEventListener("click", () => {
+        state.mode = "layered";
+        btnLayered.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-sky-800 shadow-sm transition cursor-pointer";
+        btnContinuous.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
+        render();
+      });
+
+      btnContinuous.addEventListener("click", () => {
+        state.mode = "continuous";
+        btnContinuous.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-sky-800 shadow-sm transition cursor-pointer";
+        btnLayered.className = "px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer";
+        render();
+      });
+
+      inversionSlider.addEventListener("input", (e) => {
+        state.deltaT = parseFloat(e.target.value);
+        inversionValue.textContent = `${state.deltaT.toFixed(1)}°C`;
+        render();
+      });
+
+      chkNormals.addEventListener("change", (e) => {
+        state.showNormals = e.target.checked;
+        render();
+      });
+
+      chkWavefronts.addEventListener("change", (e) => {
+        state.showWavefronts = e.target.checked;
+        render();
+      });
+
+      chkVirtualSight.addEventListener("change", (e) => {
+        state.showVirtualSight = e.target.checked;
+        render();
+      });
+
+      btnTogglePulse.addEventListener("click", () => {
+        state.pulsePlaying = !state.pulsePlaying;
+        pulseIcon.textContent = state.pulsePlaying ? "⏸" : "▶";
+      });
+
+      btnDownloadSvg.addEventListener("click", () => {
+        const prevViewBox = svg.getAttribute("viewBox");
+        svg.setAttribute("viewBox", `0 0 ${BASE_W} ${BASE_H}`);
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(svg);
+        svg.setAttribute("viewBox", prevViewBox);
+
+        const styleBlock = `<style>
+          text { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+          .svg-text-outline { paint-order: stroke; stroke: rgba(255,255,255,0.92); stroke-width: 3.5px; stroke-linecap: round; stroke-linejoin: round; }
+          .svg-text-outline-dark { paint-order: stroke; stroke: rgba(15,23,42,0.85); stroke-width: 3px; stroke-linecap: round; stroke-linejoin: round; }
+        </style>`;
+        source = source.replace("<defs>", `<defs>${styleBlock}`);
+        const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${state.mirageType}-mirage-wavefront-diagram.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+
+      // Initial draw & start traveling wavefront pulse
+      applyViewBox();
+      render();
+      requestAnimationFrame(animateTravelingPulse);
+    })();
+  </script>
+</body>
+</html>

@@ -232,22 +232,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Last viewed button setup
+    const btnShowLast = document.getElementById('btn-show-last');
+    function updateLastViewedButton() {
+        const lastOpened = localStorage.getItem('lastOpenedFile');
+        if (lastOpened && btnShowLast) {
+            const targetLink = document.querySelector(`.node-link[href="${lastOpened}"]`);
+            if (targetLink) {
+                const fileName = targetLink.querySelector('.file-name')?.textContent || '';
+                btnShowLast.style.display = 'inline-flex';
+                if (fileName) {
+                    btnShowLast.title = `定位上次访问: ${fileName}`;
+                }
+            }
+        }
+    }
+
+    if (btnShowLast) {
+        btnShowLast.addEventListener('click', () => {
+            scrollToLastOpenedFile();
+        });
+    }
+
+    updateLastViewedButton();
+
     // Record last opened file in localStorage
     document.addEventListener('click', (e) => {
         const link = e.target.closest('.node-link');
         if (link) {
             localStorage.setItem('lastOpenedFile', link.getAttribute('href'));
+            updateLastViewedButton();
         }
     });
 });
 
-// Restore accordion state if last opened file is recorded
-function restoreAccordionState() {
+// Locate and scroll to last opened file on user request
+function scrollToLastOpenedFile() {
     const treeRoot = document.getElementById('project-tree');
     const lastOpened = localStorage.getItem('lastOpenedFile');
     if (lastOpened && treeRoot) {
         const targetLink = document.querySelector(`.node-link[href="${lastOpened}"]`);
         if (targetLink) {
+            // Fold all folders first
             document.querySelectorAll('.tree-node.folder').forEach(f => {
                 f.classList.remove('open');
             });
@@ -272,11 +298,15 @@ function restoreAccordionState() {
 
                 setTimeout(() => {
                     fileNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
+                }, 100);
             }
         }
     }
 }
 
-// Run on pageshow to handle normal loading and Back-Forward Cache (bfcache) navigation
-window.addEventListener('pageshow', restoreAccordionState);
+// Run on pageshow ONLY when navigating back via Back-Forward Cache (bfcache)
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        scrollToLastOpenedFile();
+    }
+});
