@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bicycle Tail Light Principle — 自行车尾灯反光原理 (Fig 4.2-8)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Custom slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 999px;
+            background: #cbd5e1;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e11d48;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.25);
+            margin-top: -6px;
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Smooth pulse for active numbered badges */
+        @keyframes badgePop {
+            0% {
+                transform: scale(0.75);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .badge-animate {
+            animation: badgePop 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between p-3 sm:p-5">
+
+    <!-- Header -->
+    <header
+        class="max-w-6xl w-full mx-auto mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-white border border-slate-200 rounded-2xl px-5 py-3.5 shadow-sm">
+        <div>
+            <div class="flex items-center gap-2">
+                <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">
+                    Optics · 图 4.2-8
+                </span>
+                <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                    Bicycle Tail Light Retroreflector <span
+                        class="text-slate-500 font-medium text-base ml-1">自行车尾灯反光原理</span>
+                </h1>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                Corner-cube mirrors reflect incoming light strictly parallel back to the source via two perpendicular
+                reflections.
+            </p>
+        </div>
+
+        <!-- Playback Controls & Navigation -->
+        <div class="flex items-center gap-2 shrink-0">
+            <a href="../../index.html"
+                class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-sm font-medium transition"
+                title="返回课程资源地图">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span>返回主页</span>
+            </a>
+            <button id="btnPlayPause"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-sm font-semibold shadow-sm transition">
+                <svg id="iconPlay" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                <svg id="iconPause" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
+                </svg>
+                <span id="txtPlayPause">Pause 暂停</span>
+            </button>
+            <button id="btnReset"
+                class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-sm font-medium transition"
+                title="Restart animation">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
+
+        <!-- Left / Main Optical Diagram Canvas (7 cols) -->
+        <section
+            class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl shadow-sm p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden">
+
+            <!-- Top Canvas Overlay Controls -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100 text-xs">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-700">
+                        <span class="w-3 h-1 rounded-full bg-rose-600 inline-block"></span> Incident 入射光
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-700">
+                        <span class="w-3 h-1 rounded-full bg-amber-500 inline-block"></span> 1st Reflected 一次反射
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-700">
+                        <span class="w-3 h-1 rounded-full bg-emerald-600 inline-block"></span> 2nd Reflected 二次反射
+                    </span>
+                </div>
+
+                <label
+                    class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-600 hover:text-slate-900 font-medium">
+                    <input id="toggleDetails" type="checkbox" checked
+                        class="rounded text-rose-600 focus:ring-rose-500 w-4 h-4 accent-rose-600" />
+                    <span>Show Normals & Angles 显示法线与角度</span>
+                </label>
+            </div>
+
+            <!-- Interactive SVG Canvas -->
+            <div class="w-full flex-1 flex items-center justify-center my-1">
+                <svg id="opticsSvg" viewBox="0 0 680 470" class="w-full h-auto max-h-[470px] select-none"
+                    aria-label="Corner reflector ray diagram">
+                    <defs>
+                        <!-- Subtle Grid Background -->
+                        <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                        </pattern>
+
+                        <!-- Mirror Hatching Pattern (back of mirror) -->
+                        <pattern id="mirrorHatch" width="8" height="8" patternTransform="rotate(45 0 0)"
+                            patternUnits="userSpaceOnUse">
+                            <line x1="0" y1="0" x2="0" y2="8" stroke="#94a3b8" stroke-width="1.5" />
+                        </pattern>
+
+                        <!-- Arrowheads -->
+                        <marker id="arrowRose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+                            orient="auto-start-reverse">
+                            <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#e11d48" />
+                        </marker>
+                        <marker id="arrowAmber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+                            orient="auto-start-reverse">
+                            <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#d97706" />
+                        </marker>
+                        <marker id="arrowEmerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+                            orient="auto-start-reverse">
+                            <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#059669" />
+                        </marker>
+                    </defs>
+
+                    <!-- Grid Backdrop -->
+                    <rect x="0" y="0" width="680" height="470" fill="url(#gridPattern)" rx="12" />
+
+                    <!-- Left Reference: Car Headlight / Observer -->
+                    <g transform="translate(22, 185)">
+                        <rect x="0" y="0" width="76" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1"
+                            stroke-width="1.5" />
+                        <!-- Torch / Headlight Icon -->
+                        <path d="M 22 36 L 44 36 L 54 28 L 54 56 L 44 48 L 22 48 Z" fill="#fef08a" stroke="#eab308"
+                            stroke-width="1.5" stroke-linejoin="round" />
+                        <rect x="14" y="38" width="10" height="8" rx="2" fill="#64748b" />
+                        <text x="38" y="73" text-anchor="middle" font-size="10.5" font-weight="700"
+                            fill="#334155">Source / Eye</text>
+                        <text x="38" y="88" text-anchor="middle" font-size="10" fill="#64748b">光源 / 人眼</text>
+                    </g>
+
+                    <!-- Mirror Structure Group (Zig-Zag 90° Corner Reflectors like Fig 4.2-8 乙) -->
+                    <g id="mirrorGroup"></g>
+
+                    <!-- Dynamic Normals, Angle Arcs & Protractor Labels -->
+                    <g id="geometryGroup"></g>
+
+                    <!-- Dynamic Light Rays Group -->
+                    <g id="raysGroup"></g>
+
+                    <!-- Dynamic Numbered Step Badges (①, ②, ③, ④) -->
+                    <g id="badgesGroup"></g>
+
+                    <!-- Bottom Caption matching textbook Fig 4.2-8 -->
+                    <text x="340" y="454" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">
+                        图 4.2-8 乙 · Mutually Perpendicular Reflecting Surfaces (互成直角的反射面)
+                    </text>
+                </svg>
+            </div>
+
+            <!-- Interactive Sliders Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2.5 border-t border-slate-100">
+                <!-- Incident Angle Tilt Slider -->
+                <div class="bg-slate-50 rounded-xl px-3.5 py-2.5 border border-slate-200/70">
+                    <div class="flex justify-between items-center text-xs font-semibold mb-1">
+                        <span class="text-slate-700">Beam Tilt Angle 入射倾斜角 ($\alpha$)</span>
+                        <span id="valTilt" class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 font-mono">0°
+                            (Horizontal)</span>
+                    </div>
+                    <input id="sliderTilt" type="range" min="-22" max="22" step="1" value="0" class="w-full" />
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
+                        <span>-22° (Upward)</span>
+                        <button id="btnZeroTilt" class="text-rose-600 hover:underline font-medium">Reset 0°</button>
+                        <span>+22° (Downward)</span>
+                    </div>
+                </div>
+
+                <!-- Animation Speed / Progress Scrubber -->
+                <div class="bg-slate-50 rounded-xl px-3.5 py-2.5 border border-slate-200/70">
+                    <div class="flex justify-between items-center text-xs font-semibold mb-1">
+                        <span class="text-slate-700">Ray Progress 光线传播进度</span>
+                        <span id="valProgress"
+                            class="px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono">100%</span>
+                    </div>
+                    <input id="sliderProgress" type="range" min="0" max="100" step="1" value="100" class="w-full" />
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
+                        <span>Start 起点</span>
+                        <span>① → ② → ③ → ④</span>
+                        <span>Complete 返回</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Numbered Steps + Angle Mathematics (5 cols) -->
+        <aside class="lg:col-span-5 flex flex-col gap-3.5">
+
+            <!-- Numbered Step Selector Cards -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-2.5">
+                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                        4-Step Reflection Sequence 分步解析
+                    </h2>
+                    <span class="text-xs text-slate-400">Click any step 点击跳转</span>
+                </div>
+
+                <div class="space-y-2" id="stepCardsContainer">
+                    <!-- Step 1 -->
+                    <button data-step="1"
+                        class="step-card w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-rose-300 transition flex items-start gap-3">
+                        <span
+                            class="step-num w-6 h-6 rounded-full bg-rose-600 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-xs sm:text-sm text-slate-900">First Incidence 第一次入射</span>
+                                <span id="badgeAngle1"
+                                    class="text-xs font-mono font-semibold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">i₁
+                                    = 45°</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                                Incoming light strikes the upper mirror. The normal line <span
+                                    class="font-mono font-semibold">N₁</span> is perpendicular to the mirror surface.
+                            </p>
+                        </div>
+                    </button>
+
+                    <!-- Step 2 -->
+                    <button data-step="2"
+                        class="step-card w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-300 transition flex items-start gap-3">
+                        <span
+                            class="step-num w-6 h-6 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-xs sm:text-sm text-slate-900">First Reflection 第一次反射</span>
+                                <span id="badgeAngle2"
+                                    class="text-xs font-mono font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">r₁
+                                    = i₁ = 45°</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                                By the Law of Reflection (<span class="font-mono">r₁ = i₁</span>), the ray bounces
+                                downward toward the lower perpendicular mirror.
+                            </p>
+                        </div>
+                    </button>
+
+                    <!-- Step 3 -->
+                    <button data-step="3"
+                        class="step-card w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-300 transition flex items-start gap-3">
+                        <span
+                            class="step-num w-6 h-6 rounded-full bg-amber-600 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-xs sm:text-sm text-slate-900">Second Incidence 第二次入射</span>
+                                <span id="badgeAngle3"
+                                    class="text-xs font-mono font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">i₂
+                                    = 90° - i₁ = 45°</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                                Because the two mirrors meet at <span class="font-mono font-semibold">90°</span>,
+                                triangle geometry gives <span class="font-mono font-semibold">i₂ = 90° − i₁</span>.
+                            </p>
+                        </div>
+                    </button>
+
+                    <!-- Step 4 -->
+                    <button data-step="4"
+                        class="step-card w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-300 transition flex items-start gap-3">
+                        <span
+                            class="step-num w-6 h-6 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">4</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-xs sm:text-sm text-slate-900">Parallel Return 原路平行返回</span>
+                                <span id="badgeAngle4"
+                                    class="text-xs font-mono font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">r₂
+                                    = i₂ = 45°</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                                Total deviation equals <span class="font-mono font-semibold">2i₁ + 2i₂ = 180°</span>.
+                                The reflected beam returns strictly parallel to the source!
+                            </p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Angle Calculation & Proof Card -->
+            <div class="bg-slate-900 text-slate-100 rounded-2xl p-4 shadow-sm flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                            Live Angle Proof 实时几何角度计算
+                        </h3>
+                        <span class="text-[11px] font-mono text-slate-400">90° Corner Cube</span>
+                    </div>
+
+                    <!-- 4-box Angle Numbers Grid -->
+                    <div class="grid grid-cols-4 gap-2 my-2.5 text-center">
+                        <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-2">
+                            <div class="text-[10px] text-rose-300 font-medium">入射角 i₁</div>
+                            <div id="numI1" class="text-base sm:text-lg font-bold font-mono text-white mt-0.5">45°</div>
+                        </div>
+                        <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-2">
+                            <div class="text-[10px] text-amber-300 font-medium">反射角 r₁</div>
+                            <div id="numR1" class="text-base sm:text-lg font-bold font-mono text-white mt-0.5">45°</div>
+                        </div>
+                        <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-2">
+                            <div class="text-[10px] text-amber-300 font-medium">入射角 i₂</div>
+                            <div id="numI2" class="text-base sm:text-lg font-bold font-mono text-white mt-0.5">45°</div>
+                        </div>
+                        <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-2">
+                            <div class="text-[10px] text-emerald-300 font-medium">反射角 r₂</div>
+                            <div id="numR2" class="text-base sm:text-lg font-bold font-mono text-white mt-0.5">45°</div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Equation Readout -->
+                    <div
+                        class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 font-mono text-xs space-y-1.5 text-slate-200">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">1. Right-angle condition:</span>
+                            <span id="eqSum">i₁ + i₂ = 45° + 45° = 90°</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">2. Total deflection angle:</span>
+                            <span id="eqDeflect" class="text-emerald-400 font-bold">2i₁ + 2i₂ = 90° + 90° = 180°</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-300 mt-3 leading-relaxed border-t border-slate-800 pt-2.5">
+                    <strong class="text-white">Why it works (结论):</strong> Even when a bicycle wobbles or a car
+                    approaches at an angle, <span class="text-emerald-400 font-semibold">180° reversal</span> sends the
+                    headlights straight back into the driver's eyes!
+                </p>
+            </div>
+
+        </aside>
+    </main>
+
+    <script>
+        /**
+         * Interactive Corner-Cube Retroreflector Simulation (Fig 4.2-8)
+         * Models two mutually perpendicular mirrors (tilted at 45° to vertical)
+         * and traces two parallel rays through 4 numbered optical stages.
+         */
+        (function () {
+            const SVG_NS = "http://www.w3.org/2000/svg";
+
+            // DOM References
+            const mirrorGroup = document.getElementById("mirrorGroup");
+            const geometryGroup = document.getElementById("geometryGroup");
+            const raysGroup = document.getElementById("raysGroup");
+            const badgesGroup = document.getElementById("badgesGroup");
+
+            const sliderTilt = document.getElementById("sliderTilt");
+            const sliderProgress = document.getElementById("sliderProgress");
+            const valTilt = document.getElementById("valTilt");
+            const valProgress = document.getElementById("valProgress");
+            const toggleDetails = document.getElementById("toggleDetails");
+
+            const btnPlayPause = document.getElementById("btnPlayPause");
+            const iconPlay = document.getElementById("iconPlay");
+            const iconPause = document.getElementById("iconPause");
+            const txtPlayPause = document.getElementById("txtPlayPause");
+            const btnReset = document.getElementById("btnReset");
+            const btnZeroTilt = document.getElementById("btnZeroTilt");
+            const stepCards = document.querySelectorAll(".step-card");
+
+            // Readout elements
+            const numI1 = document.getElementById("numI1");
+            const numR1 = document.getElementById("numR1");
+            const numI2 = document.getElementById("numI2");
+            const numR2 = document.getElementById("numR2");
+            const badgeAngle1 = document.getElementById("badgeAngle1");
+            const badgeAngle2 = document.getElementById("badgeAngle2");
+            const badgeAngle3 = document.getElementById("badgeAngle3");
+            const badgeAngle4 = document.getElementById("badgeAngle4");
+            const eqSum = document.getElementById("eqSum");
+            const eqDeflect = document.getElementById("eqDeflect");
+
+            // Simulation State
+            let state = {
+                tiltDeg: 0,         // Beam tilt angle in degrees (-22 to +22)
+                progress: 0,        // Animation progress 0 to 100
+                isPlaying: true,
+                showDetails: true,
+                lastTimestamp: null
+            };
+
+            // Corner-Cube Geometry Constants
+            // Each corner has an inner right-angle vertex at (Vx, Vy).
+            // Upper mirror goes from (Vx - L, Vy - L) to (Vx, Vy) -> slope +1 (45° down-right)
+            // Lower mirror goes from (Vx, Vy) to (Vx - L, Vy + L) -> slope -1 (45° down-left)
+            const L = 76; // half-arm length of each mirror facet
+            const corners = [
+                { vx: 585, vy: 155, primary: true },   // Upper corner (gets detailed normals, arcs & badges ①②③④)
+                { vx: 585, vy: 307, primary: false }   // Lower corner (shows second parallel ray as in Fig 4.2-8 乙)
+            ];
+
+            // Helper: create SVG element with attributes
+            function createSvgEl(tag, attrs = {}) {
+                const el = document.createElementNS(SVG_NS, tag);
+                for (const [k, v] of Object.entries(attrs)) {
+                    el.setAttribute(k, v);
+                }
+                return el;
+            }
+
+            // Draw the static zig-zag mirror array matching Fig 4.2-8 (乙)
+            function buildMirrors() {
+                mirrorGroup.innerHTML = "";
+
+                // Build continuous zig-zag vertices from top to bottom
+                // Top tip -> Corner 1 vertex -> Middle tip -> Corner 2 vertex -> Bottom tip
+                const c1 = corners[0];
+                const c2 = corners[1];
+                const topTip = { x: c1.vx - L, y: c1.vy - L };
+                const midTip = { x: c1.vx - L, y: c1.vy + L }; // equals (c2.vx - L, c2.vy - L)
+                const botTip = { x: c2.vx - L, y: c2.vy + L };
+                const extraBot = { x: c2.vx, y: c2.vy + 2 * L };
+
+                const points = [topTip, { x: c1.vx, y: c1.vy }, midTip, { x: c2.vx, y: c2.vy }, botTip];
+                const polylineStr = points.map(p => `${p.x},${p.y}`).join(" ");
+
+                // Backing shadow/hatch strip behind mirrors (to the right of the zig-zag)
+                const backingPoints = [
+                    `${topTip.x + 8},${topTip.y - 4}`,
+                    `${c1.vx + 12},${c1.vy}`,
+                    `${midTip.x + 12},${midTip.y}`,
+                    `${c2.vx + 12},${c2.vy}`,
+                    `${botTip.x + 8},${botTip.y + 4}`,
+                    `${botTip.x},${botTip.y}`,
+                    `${c2.vx},${c2.vy}`,
+                    `${midTip.x},${midTip.y}`,
+                    `${c1.vx},${c1.vy}`,
+                    `${topTip.x},${topTip.y}`
+                ].join(" ");
+
+                mirrorGroup.appendChild(createSvgEl("polygon", {
+                    points: backingPoints,
+                    fill: "url(#mirrorHatch)",
+                    opacity: "0.85"
+                }));
+
+                // Main reflective mirror line (cyan-blue matching textbook diagram)
+                mirrorGroup.appendChild(createSvgEl("polyline", {
+                    points: polylineStr,
+                    fill: "none",
+                    stroke: "#0284c7",
+                    "stroke-width": "4",
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round"
+                }));
+
+                // 90° Right-Angle Symbols at the two inner vertices
+                corners.forEach((c, idx) => {
+                    const s = 14; // right angle square size along 45° arms
+                    const d = s / Math.SQRT2;
+                    // Arm 1 direction: (-1, -1)/sqrt(2), Arm 2 direction: (-1, +1)/sqrt(2)
+                    const p1 = { x: c.vx - d, y: c.vy - d };
+                    const pCorner = { x: c.vx - 2 * d, y: c.vy };
+                    const p2 = { x: c.vx - d, y: c.vy + d };
+
+                    mirrorGroup.appendChild(createSvgEl("polyline", {
+                        points: `${p1.x},${p1.y} ${pCorner.x},${pCorner.y} ${p2.x},${p2.y}`,
+                        fill: "none",
+                        stroke: "#334155",
+                        "stroke-width": "1.6"
+                    }));
+
+                    if (idx === 0) {
+                        const lbl = createSvgEl("text", {
+                            x: c.vx + 16,
+                            y: c.vy + 4,
+                            "font-size": "11",
+                            "font-weight": "700",
+                            fill: "#0369a1"
+                        });
+                        lbl.textContent = "90°";
+                        mirrorGroup.appendChild(lbl);
+                    }
+                });
+
+                // Label for Mirror Array
+                const mirrorLabel = createSvgEl("text", {
+                    x: 565,
+                    y: 58,
+                    "text-anchor": "middle",
+                    "font-size": "11.5",
+                    "font-weight": "700",
+                    fill: "#0369a1"
+                });
+                mirrorLabel.textContent = "Reflective Mirrors";
+                mirrorGroup.appendChild(mirrorLabel);
+
+                const mirrorSub = createSvgEl("text", {
+                    x: 565,
+                    y: 73,
+                    "text-anchor": "middle",
+                    "font-size": "10.5",
+                    fill: "#64748b"
+                });
+                mirrorSub.textContent = "互成直角的反射面";
+                mirrorGroup.appendChild(mirrorSub);
+            }
+
+            /**
+             * Compute exact ray path for a given corner vertex (vx, vy) and beam tilt angle alpha (radians).
+             * Mirror 1 (upper): line through (vx, vy) with normal n1 = (-1/sqrt(2), +1/sqrt(2)) (points down-left)
+             *   Equation: (x - vx) - (y - vy) = 0  =>  x - y = vx - vy
+             * Mirror 2 (lower): line through (vx, vy) with normal n2 = (-1/sqrt(2), -1/sqrt(2)) (points up-left)
+             *   Equation: (x - vx) + (y - vy) = 0  =>  x + y = vx + vy
+             */
+            function traceCornerRay(vx, vy, tiltDeg) {
+                const alpha = (tiltDeg * Math.PI) / 180;
+                // Incoming ray direction vector d0 (moving rightwards, tilted by alpha)
+                const d0 = { x: Math.cos(alpha), y: Math.sin(alpha) };
+
+                // Choose hit point P1 on Mirror 1 at distance u = 42 px from vertex along upper mirror (-1, -1)/sqrt(2)
+                // Adjust u slightly with tilt so P2 always lands cleanly on Mirror 2
+                const u = 44 - tiltDeg * 0.25;
+                const invSqrt2 = 1 / Math.SQRT2;
+                const P1 = {
+                    x: vx - u * invSqrt2,
+                    y: vy - u * invSqrt2
+                };
+
+                // Start point P0 at x = 115
+                const t0 = (P1.x - 115) / d0.x;
+                const P0 = {
+                    x: 115,
+                    y: P1.y - t0 * d0.y
+                };
+
+                // Reflection 1: d1 = d0 - 2*(d0 · n1)*n1
+                const n1 = { x: -invSqrt2, y: invSqrt2 };
+                const dot1 = d0.x * n1.x + d0.y * n1.y;
+                const d1 = {
+                    x: d0.x - 2 * dot1 * n1.x,
+                    y: d0.y - 2 * dot1 * n1.y
+                };
+
+                // Intersect ray P1 + t*d1 with Mirror 2: (x - vx) + (y - vy) = 0
+                // (P1.x - vx + t*d1.x) + (P1.y - vy + t*d1.y) = 0
+                const num = -((P1.x - vx) + (P1.y - vy));
+                const den = d1.x + d1.y;
+                const t1 = num / den;
+                const P2 = {
+                    x: P1.x + t1 * d1.x,
+                    y: P1.y + t1 * d1.y
+                };
+
+                // Reflection 2: d2 = d1 - 2*(d1 · n2)*n2
+                const n2 = { x: -invSqrt2, y: -invSqrt2 };
+                const dot2 = d1.x * n2.x + d1.y * n2.y;
+                const d2 = {
+                    x: d1.x - 2 * dot2 * n2.x,
+                    y: d1.y - 2 * dot2 * n2.y
+                };
+
+                // Outgoing endpoint P3 at x = 115
+                const t2 = (115 - P2.x) / d2.x;
+                const P3 = {
+                    x: 115,
+                    y: P2.y + t2 * d2.y
+                };
+
+                // Exact angles in degrees
+                const i1 = 45 - tiltDeg;
+                const r1 = i1;
+                const i2 = 90 - r1;
+                const r2 = i2;
+
+                return { P0, P1, P2, P3, n1, n2, i1, r1, i2, r2 };
+            }
+
+            // Helper to build an SVG arc path between two angles around (cx, cy)
+            function describeArc(cx, cy, radius, vecA, vecB) {
+                const angA = Math.atan2(vecA.y, vecA.x);
+                const angB = Math.atan2(vecB.y, vecB.x);
+                let diff = angB - angA;
+                while (diff <= -Math.PI) diff += 2 * Math.PI;
+                while (diff > Math.PI) diff -= 2 * Math.PI;
+
+                const startX = cx + radius * Math.cos(angA);
+                const startY = cy + radius * Math.sin(angA);
+                const endX = cx + radius * Math.cos(angB);
+                const endY = cy + radius * Math.sin(angB);
+                const sweepFlag = diff >= 0 ? 1 : 0;
+
+                return `M ${startX.toFixed(1)} ${startY.toFixed(1)} A ${radius} ${radius} 0 0 ${sweepFlag} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
+            }
+
+            // Draw a circled number badge (①, ②, ③, ④) at (x, y)
+            function drawNumberBadge(x, y, numberText, bgColor, visible) {
+                if (!visible) return;
+                const g = createSvgEl("g", {
+                    transform: `translate(${x}, ${y})`,
+                    class: "badge-animate"
+                });
+
+                g.appendChild(createSvgEl("circle", {
+                    cx: 0,
+                    cy: 0,
+                    r: 12,
+                    fill: bgColor,
+                    stroke: "#ffffff",
+                    "stroke-width": "2"
+                }));
+
+                const txt = createSvgEl("text", {
+                    x: 0,
+                    y: 4.5,
+                    "text-anchor": "middle",
+                    "font-size": "12",
+                    "font-weight": "700",
+                    fill: "#ffffff"
+                });
+                txt.textContent = numberText;
+                g.appendChild(txt);
+
+                badgesGroup.appendChild(g);
+            }
+
+            // Render current frame based on state.tiltDeg, state.progress, state.showDetails
+            function render() {
+                geometryGroup.innerHTML = "";
+                raysGroup.innerHTML = "";
+                badgesGroup.innerHTML = "";
+
+                const p = state.progress / 100; // 0.0 to 1.0
+
+                // Segment progress breakdown:
+                // Segment 1 (Incident P0 -> P1): 0.00 -> 0.38
+                // Segment 2 (1st Reflect P1 -> P2): 0.38 -> 0.62
+                // Segment 3 (2nd Reflect P2 -> P3): 0.62 -> 1.00
+                const seg1 = Math.min(1, Math.max(0, p / 0.38));
+                const seg2 = Math.min(1, Math.max(0, (p - 0.38) / 0.24));
+                const seg3 = Math.min(1, Math.max(0, (p - 0.62) / 0.38));
+
+                // Update UI numeric readouts
+                const primaryTrace = traceCornerRay(corners[0].vx, corners[0].vy, state.tiltDeg);
+                const { i1, r1, i2, r2 } = primaryTrace;
+
+                valTilt.textContent = state.tiltDeg === 0
+                    ? "0° (Horizontal)"
+                    : `${state.tiltDeg > 0 ? "+" : ""}${state.tiltDeg}°`;
+                valProgress.textContent = `${Math.round(state.progress)}%`;
+
+                numI1.textContent = `${i1}°`;
+                numR1.textContent = `${r1}°`;
+                numI2.textContent = `${i2}°`;
+                numR2.textContent = `${r2}°`;
+
+                badgeAngle1.textContent = `i₁ = ${i1}°`;
+                badgeAngle2.textContent = `r₁ = i₁ = ${r1}°`;
+                badgeAngle3.textContent = `i₂ = 90° - ${r1}° = ${i2}°`;
+                badgeAngle4.textContent = `r₂ = i₂ = ${r2}°`;
+
+                eqSum.textContent = `i₁ + i₂ = ${i1}° + ${i2}° = 90°`;
+                eqDeflect.textContent = `2i₁ + 2i₂ = ${2 * i1}° + ${2 * i2}° = 180°`;
+
+                // Highlight active step card
+                let activeStep = 1;
+                if (p >= 0.62) activeStep = 4;
+                else if (p >= 0.50) activeStep = 3;
+                else if (p >= 0.38) activeStep = 2;
+
+                stepCards.forEach(card => {
+                    const s = Number(card.dataset.step);
+                    if (s === activeStep) {
+                        card.classList.add("ring-2", "ring-rose-500/40", "bg-rose-50/40", "border-rose-300");
+                    } else {
+                        card.classList.remove("ring-2", "ring-rose-500/40", "bg-rose-50/40", "border-rose-300");
+                    }
+                });
+
+                // Render rays for both corners (primary upper corner + secondary lower corner)
+                corners.forEach((corner) => {
+                    const trace = traceCornerRay(corner.vx, corner.vy, state.tiltDeg);
+                    const { P0, P1, P2, P3, n1, n2 } = trace;
+
+                    // --- 1. Geometry Details (Normals & Angle Arcs) on Primary Corner ---
+                    if (corner.primary && state.showDetails) {
+                        // Normal N1 at P1 (shows when seg1 > 0.7)
+                        if (seg1 > 0.7) {
+                            const nLen = 95;
+                            raysGroup.appendChild(createSvgEl("line", {
+                                x1: P1.x,
+                                y1: P1.y,
+                                x2: P1.x + n1.x * nLen,
+                                y2: P1.y + n1.y * nLen,
+                                stroke: "#64748b",
+                                "stroke-width": "1.6",
+                                "stroke-dasharray": "5,4"
+                            }));
+
+                            const lblN1 = createSvgEl("text", {
+                                x: P1.x + n1.x * (nLen + 12),
+                                y: P1.y + n1.y * (nLen + 12),
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#475569"
+                            });
+                            lblN1.textContent = "N₁ (法线)";
+                            geometryGroup.appendChild(lblN1);
+
+                            // Incident angle arc i1 (between N1 and incoming ray vector P0 - P1)
+                            const vecInc1 = { x: P0.x - P1.x, y: P0.y - P1.y };
+                            geometryGroup.appendChild(createSvgEl("path", {
+                                d: describeArc(P1.x, P1.y, 32, n1, vecInc1),
+                                fill: "none",
+                                stroke: "#e11d48",
+                                "stroke-width": "1.8"
+                            }));
+
+                            const mid1 = {
+                                x: P1.x + (n1.x + vecInc1.x / Math.hypot(vecInc1.x, vecInc1.y)) * 24,
+                                y: P1.y + (n1.y + vecInc1.y / Math.hypot(vecInc1.x, vecInc1.y)) * 24
+                            };
+                            const txtI1 = createSvgEl("text", {
+                                x: mid1.x - 14,
+                                y: mid1.y + 4,
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#be123c"
+                            });
+                            txtI1.textContent = `i₁=${i1}°`;
+                            geometryGroup.appendChild(txtI1);
+                        }
+
+                        // Reflected angle arc r1 (shows when seg2 > 0.25)
+                        if (seg2 > 0.25) {
+                            const vecRef1 = { x: P2.x - P1.x, y: P2.y - P1.y };
+                            geometryGroup.appendChild(createSvgEl("path", {
+                                d: describeArc(P1.x, P1.y, 26, n1, vecRef1),
+                                fill: "none",
+                                stroke: "#d97706",
+                                "stroke-width": "1.8"
+                            }));
+
+                            const txtR1 = createSvgEl("text", {
+                                x: P1.x - 36,
+                                y: P1.y + 46,
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#b45309"
+                            });
+                            txtR1.textContent = `r₁=${r1}°`;
+                            geometryGroup.appendChild(txtR1);
+                        }
+
+                        // Normal N2 & Angles i2, r2 at P2 (shows when seg2 > 0.85)
+                        if (seg2 > 0.85) {
+                            const nLen2 = 95;
+                            geometryGroup.appendChild(createSvgEl("line", {
+                                x1: P2.x,
+                                y1: P2.y,
+                                x2: P2.x + n2.x * nLen2,
+                                y2: P2.y + n2.y * nLen2,
+                                stroke: "#64748b",
+                                "stroke-width": "1.6",
+                                "stroke-dasharray": "5,4"
+                            }));
+
+                            const lblN2 = createSvgEl("text", {
+                                x: P2.x + n2.x * (nLen2 + 14) - 24,
+                                y: P2.y + n2.y * (nLen2 + 14),
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#475569"
+                            });
+                            lblN2.textContent = "N₂ (法线)";
+                            geometryGroup.appendChild(lblN2);
+
+                            // Incident angle arc i2 (between N2 and incoming ray P1 - P2)
+                            const vecInc2 = { x: P1.x - P2.x, y: P1.y - P2.y };
+                            geometryGroup.appendChild(createSvgEl("path", {
+                                d: describeArc(P2.x, P2.y, 26, n2, vecInc2),
+                                fill: "none",
+                                stroke: "#d97706",
+                                "stroke-width": "1.8"
+                            }));
+
+                            const txtI2 = createSvgEl("text", {
+                                x: P2.x - 36,
+                                y: P2.y - 38,
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#b45309"
+                            });
+                            txtI2.textContent = `i₂=${i2}°`;
+                            geometryGroup.appendChild(txtI2);
+                        }
+
+                        // Reflected angle arc r2 (shows when seg3 > 0.15)
+                        if (seg3 > 0.15) {
+                            const vecRef2 = { x: P3.x - P2.x, y: P3.y - P2.y };
+                            geometryGroup.appendChild(createSvgEl("path", {
+                                d: describeArc(P2.x, P2.y, 32, n2, vecRef2),
+                                fill: "none",
+                                stroke: "#059669",
+                                "stroke-width": "1.8"
+                            }));
+
+                            const txtR2 = createSvgEl("text", {
+                                x: P2.x - 74,
+                                y: P2.y - 8,
+                                "font-size": "11",
+                                "font-weight": "700",
+                                fill: "#047857"
+                            });
+                            txtR2.textContent = `r₂=${r2}°`;
+                            geometryGroup.appendChild(txtR2);
+                        }
+                    }
+
+                    // --- 2. Draw Light Ray Segments ---
+                    // Segment 1: P0 -> P1 (Magenta / Rose)
+                    if (seg1 > 0) {
+                        const curX1 = P0.x + (P1.x - P0.x) * seg1;
+                        const curY1 = P0.y + (P1.y - P0.y) * seg1;
+
+                        raysGroup.appendChild(createSvgEl("line", {
+                            x1: P0.x,
+                            y1: P0.y,
+                            x2: curX1,
+                            y2: curY1,
+                            stroke: "#e11d48",
+                            "stroke-width": corner.primary ? "3" : "2.4",
+                            "stroke-linecap": "round"
+                        }));
+
+                        // Midpoint arrow on segment 1
+                        if (seg1 > 0.45) {
+                            const mx = P0.x + (P1.x - P0.x) * 0.45;
+                            const my = P0.y + (P1.y - P0.y) * 0.45;
+                            raysGroup.appendChild(createSvgEl("line", {
+                                x1: mx - (P1.x - P0.x) * 0.02,
+                                y1: my - (P1.y - P0.y) * 0.02,
+                                x2: mx,
+                                y2: my,
+                                stroke: "#e11d48",
+                                "stroke-width": "3",
+                                "marker-end": "url(#arrowRose)"
+                            }));
+                        }
+
+                        if (corner.primary && seg1 > 0.25) {
+                            const lblInc = createSvgEl("text", {
+                                x: 215,
+                                y: P0.y + (P1.y - P0.y) * 0.25 - 10,
+                                "font-size": "11.5",
+                                "font-weight": "700",
+                                fill: "#be123c"
+                            });
+                            lblInc.textContent = "Incident Ray 入射光线";
+                            raysGroup.appendChild(lblInc);
+                        }
+                    }
+
+                    // Segment 2: P1 -> P2 (Amber)
+                    if (seg2 > 0) {
+                        const curX2 = P1.x + (P2.x - P1.x) * seg2;
+                        const curY2 = P1.y + (P2.y - P1.y) * seg2;
+
+                        raysGroup.appendChild(createSvgEl("line", {
+                            x1: P1.x,
+                            y1: P1.y,
+                            x2: curX2,
+                            y2: curY2,
+                            stroke: "#d97706",
+                            "stroke-width": corner.primary ? "3" : "2.4",
+                            "stroke-linecap": "round"
+                        }));
+
+                        if (seg2 > 0.55) {
+                            const mx = P1.x + (P2.x - P1.x) * 0.55;
+                            const my = P1.y + (P2.y - P1.y) * 0.55;
+                            raysGroup.appendChild(createSvgEl("line", {
+                                x1: mx - (P2.x - P1.x) * 0.04,
+                                y1: my - (P2.y - P1.y) * 0.04,
+                                x2: mx,
+                                y2: my,
+                                stroke: "#d97706",
+                                "stroke-width": "3",
+                                "marker-end": "url(#arrowAmber)"
+                            }));
+                        }
+                    }
+
+                    // Segment 3: P2 -> P3 (Emerald Green - Parallel Return!)
+                    if (seg3 > 0) {
+                        const curX3 = P2.x + (P3.x - P2.x) * seg3;
+                        const curY3 = P2.y + (P3.y - P2.y) * seg3;
+
+                        raysGroup.appendChild(createSvgEl("line", {
+                            x1: P2.x,
+                            y1: P2.y,
+                            x2: curX3,
+                            y2: curY3,
+                            stroke: "#059669",
+                            "stroke-width": corner.primary ? "3" : "2.4",
+                            "stroke-linecap": "round"
+                        }));
+
+                        if (seg3 > 0.45) {
+                            const mx = P2.x + (P3.x - P2.x) * 0.45;
+                            const my = P2.y + (P3.y - P2.y) * 0.45;
+                            raysGroup.appendChild(createSvgEl("line", {
+                                x1: mx - (P3.x - P2.x) * 0.02,
+                                y1: my - (P3.y - P2.y) * 0.02,
+                                x2: mx,
+                                y2: my,
+                                stroke: "#059669",
+                                "stroke-width": "3",
+                                "marker-end": "url(#arrowEmerald)"
+                            }));
+                        }
+
+                        if (corner.primary && seg3 > 0.35) {
+                            const lblRet = createSvgEl("text", {
+                                x: 205,
+                                y: P2.y + (P3.y - P2.y) * 0.72 + 18,
+                                "font-size": "11.5",
+                                "font-weight": "700",
+                                fill: "#047857"
+                            });
+                            lblRet.textContent = "Parallel Return 平行返回";
+                            raysGroup.appendChild(lblRet);
+                        }
+                    }
+
+                    // --- 3. Numbered Badges ①, ②, ③, ④ on Primary Corner ---
+                    if (corner.primary) {
+                        // ① First Incidence
+                        drawNumberBadge(P1.x - 16, P1.y - 24, "1", "#e11d48", seg1 >= 0.85);
+                        // ② First Reflection
+                        drawNumberBadge(P1.x + 22, P1.y + 18, "2", "#d97706", seg2 >= 0.25);
+                        // ③ Second Incidence
+                        drawNumberBadge(P2.x + 22, P2.y - 16, "3", "#b45309", seg2 >= 0.90);
+                        // ④ Second Reflection (Parallel Return)
+                        drawNumberBadge(P2.x - 18, P2.y + 24, "4", "#059669", seg3 >= 0.20);
+                    }
+                });
+            }
+
+            // Animation Loop
+            function animate(timestamp) {
+                if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+                const dt = (timestamp - state.lastTimestamp) / 1000;
+                state.lastTimestamp = timestamp;
+
+                if (state.isPlaying) {
+                    state.progress += dt * 28; // ~3.5 seconds for full cycle
+                    if (state.progress >= 100) {
+                        state.progress = 100;
+                        setPlaying(false);
+                    }
+                    sliderProgress.value = state.progress;
+                    render();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            function setPlaying(playing) {
+                state.isPlaying = playing;
+                if (playing) {
+                    iconPlay.classList.add("hidden");
+                    iconPause.classList.remove("hidden");
+                    txtPlayPause.textContent = "Pause 暂停";
+                } else {
+                    iconPlay.classList.remove("hidden");
+                    iconPause.classList.add("hidden");
+                    txtPlayPause.textContent = "Play 播放";
+                }
+            }
+
+            // Event Listeners
+            btnPlayPause.addEventListener("click", () => {
+                if (!state.isPlaying && state.progress >= 100) {
+                    state.progress = 0;
+                }
+                setPlaying(!state.isPlaying);
+            });
+
+            btnReset.addEventListener("click", () => {
+                state.progress = 0;
+                sliderProgress.value = 0;
+                setPlaying(true);
+                render();
+            });
+
+            btnZeroTilt.addEventListener("click", () => {
+                state.tiltDeg = 0;
+                sliderTilt.value = 0;
+                render();
+            });
+
+            sliderTilt.addEventListener("input", (e) => {
+                state.tiltDeg = Number(e.target.value);
+                render();
+            });
+
+            sliderProgress.addEventListener("input", (e) => {
+                setPlaying(false);
+                state.progress = Number(e.target.value);
+                render();
+            });
+
+            toggleDetails.addEventListener("change", (e) => {
+                state.showDetails = e.target.checked;
+                render();
+            });
+
+            // Step cards jump directly to the corresponding stage of the ray
+            stepCards.forEach(card => {
+                card.addEventListener("click", () => {
+                    setPlaying(false);
+                    const step = Number(card.dataset.step);
+                    const targets = { 1: 38, 2: 52, 3: 62, 4: 100 };
+                    state.progress = targets[step] || 100;
+                    sliderProgress.value = state.progress;
+                    render();
+                });
+            });
+
+            // Initialize
+            window.addEventListener("load", () => {
+                buildMirrors();
+                state.progress = 0;
+                setPlaying(true);
+                render();
+                requestAnimationFrame(animate);
+            });
+        })();
+    </script>
+</body>
+
+</html>
