@@ -431,6 +431,17 @@ const COURSE_TREE_DATA = [
           },
           {
             "type": "file",
+            "dataTitle": "副虹(霓)与主虹(虹)光学形成机制模拟器 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-double-rainbow.html",
+            "name": "p8a-optics-double-rainbow.html",
+            "title": "副虹(霓)与主虹(虹)光学形成机制 (Double Rainbow)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
             "dataTitle": "水的反常膨胀与4°C最大密度深度可视化 - 八年级上册物理",
             "href": "physics/p8a/p8a-thermo-water.html",
             "name": "p8a-thermo-water.html",

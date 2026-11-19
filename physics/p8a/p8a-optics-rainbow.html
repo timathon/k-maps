@@ -1424,15 +1424,16 @@ button.lumi-sort-btn:focus-visible, .lumi-sort-btn:focus-visible {
 <title>How a Rainbow Forms — 彩虹形成与雨滴色散原理 (Rainbow Dispersion)</title>
 <style>
   .widget-container {
-    width: 100%;
-    max-width: 708px;
-    margin-inline: auto;
+    width: 100% !important;
+    max-width: 1080px !important;
+    margin: 0 auto !important;
     min-height: 280px;
-    padding-inline: 0;
+    padding: 16px 20px 32px 20px !important;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-l, 16px);
+    box-sizing: border-box;
   }
 
   .main-card {
@@ -1606,16 +1607,17 @@ button.lumi-sort-btn:focus-visible, .lumi-sort-btn:focus-visible {
 <body>
 <div class="widget-container">
   <div class="main-card">
-    <div class="header-row" id="header-zone">
-      <a href="../../index.html" class="lumi-btn lumi-btn--tonal" style="font-size: 13px; text-decoration: none; padding: 0 16px; min-height: 36px; display: inline-flex; align-items: center; gap: 6px;" title="返回课程资源地图">
+    <div class="header-row" id="header-zone" style="flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 280px;">
+        <h2 class="lumi-headline-m" style="margin:0;">How a Rainbow Forms <span style="font-size: 0.85em; opacity: 0.8; font-weight: 500;">彩虹形成与雨滴色散</span></h2>
+        <p class="lumi-body-m" style="margin:0; color: var(--on-surface-variant);">Explore how raindrops bend, bounce, and split sunlight into a rainbow arc.</p>
+      </div>
+      <a href="../../index.html" class="lumi-btn lumi-btn--tonal" style="font-size: 13px; text-decoration: none; padding: 0 16px; min-height: 36px; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;" title="返回课程资源地图">
         <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
         <span>返回主页</span>
       </a>
-
-      <h2 class="lumi-headline-m" style="margin:0;">How a Rainbow Forms</h2>
-      <p class="lumi-body-m" style="margin:0; color: var(--on-surface-variant);">Explore how raindrops bend, bounce, and split sunlight into a rainbow arc.</p>
     </div>
 
     <div class="mode-bar">

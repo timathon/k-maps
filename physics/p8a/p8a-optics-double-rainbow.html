@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physics of 霓 (Secondary Rainbow) vs 虹 (Primary Rainbow)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      background-color: #090d16;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: manipulation;
+    }
+    /* Custom subtle range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 6px;
+      background: #1e293b;
+      border-radius: 999px;
+      border: 1px solid #334155;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      margin-top: -7px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 selection:bg-sky-500 selection:text-white">
+
+  <!-- Top Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="../../index.html"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 transition shadow-sm"
+          title="返回课程资源地图">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span class="hidden sm:inline">返回主页</span>
+        </a>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 via-sky-500 to-rose-500 flex items-center justify-center shadow-lg shadow-sky-500/20 font-bold text-white text-lg">
+          霓
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">
+            How <span class="text-violet-400">霓 (Secondary Rainbow)</span> Works
+          </h1>
+          <p class="text-xs text-slate-400">
+            Double Internal Reflection & Color Inversion Physics · 副虹(霓)与主虹(虹)光学形成机制
+          </p>
+        </div>
+      </div>
+
+      <!-- View Mode Switcher -->
+      <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
+        <button id="btnViewDroplet" onclick="setViewMode('droplet')"
+          class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-sky-500 text-slate-950 shadow">
+          1. Single Droplet · 单水滴光路
+        </button>
+        <button id="btnViewSky" onclick="setViewMode('sky')"
+          class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white">
+          2. Sky Geometry · 天空视角与色序
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Grid -->
+  <main class="max-w-7xl w-full mx-auto px-4 py-4 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- Left/Center Interactive Simulation Viewport -->
+    <div class="lg:col-span-8 flex flex-col gap-3">
+      <div class="relative w-full h-[380px] sm:h-[460px] bg-slate-900/90 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden">
+        <canvas id="simCanvas"></canvas>
+
+        <!-- Floating Legend Overlay -->
+        <div class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md border border-slate-800/90 rounded-xl px-3 py-2 text-xs space-y-1 pointer-events-none">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-0.5 bg-white inline-block"></span>
+            <span class="text-slate-300">Sunlight 入射白光 (Parallel Rays)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-0.5 bg-rose-500 inline-block"></span>
+            <span class="text-rose-300">Red 红光 (n = 1.331, bends less)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-0.5 bg-violet-400 inline-block"></span>
+            <span class="text-violet-300">Violet 紫光 (n = 1.344, bends more)</span>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Readout -->
+        <div id="telemetryBadge" class="absolute top-3 right-3 bg-slate-950/85 backdrop-blur-md border border-slate-800 rounded-xl px-3 py-2 text-xs text-right">
+          <div class="text-slate-400">Deviation / Viewing Angle 观测仰角</div>
+          <div id="angleReadout" class="text-sm sm:text-base font-bold text-violet-400 font-mono">
+            霓: ~50.8° (Red) – 53.5° (Violet)
+          </div>
+          <div id="intensityReadout" class="text-[11px] text-amber-300/90 mt-0.5">
+            2 Reflections → ~43% dimmer than 虹
+          </div>
+        </div>
+      </div>
+
+      <!-- Step Subtitle Banner below Canvas -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span id="stepTag" class="inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-violet-500/20 text-violet-300 border border-violet-500/30 mb-1">
+            STEP 1 / 4 · Refraction & Dispersion
+          </span>
+          <p id="stepCaption" class="text-xs sm:text-sm text-slate-200 leading-snug">
+            Sunlight hits the <strong>lower half</strong> of a spherical raindrop and splits (disperses) into red and violet rays.
+          </p>
+        </div>
+      </div>
+
+      <!-- Playback & Interactive Controls Bar -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3.5 flex flex-col gap-3">
+        <!-- Step Buttons -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <button id="btnPlayPause" onclick="togglePlay()"
+              class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-md shadow-sky-500/20">
+              <span id="playIcon">⏸</span>
+              <span id="playText">Pause 暂停</span>
+            </button>
+            <button onclick="resetAnimation()"
+              class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs sm:text-sm transition border border-slate-700">
+              ↺ Replay 重播
+            </button>
+          </div>
+
+          <!-- Comparison Mode Selector -->
+          <div class="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button id="modeNi" onclick="setRainbowType('ni')"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 text-white transition">
+              霓 Secondary (2 Reflections)
+            </button>
+            <button id="modeHong" onclick="setRainbowType('hong')"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+              虹 Primary (1 Reflection)
+            </button>
+            <button id="modeBoth" onclick="setRainbowType('both')"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+              Compare 对比
+            </button>
+          </div>
+        </div>
+
+        <!-- Timeline / Step Scrubber + Impact Parameter -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 border-t border-slate-800/80">
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-400 font-medium">Ray Progress 光线传播阶段</span>
+              <span id="progressLabel" class="text-sky-400 font-mono">100%</span>
+            </div>
+            <input id="progressSlider" type="range" min="0" max="100" value="100" class="w-full" oninput="onScrubProgress(this.value)">
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <button onclick="jumpToStage(0.25)" class="hover:text-sky-400">1. Entry 折射</button>
+              <button onclick="jumpToStage(0.50)" class="hover:text-sky-400">2. Reflect 1 反射1</button>
+              <button onclick="jumpToStage(0.75)" class="hover:text-sky-400">3. Reflect 2 反射2</button>
+              <button onclick="jumpToStage(1.00)" class="hover:text-sky-400">4. Exit 出射</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-400 font-medium">Impact Height 入射高度 (b/R)</span>
+              <span id="impactLabel" class="text-violet-400 font-mono">-0.95 (Rainbow Angle)</span>
+            </div>
+            <input id="impactSlider" type="range" min="-0.98" max="-0.70" step="0.01" value="-0.95" class="w-full" oninput="onChangeImpact(this.value)">
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>Grazing 边缘 (-0.98)</span>
+              <span class="text-violet-400">Minimum Deviation 极值角 (-0.95)</span>
+              <span>Inner 靠内 (-0.70)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Educational Breakdown Panel -->
+    <div class="lg:col-span-4 flex flex-col gap-3">
+      <!-- Core Physics Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h2 class="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-violet-400"></span>
+            Why is <span class="text-violet-400">霓</span> Inverted & Dimmer?
+          </h2>
+          <span class="text-xs text-slate-400">核心原理解析</span>
+        </div>
+
+        <!-- Step-by-Step Cards -->
+        <div class="space-y-2.5 text-xs leading-relaxed">
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80">
+            <div class="font-semibold text-sky-400 mb-0.5">1. Bottom Entry 底部入射</div>
+            <p class="text-slate-300">
+              While <strong>虹 (Primary)</strong> enters the <em>top</em> of a raindrop, <strong>霓 (Secondary)</strong> comes from sunlight hitting the <strong>bottom</strong> of the drop and refracting upward.
+              <br><span class="text-slate-400">主虹光线从水滴上半部射入；而副虹（霓）的光线从水滴<strong>下半部</strong>射入并向上折射。</span>
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80">
+            <div class="font-semibold text-violet-400 mb-0.5">2. Two Internal Reflections 两次内反射 (色序反转)</div>
+            <p class="text-slate-300">
+              Inside the drop, light reflects <strong>twice</strong> before exiting. Each reflection flips the ray order—just like looking in two mirrors—so <strong>Red exits steeper (~51°) and Violet exits flatter (~53.5°)</strong>.
+              <br><span class="text-slate-400">光线在水滴内经历<strong>两次反射</strong>，如同照两次镜子发生交叉翻转，导致红光与紫光的出射角度顺序与主虹完全相反。</span>
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80">
+            <div class="font-semibold text-amber-400 mb-0.5">3. Why High Drops Send Violet 为什么霓是“外紫内红”？</div>
+            <p class="text-slate-300">
+              To reach your eye, droplets higher in the sky (~53.5° elevation) send <strong>Violet</strong> down to you, while lower droplets (~50.8°) send <strong>Red</strong>. Thus, <strong>Violet is on top</strong>!
+              <br><span class="text-slate-400">高处水滴（仰角约 53.5°）把<strong>紫光</strong>射入人眼，低处水滴（约 50.8°）把<strong>红光</strong>射入人眼，因此我们看到<strong>外紫内红</strong>。</span>
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80">
+            <div class="font-semibold text-rose-400 mb-0.5">4. Dimmer Glow & Alexander's Dark Band 亮度更暗与暗带</div>
+            <p class="text-slate-300">
+              At each reflection, ~95% of light escapes out of the drop and only ~5% reflects inside. Two reflections leave 霓 much fainter than 虹, separated by <strong>Alexander's Dark Band (42°–51°)</strong> where no internally reflected light exits.
+              <br><span class="text-slate-400">每次内反射都会损失大量光能，因此“霓”比“虹”暗淡得多；两者之间（42°–51°）没有反射光射出，形成著名的<strong>亚历山大暗带</strong>。</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Comparison Table -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+          Comparison · 虹 vs 霓 参数对比
+        </h3>
+        <div class="overflow-hidden rounded-xl border border-slate-800 text-xs">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <th class="py-2 px-2.5">Feature 特征</th>
+                <th class="py-2 px-2.5 text-rose-400">虹 (Primary)</th>
+                <th class="py-2 px-2.5 text-violet-400">霓 (Secondary)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80 bg-slate-900/40">
+              <tr>
+                <td class="py-2 px-2.5 text-slate-400">Reflections 反射</td>
+                <td class="py-2 px-2.5 font-medium">1 time (一次)</td>
+                <td class="py-2 px-2.5 font-medium text-violet-300">2 times (两次)</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2.5 text-slate-400">Elevation 仰角</td>
+                <td class="py-2 px-2.5 font-mono">~40.6° – 42.3°</td>
+                <td class="py-2 px-2.5 font-mono text-violet-300">~50.8° – 53.5°</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2.5 text-slate-400">Color Order 色序</td>
+                <td class="py-2 px-2.5">外红内紫 (Red top)</td>
+                <td class="py-2 px-2.5 text-violet-300">外紫内红 (Violet top)</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2.5 text-slate-400">Brightness 亮度</td>
+                <td class="py-2 px-2.5">Bright 鲜艳明亮</td>
+                <td class="py-2 px-2.5 text-slate-400">Dimmer 柔和暗淡</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. State & Physics Constants
+    // ==========================================
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let viewMode = 'droplet';      // 'droplet' | 'sky'
+    let rainbowType = 'ni';        // 'ni' | 'hong' | 'both'
+    let isPlaying = true;
+    let progress = 0.0;            // 0.0 -> 1.0 animation cycle
+    let impactParamNi = -0.95;     // b/R for secondary rainbow (~ -0.95 is Descartes ray)
+    const impactParamHong = 0.86;  // b/R for primary rainbow (~ +0.86 is Descartes ray)
+
+    // Refractive indices of water at ~20°C
+    const N_RED = 1.331;
+    const N_GREEN = 1.336;
+    const N_VIOLET = 1.344;
+
+    let lastTimestamp = 0;
+
+    // ==========================================
+    // 2. Canvas Responsive Setup
+    // ==========================================
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // ==========================================
+    // 3. Exact Snell's Law & Spherical Ray Tracer
+    // ==========================================
+    /**
+     * Computes exact 2D ray path inside a unit circle centered at (0,0)
+     * Incoming sunlight moves horizontally left-to-right (+x direction) at y = b.
+     * @param {number} b - Normalized impact parameter in [-0.99, 0.99]
+     * @param {number} n - Refractive index of water for wavelength
+     * @param {number} reflections - 1 for Primary (虹), 2 for Secondary (霓)
+     */
+    function traceDropletRay(b, n, reflections) {
+      // Entry point on unit circle: x0 = -sqrt(1 - b^2), y0 = b
+      const x0 = -Math.sqrt(Math.max(0, 1 - b * b));
+      const y0 = b;
+
+      // Angle of incidence i: sin(i) = |b|
+      const i = Math.asin(b); // signed angle relative to inward normal
+      // Snell's law: sin(r) = sin(i) / n
+      const r = Math.asin(Math.sin(i) / n);
+
+      // Inward normal at (x0, y0) points toward origin: (-x0, -y0)
+      // Angle of inward normal is alpha0 = atan2(-y0, -x0)
+      const alpha0 = Math.atan2(-y0, -x0);
+      // Refracted ray direction angle inside drop:
+      // Since incoming ray is at angle 0, and normal is alpha0 = -i,
+      // refracted ray bends toward normal by (i - r): theta1 = -i + r = r - i
+      let theta = r - i;
+
+      const points = [
+        { x: x0 - 1.35, y: y0 }, // External incoming source
+        { x: x0, y: y0 }         // P0: Entry refraction
+      ];
+
+      let currX = x0;
+      let currY = y0;
+
+      // Helper to find next intersection of ray (currX + t*cos(theta), currY + t*sin(theta)) with unit circle
+      function nextCircleHit(px, py, ang) {
+        const dx = Math.cos(ang);
+        const dy = Math.sin(ang);
+        // (px + t*dx)^2 + (py + t*dy)^2 = 1 => t^2 + 2(px*dx + py*dy)t + (px^2 + py^2 - 1) = 0
+        // Since (px, py) is on the circle, px^2 + py^2 - 1 = 0, so t = -2*(px*dx + py*dy)
+        const t = -2 * (px * dx + py * dy);
+        return {
+          x: px + t * dx,
+          y: py + t * dy
+        };
+      }
+
+      // Internal bounce(s)
+      for (let k = 0; k < reflections; k++) {
+        const hit = nextCircleHit(currX, currY, theta);
+        points.push(hit);
+
+        // Normal at hit (pointing outward) has angle phi = atan2(hit.y, hit.x)
+        // Reflection law: new direction = phi + pi - (theta - phi) = 2*phi + pi - theta
+        const phi = Math.atan2(hit.y, hit.x);
+        theta = 2 * phi + Math.PI - theta;
+        currX = hit.x;
+        currY = hit.y;
+      }
+
+      // Exit point on circle
+      const exitHit = nextCircleHit(currX, currY, theta);
+      points.push(exitHit);
+
+      // Exit refraction into air (n -> 1)
+      // Outward normal at exitHit is phiExit = atan2(exitHit.y, exitHit.x)
+      // Internal incidence angle relative to outward normal is signed angle from phiExit to theta
+      const phiExit = Math.atan2(exitHit.y, exitHit.x);
+      let internalInc = theta - phiExit;
+      // Normalize to [-pi, pi]
+      while (internalInc > Math.PI) internalInc -= 2 * Math.PI;
+      while (internalInc < -Math.PI) internalInc += 2 * Math.PI;
+
+      // Snell's law on exit: sin(exitAngle) = n * sin(internalInc)
+      const sinExit = Math.max(-0.999, Math.min(0.999, n * Math.sin(internalInc)));
+      const externalAngle = phiExit + Math.asin(sinExit);
+
+      // Extend outgoing ray toward left/observer
+      points.push({
+        x: exitHit.x + 1.55 * Math.cos(externalAngle),
+        y: exitHit.y + 1.55 * Math.sin(externalAngle)
+      });
+
+      // Calculate elevation angle above anti-solar direction (ray exits heading generally left, i.e., ~PI)
+      // Anti-solar direction is angle PI (pointing left toward observer)
+      // For b < 0 (bottom entry, 2 reflections), ray exits downward-left (externalAngle around PI - 51 deg)
+      // Viewer looking UP at angle theta_view sees ray traveling DOWN at angle theta_view.
+      let degFromLeft = Math.abs(((externalAngle - Math.PI + 3 * Math.PI) % (2 * Math.PI)) - Math.PI) * 180 / Math.PI;
+
+      return {
+        points,
+        exitAngleDeg: degFromLeft,
+        externalAngle
+      };
+    }
+
+    // ==========================================
+    // 4. UI Controls & Event Handlers
+    // ==========================================
+    function setViewMode(mode) {
+      viewMode = mode;
+      const btnDrop = document.getElementById('btnViewDroplet');
+      const btnSky = document.getElementById('btnViewSky');
+      if (mode === 'droplet') {
+        btnDrop.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-sky-500 text-slate-950 shadow';
+        btnSky.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white';
+      } else {
+        btnSky.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-sky-500 text-slate-950 shadow';
+        btnDrop.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white';
+      }
+      updateTelemetry();
+    }
+
+    function setRainbowType(type) {
+      rainbowType = type;
+      ['ni', 'hong', 'both'].forEach(t => {
+        const el = document.getElementById('mode' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (t === type) {
+          el.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 text-white transition';
+        } else {
+          el.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition';
+        }
+      });
+      updateTelemetry();
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('playIcon').textContent = isPlaying ? '⏸' : '▶';
+      document.getElementById('playText').textContent = isPlaying ? 'Pause 暂停' : 'Play 播放';
+    }
+
+    function resetAnimation() {
+      progress = 0;
+      isPlaying = true;
+      document.getElementById('playIcon').textContent = '⏸';
+      document.getElementById('playText').textContent = 'Pause 暂停';
+    }
+
+    function onScrubProgress(val) {
+      isPlaying = false;
+      document.getElementById('playIcon').textContent = '▶';
+      document.getElementById('playText').textContent = 'Play 播放';
+      progress = parseFloat(val) / 100;
+      document.getElementById('progressLabel').textContent = Math.round(progress * 100) + '%';
+    }
+
+    function jumpToStage(stageVal) {
+      isPlaying = false;
+      document.getElementById('playIcon').textContent = '▶';
+      document.getElementById('playText').textContent = 'Play 播放';
+      progress = stageVal;
+      document.getElementById('progressSlider').value = Math.round(progress * 100);
+      document.getElementById('progressLabel').textContent = Math.round(progress * 100) + '%';
+    }
+
+    function onChangeImpact(val) {
+      impactParamNi = parseFloat(val);
+      const label = Math.abs(impactParamNi + 0.95) < 0.015
+        ? `${impactParamNi.toFixed(2)} (Rainbow Peak 极值角)`
+        : `${impactParamNi.toFixed(2)}`;
+      document.getElementById('impactLabel').textContent = label;
+      updateTelemetry();
+    }
+
+    function updateTelemetry() {
+      const redTrace = traceDropletRay(impactParamNi, N_RED, 2);
+      const violetTrace = traceDropletRay(impactParamNi, N_VIOLET, 2);
+
+      const angleEl = document.getElementById('angleReadout');
+      const intEl = document.getElementById('intensityReadout');
+
+      if (rainbowType === 'hong') {
+        const hRed = traceDropletRay(impactParamHong, N_RED, 1);
+        const hViolet = traceDropletRay(impactParamHong, N_VIOLET, 1);
+        angleEl.textContent = `虹: ${hViolet.exitAngleDeg.toFixed(1)}° (Violet) – ${hRed.exitAngleDeg.toFixed(1)}° (Red)`;
+        angleEl.className = 'text-sm sm:text-base font-bold text-rose-400 font-mono';
+        intEl.textContent = '1 Internal Reflection · Bright Primary Arc';
+      } else if (rainbowType === 'ni') {
+        angleEl.textContent = `霓: ${redTrace.exitAngleDeg.toFixed(1)}° (Red) – ${violetTrace.exitAngleDeg.toFixed(1)}° (Violet)`;
+        angleEl.className = 'text-sm sm:text-base font-bold text-violet-400 font-mono';
+        intEl.textContent = '2 Reflections → Spectrum Inverted & ~43% Dimmer';
+      } else {
+        angleEl.textContent = `虹 ~42° (Red Top) | 霓 ~51°–53.5° (Violet Top)`;
+        angleEl.className = 'text-sm sm:text-base font-bold text-sky-400 font-mono';
+        intEl.textContent = 'Alexander Dark Band lies between 42.3° and 50.8°';
+      }
+    }
+
+    function updateStepBanner() {
+      const tagEl = document.getElementById('stepTag');
+      const capEl = document.getElementById('stepCaption');
+
+      if (viewMode === 'sky') {
+        tagEl.textContent = 'MACRO SKY GEOMETRY · 宏观天空视角与外紫内红成因';
+        capEl.innerHTML = 'Higher raindrops (~53.5°) aim <strong>Violet</strong> into the eye; lower drops (~50.8°) aim <strong>Red</strong>. That is why <strong>霓</strong> has Violet on the outside! <span class="text-slate-400">(高处水滴紫光入眼，低处水滴红光入眼)</span>';
+        return;
+      }
+
+      if (rainbowType === 'hong') {
+        tagEl.textContent = 'PRIMARY RAINBOW (虹) · 1 INTERNAL REFLECTION';
+        capEl.innerHTML = 'Sunlight enters the <strong>top</strong> of the droplet, reflects <strong>once</strong> at the back, and exits at ~42° with <strong>Red below Violet</strong> (so high drops send Red to your eye).';
+        return;
+      }
+
+      if (progress < 0.30) {
+        tagEl.textContent = 'STEP 1 / 4 · ENTRY & DISPERSION 入射与色散';
+        capEl.innerHTML = 'Sunlight enters the <strong>bottom</strong> of the droplet. Violet (n=1.344) bends upward more sharply than Red (n=1.331). <span class="text-slate-400">(光线从底部射入，紫光折射率更大、向上偏折更明显)</span>';
+      } else if (progress < 0.56) {
+        tagEl.textContent = 'STEP 2 / 4 · FIRST INTERNAL REFLECTION 第一次内反射';
+        capEl.innerHTML = 'Rays hit the back-right wall and reflect upward. Notice Violet is currently <em>above</em> Red inside the droplet. <span class="text-slate-400">(第一次反射，部分光能透出损失)</span>';
+      } else if (progress < 0.80) {
+        tagEl.textContent = 'STEP 3 / 4 · SECOND REFLECTION & CROSSOVER 第二次内反射（光路交叉翻转）';
+        capEl.innerHTML = 'Rays reflect a <strong>second time</strong> off the top wall—causing Red and Violet rays to <strong>cross over</strong> and invert! <span class="text-slate-400">(第二次反射使红紫光路交叉反转！)</span>';
+      } else {
+        tagEl.textContent = 'STEP 4 / 4 · EXIT TOWARD OBSERVER 出射飞向观察者';
+        capEl.innerHTML = 'Rays exit downward-left at <strong>~50.8° (Red)</strong> and <strong>~53.5° (Violet)</strong>. Violet exits at a steeper angle! <span class="text-slate-400">(紫光出射仰角更大，红光出射仰角更小)</span>';
+      }
+    }
+
+    // ==========================================
+    // 5. Drawing Routines
+    // ==========================================
+    function drawPartialPolyline(pts, fraction, color, lineWidth, alpha = 1.0, dashed = false) {
+      if (pts.length < 2 || fraction <= 0) return;
+
+      // Compute total length
+      let totalLen = 0;
+      const segLens = [];
+      for (let i = 0; i < pts.length - 1; i++) {
+        const d = Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
+        segLens.push(d);
+        totalLen += d;
+      }
+
+      const targetLen = totalLen * Math.min(1, fraction);
+      let drawnLen = 0;
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      if (dashed) ctx.setLineDash([5, 5]);
+
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+
+      let tipX = pts[0].x;
+      let tipY = pts[0].y;
+
+      for (let i = 0; i < segLens.length; i++) {
+        const seg = segLens[i];
+        if (drawnLen + seg <= targetLen) {
+          ctx.lineTo(pts[i + 1].x, pts[i + 1].y);
+          drawnLen += seg;
+          tipX = pts[i + 1].x;
+          tipY = pts[i + 1].y;
+        } else {
+          const rem = Math.max(0, targetLen - drawnLen);
+          const t = seg > 0 ? rem / seg : 0;
+          tipX = pts[i].x + (pts[i + 1].x - pts[i].x) * t;
+          tipY = pts[i].y + (pts[i + 1].y - pts[i].y) * t;
+          ctx.lineTo(tipX, tipY);
+          break;
+        }
+      }
+      ctx.stroke();
+
+      // Glowing photon head if animating in progress
+      if (fraction < 0.99 && fraction > 0.01) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(tipX, tipY, lineWidth * 1.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawWaterDroplet(cx, cy, radius) {
+      ctx.save();
+      // Outer subtle glow
+      const outerGlow = ctx.createRadialGradient(cx, cy, radius * 0.85, cx, cy, radius * 1.15);
+      outerGlow.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      outerGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = outerGlow;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 1.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Glassy spherical water drop fill
+      const dropGrad = ctx.createRadialGradient(
+        cx - radius * 0.3, cy - radius * 0.3, radius * 0.1,
+        cx, cy, radius
+      );
+      dropGrad.addColorStop(0, 'rgba(186, 230, 253, 0.22)');
+      dropGrad.addColorStop(0.7, 'rgba(14, 165, 233, 0.10)');
+      dropGrad.addColorStop(1, 'rgba(56, 189, 248, 0.28)');
+
+      ctx.fillStyle = dropGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Rim border
+      ctx.strokeStyle = 'rgba(125, 211, 252, 0.65)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Center optical axis dashed line
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cx - radius * 1.45, cy);
+      ctx.lineTo(cx + radius * 1.35, cy);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawSingleDropletView(w, h) {
+      // Background subtle grid
+      ctx.save();
+      ctx.strokeStyle = 'rgba(30, 41, 59, 0.45)';
+      ctx.lineWidth = 1;
+      const step = 36;
+      for (let x = 0; x < w; x += step) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += step) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+      ctx.restore();
+
+      const cx = w * 0.54;
+      const cy = h * 0.47;
+      const R = Math.min(w * 0.24, h * 0.31);
+
+      drawWaterDroplet(cx, cy, R);
+
+      // Helper to map normalized droplet coords (y up in physics -> y down in canvas)
+      const toCanvas = (pt) => ({
+        x: cx + pt.x * R,
+        y: cy - pt.y * R // flip y so +y is top of droplet, -y is bottom
+      });
+
+      // Draw Primary Rainbow (虹) if selected
+      if (rainbowType === 'hong' || rainbowType === 'both') {
+        const alphaMult = rainbowType === 'both' ? 0.55 : 1.0;
+        const hRed = traceDropletRay(impactParamHong, N_RED, 1);
+        const hViolet = traceDropletRay(impactParamHong, N_VIOLET, 1);
+
+        // Incoming white segment
+        const whiteSeg = [toCanvas(hRed.points[0]), toCanvas(hRed.points[1])];
+        drawPartialPolyline(whiteSeg, Math.min(1, progress / 0.28), '#ffffff', 3, alphaMult);
+
+        if (progress > 0.25) {
+          const internalProg = (progress - 0.25) / 0.75;
+          drawPartialPolyline(hRed.points.slice(1).map(toCanvas), internalProg, '#f43f5e', 2.6, alphaMult);
+          drawPartialPolyline(hViolet.points.slice(1).map(toCanvas), internalProg, '#a78bfa', 2.6, alphaMult);
+        }
+
+        // Label for 虹
+        ctx.save();
+        ctx.fillStyle = 'rgba(251, 113, 133, 0.9)';
+        ctx.font = '600 12px Inter, sans-serif';
+        ctx.fillText('虹 Primary Entry (Top)', cx - R * 1.48, cy - impactParamHong * R - 8);
+        ctx.restore();
+      }
+
+      // Draw Secondary Rainbow (霓) if selected
+      if (rainbowType === 'ni' || rainbowType === 'both') {
+        const nRed = traceDropletRay(impactParamNi, N_RED, 2);
+        const nGreen = traceDropletRay(impactParamNi, N_GREEN, 2);
+        const nViolet = traceDropletRay(impactParamNi, N_VIOLET, 2);
+
+        const rPts = nRed.points.map(toCanvas);
+        const gPts = nGreen.points.map(toCanvas);
+        const vPts = nViolet.points.map(toCanvas);
+
+        // Segment 0->1: Incoming Sunlight
+        const entryFrac = Math.min(1, progress / 0.26);
+        drawPartialPolyline([rPts[0], rPts[1]], entryFrac, '#ffffff', 3.5, 0.95);
+
+        // Label Sunlight
+        ctx.save();
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '600 12px Inter, sans-serif';
+        ctx.fillText('☀ Sunlight 入射白光', rPts[0].x, rPts[0].y - 10);
+        ctx.restore();
+
+        if (progress > 0.24) {
+          const subProg = (progress - 0.24) / 0.76;
+
+          // Draw Red, Green, Violet internal & outgoing rays
+          drawPartialPolyline(rPts.slice(1), subProg, '#f43f5e', 2.8, 0.95);
+          drawPartialPolyline(gPts.slice(1), subProg, '#34d399', 2.0, 0.75);
+          drawPartialPolyline(vPts.slice(1), subProg, '#a78bfa', 2.8, 0.95);
+
+          // Highlight Reflection 1 & Reflection 2 vertices with pulse markers
+          if (progress >= 0.48) {
+            drawReflectionMarker(rPts[2].x, rPts[2].y, 'Reflect 1 反射1', '#38bdf8');
+          }
+          if (progress >= 0.72) {
+            drawReflectionMarker(rPts[3].x, rPts[3].y, 'Reflect 2 反射2 (翻转)', '#c084fc');
+          }
+
+          // When exit completes, draw exit angle annotations
+          if (progress >= 0.92) {
+            const rEnd = rPts[5];
+            const vEnd = vPts[5];
+            ctx.save();
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.fillStyle = '#fda4af';
+            ctx.fillText(`Red 红 ~${nRed.exitAngleDeg.toFixed(1)}°`, rEnd.x - 10, rEnd.y + 16);
+
+            ctx.fillStyle = '#ddd6fe';
+            ctx.fillText(`Violet 紫 ~${nViolet.exitAngleDeg.toFixed(1)}°`, vEnd.x - 10, vEnd.y - 10);
+            ctx.restore();
+          }
+        }
+      }
+    }
+
+    function drawReflectionMarker(x, y, label, color) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText(label, x + 12, y + 4);
+      ctx.restore();
+    }
+
+    // ==========================================
+    // 6. Macro Sky Geometry View (Why Violet is on Top)
+    // ==========================================
+    function drawMacroSkyView(w, h) {
+      // Sky gradient background
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#090d16');
+      skyGrad.addColorStop(0.75, '#0f172a');
+      skyGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Ground horizon
+      const groundY = h * 0.84;
+      ctx.fillStyle = '#064e3b';
+      ctx.fillRect(0, groundY, w, h - groundY);
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      ctx.lineTo(w, groundY);
+      ctx.stroke();
+
+      // Observer position (Bottom Left)
+      const obsX = w * 0.14;
+      const obsY = groundY - 26;
+
+      // Draw Observer Stick Figure + Eye
+      ctx.save();
+      ctx.strokeStyle = '#f8fafc';
+      ctx.lineWidth = 2.5;
+      // Body
+      ctx.beginPath();
+      ctx.moveTo(obsX, groundY);
+      ctx.lineTo(obsX, obsY + 6);
+      ctx.stroke();
+      // Head
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(obsX, obsY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '600 12px Inter, sans-serif';
+      ctx.fillText('Observer 观察者', obsX - 36, groundY + 18);
+
+      // Horizontal anti-solar reference line
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(obsX, obsY);
+      ctx.lineTo(w * 0.92, obsY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.fillText('Anti-solar line 平行太阳光基准线 (0°)', w * 0.62, obsY - 6);
+      ctx.restore();
+
+      // Helper to place a raindrop at distance D and elevation angle deg from observer
+      const dist = Math.min(w * 0.62, h * 0.68);
+      function dropPos(deg) {
+        const rad = deg * Math.PI / 180;
+        return {
+          x: obsX + dist * Math.cos(rad),
+          y: obsY - dist * Math.sin(rad)
+        };
+      }
+
+      // Draw Alexander's Dark Band Sector (between 42.3° and 50.8°)
+      ctx.save();
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.55)';
+      ctx.beginPath();
+      ctx.moveTo(obsX, obsY);
+      ctx.arc(obsX, obsY, dist * 1.15, -50.8 * Math.PI / 180, -42.3 * Math.PI / 180);
+      ctx.closePath();
+      ctx.fill();
+
+      const midDark = dropPos(46.5);
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'italic 11px Inter, sans-serif';
+      ctx.fillText("Alexander's Dark Band 亚历山大暗带", midDark.x - 45, midDark.y + 4);
+      ctx.restore();
+
+      // Secondary Rainbow Droplets (霓: 53.5° Violet Top, 50.8° Red Bottom)
+      const dNiViolet = dropPos(55.5); // slightly exaggerated angular spread for visual clarity
+      const dNiRed = dropPos(49.5);
+
+      // Primary Rainbow Droplets (虹: 42.3° Red Top, 40.6° Violet Bottom)
+      const dHongRed = dropPos(41.5);
+      const dHongViolet = dropPos(35.5);
+
+      const animFrac = isPlaying ? Math.min(1, progress * 1.2) : Math.max(0.25, progress);
+
+      // Draw 霓 (Secondary) Drops & Rays
+      if (rainbowType === 'ni' || rainbowType === 'both') {
+        drawSkyDropRay(dNiViolet, obsX, obsY, '#a78bfa', '#f43f5e', '53.5° Violet 紫 (外圈)', true, animFrac);
+        drawSkyDropRay(dNiRed, obsX, obsY, '#f43f5e', '#a78bfa', '50.8° Red 红 (内圈)', false, animFrac);
+      }
+
+      // Draw 虹 (Primary) Drops & Rays
+      if (rainbowType === 'hong' || rainbowType === 'both') {
+        drawSkyDropRay(dHongRed, obsX, obsY, '#f43f5e', '#a78bfa', '42.3° Red 红 (外圈)', true, animFrac);
+        drawSkyDropRay(dHongViolet, obsX, obsY, '#a78bfa', '#f43f5e', '40.6° Violet 紫 (内圈)', false, animFrac);
+      }
+
+      // Right-side Sky Arc Preview showing stacked colors in the sky
+      const arcX = w * 0.90;
+      ctx.save();
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillText('Sky View 视觉效果', arcX - 48, 28);
+
+      if (rainbowType === 'ni' || rainbowType === 'both') {
+        // 霓 Band (Violet on top, Red on bottom, dimmer)
+        const niGrad = ctx.createLinearGradient(0, dNiViolet.y - 10, 0, dNiRed.y + 10);
+        niGrad.addColorStop(0, 'rgba(167, 139, 250, 0.55)');
+        niGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.45)');
+        niGrad.addColorStop(1, 'rgba(244, 63, 94, 0.55)');
+        ctx.fillStyle = niGrad;
+        ctx.fillRect(arcX - 18, dNiViolet.y - 8, 36, (dNiRed.y - dNiViolet.y) + 16);
+        ctx.fillStyle = '#ddd6fe';
+        ctx.fillText('霓 (外紫内红)', arcX - 36, dNiViolet.y - 14);
+      }
+
+      if (rainbowType === 'hong' || rainbowType === 'both') {
+        // 虹 Band (Red on top, Violet on bottom, bright)
+        const hongGrad = ctx.createLinearGradient(0, dHongRed.y - 10, 0, dHongViolet.y + 10);
+        hongGrad.addColorStop(0, 'rgba(244, 63, 94, 0.95)');
+        hongGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.85)');
+        hongGrad.addColorStop(1, 'rgba(167, 139, 250, 0.95)');
+        ctx.fillStyle = hongGrad;
+        ctx.fillRect(arcX - 18, dHongRed.y - 8, 36, (dHongViolet.y - dHongRed.y) + 16);
+        ctx.fillStyle = '#fda4af';
+        ctx.fillText('虹 (外红内紫)', arcX - 36, dHongViolet.y + 22);
+      }
+      ctx.restore();
+    }
+
+    function drawSkyDropRay(drop, obsX, obsY, eyeColor, missedColor, label, isUpper, frac) {
+      ctx.save();
+      // Incoming sunlight from left
+      const sunStartX = obsX - 30;
+      drawPartialPolyline([{ x: sunStartX, y: drop.y }, drop], Math.min(1, frac * 2), 'rgba(255,255,255,0.75)', 2);
+
+      // Ray hitting observer's eye
+      if (frac > 0.45) {
+        const outFrac = (frac - 0.45) / 0.55;
+        drawPartialPolyline([drop, { x: obsX, y: obsY }], outFrac, eyeColor, 3);
+
+        // Missed sibling ray going above or below the eye
+        const missY = isUpper ? obsY + 42 : obsY - 42;
+        drawPartialPolyline([drop, { x: obsX, y: missY }], outFrac, missedColor, 1.5, 0.4, true);
+      }
+
+      // Draw mini raindrop
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.strokeStyle = '#7dd3fc';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(drop.x, drop.y, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Label next to drop
+      ctx.fillStyle = eyeColor;
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.fillText(label, drop.x + 16, drop.y + 4);
+      ctx.restore();
+    }
+
+    // ==========================================
+    // 7. Main Animation Loop
+    // ==========================================
+    function animate(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const dt = (timestamp - lastTimestamp) / 1000;
+      lastTimestamp = timestamp;
+
+      if (isPlaying) {
+        progress += dt * 0.22; // ~4.5 seconds per full cycle
+        if (progress > 1.15) {
+          progress = 0; // Pause briefly at 100% before looping
+        }
+        const clamped = Math.min(1, progress);
+        document.getElementById('progressSlider').value = Math.round(clamped * 100);
+        document.getElementById('progressLabel').textContent = Math.round(clamped * 100) + '%';
+      }
+
+      const rect = canvas.parentElement.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      const effectiveProgress = Math.min(1, progress);
+      if (viewMode === 'droplet') {
+        drawSingleDropletView(rect.width, rect.height);
+      } else {
+        drawMacroSkyView(rect.width, rect.height);
+      }
+
+      updateStepBanner();
+      requestAnimationFrame(animate);
+    }
+
+    // Initialize on window load
+    window.onload = function () {
+      resizeCanvas();
+      updateTelemetry();
+      requestAnimationFrame(animate);
+    };
+  </script>
+</body>
+</html>
