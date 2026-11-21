@@ -442,6 +442,17 @@ const COURSE_TREE_DATA = [
           },
           {
             "type": "file",
+            "dataTitle": "瑞利散射与天空呈蓝色/日落呈红色原理模拟器 - 八年级上册物理",
+            "href": "physics/p8a/p8a-optics-scattering.html",
+            "name": "p8a-optics-scattering.html",
+            "title": "瑞利散射与天空呈蓝色/日落呈红色原理 (Rayleigh Scattering)",
+            "badge": {
+              "text": "Logic",
+              "class": "badge-logic"
+            }
+          },
+          {
+            "type": "file",
             "dataTitle": "水的反常膨胀与4°C最大密度深度可视化 - 八年级上册物理",
             "href": "physics/p8a/p8a-thermo-water.html",
             "name": "p8a-thermo-water.html",

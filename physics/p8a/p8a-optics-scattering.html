@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why the Sky is Blue &amp; Sunsets are Red — Real Beer-Lambert Scattering Simulation</title>
+  <style>
+    :root {
+      --bg-base: #060b16;
+      --bg-surface: #0d1526;
+      --bg-elevated: #162036;
+      --bg-hover: #1e2c4a;
+      --border: #263554;
+      --border-bright: #3b5280;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-indigo: #818cf8;
+      --accent-teal: #2dd4bf;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header & Tab Bar */
+    header {
+      background: rgba(13, 21, 38, 0.94);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .brand h1 {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.65);
+      flex-shrink: 0;
+    }
+
+    .brand p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: #080e1c;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #1d4ed8, #0284c7);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Main Stage */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px 16px;
+      gap: 12px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stage-container {
+      position: relative;
+      flex: 1;
+      min-height: 460px;
+      height: 64vh;
+      max-height: 700px;
+      background: #040812;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    /* Floating "What the Eye Sees" HUD Card (Top-Left) */
+    .eye-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      width: 284px;
+      background: rgba(11, 18, 34, 0.84);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(59, 82, 128, 0.72);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      pointer-events: auto;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+    }
+
+    .eye-hud.hidden {
+      display: none;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .hud-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .path-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent-teal);
+      background: rgba(45, 212, 191, 0.12);
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .retina-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 9px;
+    }
+
+    .retina-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2.5px solid #475569;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.45), 0 0 14px rgba(56, 189, 248, 0.18);
+    }
+
+    .retina-sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .rgb-meters {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .meter-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .meter-lbl {
+      width: 12px;
+      color: var(--text-secondary);
+    }
+
+    .meter-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(6, 11, 22, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.75);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
+
+    .meter-pct {
+      width: 30px;
+      text-align: right;
+      font-size: 0.7rem;
+      color: #cbd5e1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hud-verdict {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-bottom: 4px;
+    }
+
+    .hud-note {
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+
+    /* Top-right interaction hint */
+    .canvas-hint {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(11, 18, 34, 0.78);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #bae6fd;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Controls Dock */
+    .controls-dock {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .preset-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ctrl-btn {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-cyan);
+    }
+
+    .ctrl-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--accent-cyan);
+      color: #7dd3fc;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25);
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 230px;
+      flex: 1;
+      max-width: 340px;
+    }
+
+    .slider-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .slider-val {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      min-width: 82px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent-cyan);
+      height: 6px;
+      border-radius: 4px;
+      background: #060b16;
+      cursor: pointer;
+    }
+
+    .playback-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 7px 11px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .checkbox-label:hover {
+      border-color: var(--accent-indigo);
+      color: var(--text-primary);
+    }
+
+    .checkbox-label input {
+      accent-color: var(--accent-cyan);
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 4px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .sky-only.hidden {
+      display: none !important;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 720px) {
+      header {
+        padding: 10px 14px;
+      }
+      main {
+        padding: 10px;
+      }
+      .stage-container {
+        min-height: 360px;
+        height: 52vh;
+      }
+      .eye-hud {
+        position: static;
+        width: 100%;
+        border-radius: var(--radius-md);
+        margin-top: 0;
+      }
+      .canvas-hint {
+        top: 8px;
+        right: 8px;
+        left: 8px;
+        text-align: center;
+        font-size: 0.7rem;
+        padding: 4px 10px;
+      }
+      .controls-dock {
+        padding: 12px;
+      }
+      .slider-group {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Tabs -->
+  <header>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="../../index.html" title="返回课程资源地图" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; color: #cbd5e1; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(51, 65, 85, 0.8); text-decoration: none; flex-shrink: 0;">
+        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span>返回主页</span>
+      </a>
+      <div class="brand">
+        <h1><span class="brand-dot"></span>Why is the Sky Blue &amp; Sunsets Red?</h1>
+        <p>True Beer-Lambert atmospheric extinction &amp; Rayleigh scattering physics</p>
+      </div>
+    </div>
+    <nav class="tab-bar" role="tablist">
+      <button class="tab-btn active" id="tabSky" role="tab" aria-selected="true">Sky &amp; Sunset Physics</button>
+      <button class="tab-btn" id="tabCompare" role="tab" aria-selected="false">Compare: Sky vs. Blue Glass</button>
+    </nav>
+  </header>
+
+  <!-- Main Workspace -->
+  <main>
+    <div class="stage-container" id="stageContainer">
+      <canvas id="simCanvas"></canvas>
+
+      <!-- Interaction Hint -->
+      <div class="canvas-hint" id="canvasHint">
+        Drag Sun to change elevation &bull; Drag sky to aim observer's gaze
+      </div>
+
+      <!-- Compact Floating "What the Eye Sees" HUD Card (Desktop overlay / Mobile docked) -->
+      <div class="eye-hud" id="eyeHud">
+        <div class="hud-header">
+          <span class="hud-title">What the Eye Sees</span>
+          <span class="path-pill" id="pathReadout">Path: 1.0&times;</span>
+        </div>
+        <div class="retina-row">
+          <div class="retina-circle" id="retinaCircle">
+            <div class="retina-sun" id="retinaSun"></div>
+          </div>
+          <div class="rgb-meters">
+            <div class="meter-row">
+              <span class="meter-lbl">R</span>
+              <div class="meter-track"><div class="meter-fill" id="barR" style="background:#ff5533;"></div></div>
+              <span class="meter-pct" id="pctR">0%</span>
+            </div>
+            <div class="meter-row">
+              <span class="meter-lbl">G</span>
+              <div class="meter-track"><div class="meter-fill" id="barG" style="background:#4ade80;"></div></div>
+              <span class="meter-pct" id="pctG">0%</span>
+            </div>
+            <div class="meter-row">
+              <span class="meter-lbl">B</span>
+              <div class="meter-track"><div class="meter-fill" id="barB" style="background:#38bdf8;"></div></div>
+              <span class="meter-pct" id="pctB">0%</span>
+            </div>
+          </div>
+        </div>
+        <div class="hud-verdict" id="hudVerdict">Bright Azure Sky</div>
+        <div class="hud-note" id="hudNote">
+          Short atmospheric path lets abundant blue light reach the gaze cone and scatter into the eye.
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile HUD mount slot (keeps HUD outside canvas on narrow viewports) -->
+    <div id="mobileHudSlot"></div>
+
+    <!-- Interactive Controls Dock -->
+    <section class="controls-dock">
+      <div class="preset-group sky-only" id="presetGroup">
+        <button class="ctrl-btn active" data-preset="noonAway">Noon &middot; Look Away</button>
+        <button class="ctrl-btn" data-preset="noonSun">Noon &middot; Look at Sun</button>
+        <button class="ctrl-btn" data-preset="sunsetSun">Sunset &middot; Look at Sun</button>
+        <button class="ctrl-btn" data-preset="sunsetUp">Sunset &middot; Look Up</button>
+      </div>
+
+      <div class="slider-group sky-only" id="sunSliderGroup">
+        <span class="slider-label">Sun Elevation</span>
+        <input type="range" id="sunSlider" min="3" max="90" step="0.5" value="78" />
+        <span class="slider-val" id="sunVal">78&deg; (Noon)</span>
+      </div>
+
+      <div class="playback-group">
+        <button class="ctrl-btn" id="btnPlayPause">Pause</button>
+        <button class="ctrl-btn" id="btnSpeed">1.0&times; Normal</button>
+        <label class="checkbox-label sky-only" id="autoSweepWrap">
+          <input type="checkbox" id="chkAutoSweep" />
+          <span>Auto-Sweep Gaze</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Legend -->
+    <div class="legend-bar">
+      <div class="legend-items">
+        <div class="legend-item"><span class="swatch" style="background:#38bdf8;"></span>Blue (short &lambda;, scatters ~12&times; stronger)</div>
+        <div class="legend-item"><span class="swatch" style="background:#4ade80;"></span>Green (medium &lambda;, scatters moderately)</div>
+        <div class="legend-item"><span class="swatch" style="background:#ff5533;"></span>Red (long &lambda;, penetrates deep air)</div>
+        <div class="legend-item"><span class="swatch" style="background:#94a3b8;"></span>Air Molecules (N&#8322; / O&#8322;)</div>
+      </div>
+      <div id="physicsTag" style="color:var(--text-muted);">Beer-Lambert Law: I = I&#8320; &middot; e<sup>&minus;&tau;(&lambda;)&middot;L</sup></div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      // =========================================================================
+      // 1. DOM REFERENCES & APPLICATION STATE
+      // =========================================================================
+      const canvas = document.getElementById('simCanvas');
+      const ctx = canvas.getContext('2d');
+      const stageContainer = document.getElementById('stageContainer');
+      const mobileHudSlot = document.getElementById('mobileHudSlot');
+      const eyeHud = document.getElementById('eyeHud');
+      const canvasHint = document.getElementById('canvasHint');
+
+      const tabSky = document.getElementById('tabSky');
+      const tabCompare = document.getElementById('tabCompare');
+      const presetGroup = document.getElementById('presetGroup');
+      const sunSliderGroup = document.getElementById('sunSliderGroup');
+      const autoSweepWrap = document.getElementById('autoSweepWrap');
+      const presetBtns = Array.from(document.querySelectorAll('[data-preset]'));
+
+      const sunSlider = document.getElementById('sunSlider');
+      const sunVal = document.getElementById('sunVal');
+      const btnPlayPause = document.getElementById('btnPlayPause');
+      const btnSpeed = document.getElementById('btnSpeed');
+      const chkAutoSweep = document.getElementById('chkAutoSweep');
+
+      const pathReadout = document.getElementById('pathReadout');
+      const retinaCircle = document.getElementById('retinaCircle');
+      const retinaSun = document.getElementById('retinaSun');
+      const barR = document.getElementById('barR');
+      const barG = document.getElementById('barG');
+      const barB = document.getElementById('barB');
+      const pctR = document.getElementById('pctR');
+      const pctG = document.getElementById('pctG');
+      const pctB = document.getElementById('pctB');
+      const hudVerdict = document.getElementById('hudVerdict');
+      const hudNote = document.getElementById('hudNote');
+
+      // Wavelength optical depths per 1.0x vertical atmosphere thickness:
+      // Calibrated so:
+      // - 1.0x vertical (Noon): ~51% Blue scatters, ~19% Green scatters, ~5% Red scatters
+      // - 5.5x–6.5x slanted (Sunset): >97% Blue scatters upstream, ~72% Green scatters, ~70% Red survives
+      const CHANNELS = [
+        { key: 'red',   color: '#ff5533', freq: 0.16, tauVert: 0.052 },
+        { key: 'green', color: '#4ade80', freq: 0.25, tauVert: 0.215 },
+        { key: 'blue',  color: '#38bdf8', freq: 0.39, tauVert: 0.720 }
+      ];
+
+      const PRESETS = {
+        noonAway:  { sunDeg: 78, gazeDeg: 125 },
+        noonSun:   { sunDeg: 78, gazeDeg: 78  },
+        sunsetSun: { sunDeg: 6,  gazeDeg: 6   },
+        sunsetUp:  { sunDeg: 6,  gazeDeg: 90  }
+      };
+
+      const state = {
+        tab: 'sky',          // 'sky' | 'compare'
+        width: 960,
+        height: 560,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+        sunDeg: 78,          // 3° (Sunset right) to 90° (Noon overhead)
+        gazeDeg: 125,        // 3° (right horizon) to 174° (left horizon)
+        coneHalfDeg: 10.5,   // Observer's line-of-sight cone half-angle
+        playing: true,
+        slowMo: false,
+        autoSweep: false,    // OFF by default so presets stay locked
+        sweepDir: -1,
+        dragMode: null,      // null | 'sun' | 'gaze'
+        hoverSun: false,
+        simTime: 0,
+        eyeFlash: 0,
+        eyeFlashColor: '#38bdf8',
+        activePreset: 'noonAway',
+        // Smoothed HUD RGB values (0..100)
+        dispR: 12,
+        dispG: 36,
+        dispB: 86
+      };
+
+      // =========================================================================
+      // 2. CURVED EARTH & ATMOSPHERE GEOMETRY + REAL OPTICAL PHYSICS
+      // =========================================================================
+      function getGeom() {
+        const w = state.width;
+        const h = state.height;
+
+        // Place observer at ~28% width so sunset to the right forms a long ~65% corridor
+        const obsX = w * 0.275;
+        const groundY = h * 0.82;
+
+        // Atmosphere vertical thickness scaled cleanly to viewport
+        const atmoH = Math.max(82, Math.min(h * 0.285, w * 0.145));
+        // Large planetary radius so 6° sunset path is ~5.0x–6.2x vertical thickness
+        // and the entry boundary sits right near the right edge of the canvas!
+        const earthR = atmoH * 23.0;
+        const cx = obsX;
+        const cy = groundY + earthR;
+        const atmoR = earthR + atmoH;
+
+        const eyeX = obsX;
+        const eyeY = groundY - 24;
+
+        const sunRad = (state.sunDeg * Math.PI) / 180;
+        const gazeRad = (state.gazeDeg * Math.PI) / 180;
+
+        // Sun direction unit vector (pointing FROM observer TOWARD sun)
+        const sunDirX = Math.cos(sunRad);
+        const sunDirY = -Math.sin(sunRad);
+
+        // Compute Sun visual position along sun ray, outside atmosphere & within canvas bounds
+        const tAtmoSun = rayCircleExit(eyeX, eyeY, sunDirX, sunDirY, cx, cy, atmoR);
+        const tRight = sunDirX > 0.005 ? (w - 46 - eyeX) / sunDirX : 1e9;
+        const tTop = sunDirY < -0.005 ? (46 - eyeY) / sunDirY : 1e9;
+        const idealDist = Math.max(tAtmoSun + 38, atmoH * 1.55);
+        const sunDist = Math.max(70, Math.min(idealDist, tRight, tTop));
+        const sunX = eyeX + sunDirX * sunDist;
+        const sunY = eyeY + sunDirY * sunDist;
+
+        return {
+          w, h, obsX, groundY, atmoH, earthR, cx, cy, atmoR,
+          eyeX, eyeY, sunRad, gazeRad, sunDirX, sunDirY,
+          sunX, sunY, tAtmoSun
+        };
+      }
+
+      // Exponential atmosphere density normalized so integral(0..1) rho(a) da = 1.0
+      function getAtmoDensity(altFrac) {
+        if (altFrac < 0 || altFrac > 1) return 0;
+        return 1.545 * Math.exp(-0.95 * altFrac);
+      }
+
+      // Distance from point (px, py) INSIDE circle (cx, cy, R) along unit ray (dx, dy) to exit circle
+      function rayCircleExit(px, py, dx, dy, cx, cy, R) {
+        const ox = px - cx;
+        const oy = py - cy;
+        const b = ox * dx + oy * dy;
+        const c = ox * ox + oy * oy - R * R;
+        const disc = b * b - c;
+        if (disc < 0) return 0;
+        return Math.max(0, -b + Math.sqrt(disc));
+      }
+
+      // Intersections of ray (px, py) + t*(dx, dy) with circle (cx, cy, R): returns [tEnter, tExit] or null
+      function rayCircleIntersect(px, py, dx, dy, cx, cy, R) {
+        const ox = px - cx;
+        const oy = py - cy;
+        const b = ox * dx + oy * dy;
+        const c = ox * ox + oy * oy - R * R;
+        const disc = b * b - c;
+        if (disc <= 0) return null;
+        const sq = Math.sqrt(disc);
+        return [-b - sq, -b + sq];
+      }
+
+      // Integrate dimensionless optical airmass from point (px, py) to space along unit direction (dx, dy)
+      function integrateOpticalPath(px, py, dx, dy, g, steps = 12) {
+        const dist = rayCircleExit(px, py, dx, dy, g.cx, g.cy, g.atmoR);
+        if (dist <= 0) return 0;
+        const ds = dist / steps;
+        let opt = 0;
+        for (let i = 0; i < steps; i++) {
+          const s = (i + 0.5) * ds;
+          const x = px + dx * s;
+          const y = py + dy * s;
+          const r = Math.hypot(x - g.cx, y - g.cy);
+          if (r < g.earthR - 2) return 40; // blocked by solid Earth
+          const a = (r - g.earthR) / g.atmoH;
+          opt += getAtmoDensity(a) * (ds / g.atmoH);
+        }
+        return opt;
+      }
+
+      // Exact Analytical Beer-Lambert + Rayleigh Single-Scattering Spectrum Reaching the Observer's Eye
+      function computeAnalyticalEyeSpectrum(g) {
+        const gx = Math.cos(g.gazeRad);
+        const gy = -Math.sin(g.gazeRad);
+        const sx = g.sunDirX;
+        const sy = g.sunDirY;
+
+        // 1. Direct solar path airmass from observer to outer atmosphere
+        const directOpt = integrateOpticalPath(g.eyeX, g.eyeY, sx, sy, g, 18);
+
+        // 2. Integrate Rayleigh single-scattering along the observer's gaze ray
+        const gazeDist = rayCircleExit(g.eyeX, g.eyeY, gx, gy, g.cx, g.cy, g.atmoR);
+        const N = 26;
+        const ds = gazeDist / N;
+        const cosPsi = gx * sx + gy * sy;
+        const phase = 0.75 * (1 + cosPsi * cosPsi);
+
+        let scatR = 0, scatG = 0, scatB = 0;
+        let optGaze = 0;
+
+        for (let i = 0; i < N; i++) {
+          const s = (i + 0.5) * ds;
+          const px = g.eyeX + gx * s;
+          const py = g.eyeY + gy * s;
+          const r = Math.hypot(px - g.cx, py - g.cy);
+          const a = Math.max(0, Math.min(1, (r - g.earthR) / g.atmoH));
+          const rho = getAtmoDensity(a);
+          const dOpt = rho * (ds / g.atmoH);
+          const midOptGaze = optGaze + dOpt * 0.5;
+          optGaze += dOpt;
+
+          const optSun = integrateOpticalPath(px, py, sx, sy, g, 10);
+          const totOpt = optSun + midOptGaze;
+
+          scatR += CHANNELS[0].tauVert * dOpt * phase * Math.exp(-CHANNELS[0].tauVert * totOpt);
+          scatG += CHANNELS[1].tauVert * dOpt * phase * Math.exp(-CHANNELS[1].tauVert * totOpt);
+          scatB += CHANNELS[2].tauVert * dOpt * phase * Math.exp(-CHANNELS[2].tauVert * totOpt);
+        }
+
+        // Convert scattered radiance to intuitive 0..100 retina meter scale
+        // Calibrated so Noon Look Away => R~12%, G~36%, B~86% and Sunset Look Up => R~6%, G~8%, B~18%
+        const skyGainR = 195;
+        const skyGainG = 195;
+        const skyGainB = 245;
+
+        let outR = Math.min(100, scatR * skyGainR);
+        let outG = Math.min(100, scatG * skyGainG);
+        let outB = Math.min(100, scatB * skyGainB);
+
+        // 3. Direct sunlight contribution when looking within ±8° of the Sun
+        const angDiff = Math.abs(state.gazeDeg - state.sunDeg);
+        const directWeight = angDiff < 10 ? Math.exp(-Math.pow(angDiff / 4.6, 2)) : 0;
+
+        const dirR = Math.exp(-CHANNELS[0].tauVert * directOpt) * 100;
+        const dirG = Math.exp(-CHANNELS[1].tauVert * directOpt) * 100;
+        const dirB = Math.exp(-CHANNELS[2].tauVert * directOpt) * 100;
+
+        if (directWeight > 0.01) {
+          outR = Math.min(100, outR * (1 - directWeight * 0.45) + dirR * directWeight);
+          outG = Math.min(100, outG * (1 - directWeight * 0.45) + dirG * directWeight);
+          outB = Math.min(100, outB * (1 - directWeight * 0.45) + dirB * directWeight);
+        }
+
+        // Geometric path multiplier relative to 1.0x vertical thickness
+        const geomPathMult = Math.max(1.0, g.tAtmoSun / g.atmoH);
+
+        return {
+          r: outR, g: outG, b: outB,
+          dirR, dirG, dirB,
+          directWeight,
+          directOpt,
+          geomPathMult
+        };
+      }
+
+      // Check whether point (x, y) is inside observer's gaze cone
+      function isInGazeCone(x, y, g) {
+        const dx = x - g.eyeX;
+        const dy = g.eyeY - y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 18) return false;
+        const angDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+        return Math.abs(angDeg - state.gazeDeg) <= state.coneHalfDeg;
+      }
+
+      // =========================================================================
+      // 3. REAL PHOTON PROPAGATION ENGINE (ZERO FAKE BLUE SPAWNERS)
+      // =========================================================================
+      const photons = [];
+      const ripples = [];
+      const airMolecules = [];
+      const stars = [];
+
+      function initBackgroundData() {
+        stars.length = 0;
+        for (let i = 0; i < 65; i++) {
+          stars.push({
+            u: Math.random(),
+            v: Math.random() * 0.58,
+            size: 0.6 + Math.random() * 1.3,
+            twinkle: Math.random() * Math.PI * 2
+          });
+        }
+
+        // Visual N2 / O2 air molecules distributed across the curved atmosphere shell
+        airMolecules.length = 0;
+        for (let i = 0; i < 95; i++) {
+          airMolecules.push({
+            // Angle relative to vertical from Earth center (-0.28 rad left to +0.42 rad right)
+            angleOffset: -0.22 + (i / 94) * 0.58 + (Math.random() - 0.5) * 0.018,
+            altFrac: 0.08 + Math.pow(Math.random(), 1.25) * 0.86, // denser near ground
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+      initBackgroundData();
+
+      // Spawn a parallel white-sunlight triplet (R, G, B) entering the outer atmosphere boundary
+      function spawnSunlightTriplet(g, aimAtObserverBias = false) {
+        // Incoming velocity direction = opposite of sunDir
+        const vxUnit = -g.sunDirX;
+        const vyUnit = -g.sunDirY;
+        // Perpendicular vector across the sunlight wavefront
+        const perpX = -vyUnit;
+        const perpY = vxUnit;
+
+        // Pick a target point inside the visible atmosphere so rays span the entire dome
+        let targetX, targetY;
+        if (aimAtObserverBias) {
+          // Ensure steady parallel rays along the corridor aimed toward the observer
+          const spread = (Math.random() - 0.5) * 34;
+          targetX = g.eyeX + perpX * spread;
+          targetY = g.eyeY + perpY * spread;
+        } else {
+          // Distribute uniformly across the entire visible sky dome
+          const frac = Math.random();
+          const xSpan = g.w * (0.04 + frac * 0.92);
+          const rGround = Math.sqrt(Math.max(1, g.earthR * g.earthR - (xSpan - g.cx) * (xSpan - g.cx)));
+          const localGroundY = g.cy - rGround;
+          const localAlt = (0.08 + Math.random() * 0.85) * g.atmoH;
+          targetX = xSpan;
+          targetY = localGroundY - localAlt;
+        }
+
+        // Back-trace from target point along sunDir to find exact outer atmosphere entry point
+        const distToEntry = rayCircleExit(targetX, targetY, g.sunDirX, g.sunDirY, g.cx, g.cy, g.atmoR);
+        if (distToEntry <= 2) return;
+
+        // Start slightly outside the outer atmosphere boundary in space so white sunlight enters visibly
+        const spaceLead = 18 + Math.random() * 28;
+        const entryX = targetX + g.sunDirX * (distToEntry + spaceLead);
+        const entryY = targetY + g.sunDirY * (distToEntry + spaceLead);
+
+        const baseSpeed = 235; // px/sec
+
+        // Emit Red, Green, and Blue wave packets together (slight perpendicular offset so all 3 are crisp)
+        for (let cIdx = 0; cIdx < 3; cIdx++) {
+          const ch = CHANNELS[cIdx];
+          const lateral = (cIdx - 1) * 4.5;
+          photons.push({
+            x: entryX + perpX * lateral,
+            y: entryY + perpY * lateral,
+            vx: vxUnit * baseSpeed,
+            vy: vyUnit * baseSpeed,
+            chIdx: cIdx,
+            mode: 'direct', // 'direct' | 'toEye' | 'scattered'
+            alpha: 0.92,
+            life: 1.0,
+            age: 0,
+            distToEye: Infinity
+          });
+        }
+      }
+
+      // Step all sky photons forward using TRUE Beer-Lambert extinction
+      function stepSkyPhysics(dt, g) {
+        // Spawn rate maintains a rich, readable flow without visual clutter
+        if (photons.length < 270) {
+          const tripletsToSpawn = state.sunDeg < 22 ? 3 : 2;
+          for (let k = 0; k < tripletsToSpawn; k++) {
+            // 1 of every 3 rays focuses near the observer's corridor so direct sunset/noon rays are clear
+            spawnSunlightTriplet(g, k === 0 && Math.random() < 0.45);
+          }
+        }
+
+        const speedScale = state.slowMo ? 0.4 : 1.0;
+        const effDt = dt * speedScale;
+
+        for (let i = photons.length - 1; i >= 0; i--) {
+          const p = photons[i];
+          const ch = CHANNELS[p.chIdx];
+
+          const dxStep = p.vx * effDt;
+          const dyStep = p.vy * effDt;
+          const ds = Math.hypot(dxStep, dyStep);
+
+          p.x += dxStep;
+          p.y += dyStep;
+          p.age += effDt;
+
+          const r = Math.hypot(p.x - g.cx, p.y - g.cy);
+          const inAtmo = r <= g.atmoR && r >= g.earthR;
+
+          // Check if photon hits Observer's Eye
+          const dEye = Math.hypot(p.x - g.eyeX, p.y - g.eyeY);
+          if (p.mode === 'toEye') {
+            if (dEye < 14 || p.distToEye < dEye) {
+              // Absorbed by observer's retina!
+              state.eyeFlash = Math.min(1, state.eyeFlash + 0.35);
+              state.eyeFlashColor = ch.color;
+              photons.splice(i, 1);
+              continue;
+            }
+            p.distToEye = dEye;
+          } else if (p.mode === 'direct' && dEye < 17) {
+            // Direct sunlight entering the eye
+            if (Math.abs(state.gazeDeg - state.sunDeg) <= state.coneHalfDeg + 3) {
+              state.eyeFlash = Math.min(1, state.eyeFlash + 0.4);
+              state.eyeFlashColor = ch.color;
+            }
+            photons.splice(i, 1);
+            continue;
+          }
+
+          // Remove photons hitting solid Earth or leaving bounds
+          if (r < g.earthR - 2 || p.x < -220 || p.x > g.w + 480 || p.y < -260 || p.y > g.h + 120) {
+            photons.splice(i, 1);
+            continue;
+          }
+
+          // REAL BEER-LAMBERT SCATTERING PROBABILITY PER STEP ds
+          if (inAtmo && (p.mode === 'direct' || p.mode === 'toEye')) {
+            const altFrac = (r - g.earthR) / g.atmoH;
+            const rho = getAtmoDensity(altFrac);
+            const dTau = (ch.tauVert / g.atmoH) * rho * ds;
+            const probScatter = 1 - Math.exp(-dTau);
+
+            if (Math.random() < probScatter) {
+              // A physical Rayleigh scattering event occurs right here!
+              if (p.mode === 'direct') {
+                const inCone = isInGazeCone(p.x, p.y, g);
+
+                // Visual ripple at scatter point (visible inside screen)
+                if (p.x > -10 && p.x < g.w + 10 && p.y > -10 && p.y < g.h + 10 && ripples.length < 70) {
+                  ripples.push({
+                    x: p.x,
+                    y: p.y,
+                    r: 2.5,
+                    maxR: inCone ? 18 : 13,
+                    color: ch.color,
+                    alpha: inCone ? 0.85 : 0.55
+                  });
+                }
+
+                // Inside observer's gaze cone: realistic fraction redirects STRAIGHT down line of sight into eye!
+                // Outside gaze cone: bounces off randomly (upstream depletion!)
+                if (inCone && Math.random() < 0.48) {
+                  const toEx = g.eyeX - p.x;
+                  const toEy = g.eyeY - p.y;
+                  const dist = Math.hypot(toEx, toEy) || 1;
+                  const spd = 250;
+                  p.mode = 'toEye';
+                  p.vx = (toEx / dist) * spd;
+                  p.vy = (toEy / dist) * spd;
+                  p.distToEye = dist;
+                  p.alpha = 1.0;
+                } else {
+                  // Scatter off in a random direction (Rayleigh-flavored)
+                  const ang = Math.random() * Math.PI * 2;
+                  const spd = 145 + Math.random() * 55;
+                  p.mode = 'scattered';
+                  p.vx = Math.cos(ang) * spd;
+                  p.vy = Math.sin(ang) * spd;
+                  p.life = 0.72 + Math.random() * 0.35;
+                  p.alpha = 0.78;
+                }
+              } else if (p.mode === 'toEye') {
+                // SECONDARY EXTINCTION along gaze path!
+                // Rare blue photon scattered far away gets scattered OUT again before hitting the eye!
+                const ang = Math.random() * Math.PI * 2;
+                const spd = 140;
+                p.mode = 'scattered';
+                p.vx = Math.cos(ang) * spd;
+                p.vy = Math.sin(ang) * spd;
+                p.life = 0.45;
+                p.alpha = 0.55;
+              }
+            }
+          } else if (p.mode === 'scattered') {
+            p.life -= effDt * 1.15;
+            if (p.life <= 0 || r > g.atmoR + 55) {
+              photons.splice(i, 1);
+              continue;
+            }
+          }
+        }
+
+        // Update ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rp = ripples[i];
+          rp.r += effDt * 34;
+          rp.alpha -= effDt * 1.35;
+          if (rp.alpha <= 0 || rp.r >= rp.maxR) {
+            ripples.splice(i, 1);
+          }
+        }
+
+        if (state.eyeFlash > 0) {
+          state.eyeFlash = Math.max(0, state.eyeFlash - effDt * 2.4);
+        }
+      }
+
+      // Instantaneously advance photon simulation when switching presets so extinction is immediately accurate
+      function prewarmSky() {
+        photons.length = 0;
+        ripples.length = 0;
+        const g = getGeom();
+        const savedSlow = state.slowMo;
+        state.slowMo = false;
+        for (let step = 0; step < 150; step++) {
+          stepSkyPhysics(0.032, g);
+        }
+        state.slowMo = savedSlow;
+      }
+
+      // =========================================================================
+      // 4. WAVE PACKET & SCENE RENDERING (TAB 1: SKY & SUNSET PHYSICS)
+      // =========================================================================
+      function drawWavePacket(x, y, vx, vy, color, freq, alpha, len, lineWidth) {
+        const angle = Math.atan2(vy, vx);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+
+        ctx.beginPath();
+        const amp = 3.1;
+        const half = len * 0.5;
+        for (let s = -half; s <= half; s += 2) {
+          const env = Math.cos((s / half) * (Math.PI * 0.5));
+          const wy = Math.sin(s * freq - state.simTime * 11) * amp * env;
+          if (s === -half) ctx.moveTo(s, wy);
+          else ctx.lineTo(s, wy);
+        }
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Glowing leading head
+        ctx.beginPath();
+        ctx.arc(half * 0.45, 0, lineWidth * 0.9, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+      function mixRGB(c1, c2, t) {
+        const k = clamp01(t);
+        return `rgb(${Math.round(lerp(c1[0], c2[0], k))},${Math.round(lerp(c1[1], c2[1], k))},${Math.round(lerp(c1[2], c2[2], k))})`;
+      }
+
+      function drawCalloutPill(x, y, text, borderColor, textColor, align = 'center') {
+        ctx.save();
+        ctx.font = '600 11.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        const padX = 10;
+        const textW = ctx.measureText(text).width;
+        const boxW = textW + padX * 2;
+        const boxH = 26;
+
+        let bx = x - boxW / 2;
+        if (align === 'left') bx = x;
+        if (align === 'right') bx = x - boxW;
+        // Clamp cleanly inside canvas
+        bx = Math.max(10, Math.min(state.width - boxW - 10, bx));
+        const by = Math.max(10, Math.min(state.height - boxH - 10, y - boxH / 2));
+
+        ctx.fillStyle = 'rgba(7, 13, 25, 0.82)';
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, boxW, boxH, 999);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, bx + boxW / 2, by + boxH / 2 + 0.5);
+        ctx.restore();
+      }
+
+      function drawObserver(g) {
+        const lookingLeft = state.gazeDeg > 90;
+        const dir = lookingLeft ? -1 : 1;
+
+        ctx.save();
+        ctx.translate(g.eyeX, g.groundY);
+
+        // Subtle retina glow when photons arrive
+        if (state.eyeFlash > 0.04) {
+          ctx.beginPath();
+          ctx.arc(dir * 5, -24, 16 + state.eyeFlash * 6, 0, Math.PI * 2);
+          ctx.fillStyle = state.eyeFlashColor;
+          ctx.globalAlpha = state.eyeFlash * 0.25;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        // Shoulders silhouette
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.roundRect(-14, -14, 28, 17, [9, 9, 0, 0]);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.arc(0, -24, 11.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose facing gaze direction
+        ctx.beginPath();
+        ctx.moveTo(dir * 10, -27);
+        ctx.lineTo(dir * 14.5, -23.5);
+        ctx.lineTo(dir * 10, -20.5);
+        ctx.fill();
+
+        // Expressive eye rotated toward gaze
+        const ex = dir * 5.2;
+        const ey = -25;
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, 4.6, 3.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        const px = ex + Math.cos(g.gazeRad) * 2.0;
+        const py = ey - Math.sin(g.gazeRad) * 1.7;
+        ctx.fillStyle = '#0284c7';
+        ctx.beginPath();
+        ctx.arc(px, py, 2.0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(px, py, 0.95, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label below observer on ground
+        ctx.font = '700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.textAlign = 'center';
+        ctx.fillText('Observer', 0, 15);
+        ctx.restore();
+      }
+
+      function renderSkyTab(g, spectrum) {
+        const w = g.w;
+        const h = g.h;
+        const tSunset = clamp01((34 - state.sunDeg) / 28);
+
+        // 1. Deep Space Background + Subtle Stars
+        ctx.fillStyle = '#040812';
+        ctx.fillRect(0, 0, w, h);
+
+        for (const st of stars) {
+          const sx = st.u * w;
+          const sy = st.v * h;
+          const r = Math.hypot(sx - g.cx, sy - g.cy);
+          if (r > g.atmoR + 8) {
+            const tw = 0.35 + 0.45 * Math.sin(state.simTime * 1.8 + st.twinkle);
+            ctx.fillStyle = `rgba(226, 232, 240, ${tw})`;
+            ctx.beginPath();
+            ctx.arc(sx, sy, st.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        // 2. Physically Synced Curved Atmosphere Shell
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(g.cx, g.cy, g.atmoR, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.lineTo(w + 50, h + 50);
+        ctx.lineTo(-50, h + 50);
+        ctx.closePath();
+        ctx.clip();
+
+        // Radial base atmospheric glow
+        const baseAtmo = ctx.createRadialGradient(g.cx, g.cy, g.earthR, g.cx, g.cy, g.atmoR);
+        baseAtmo.addColorStop(0.0, mixRGB([56, 152, 238], [26, 38, 86], tSunset));
+        baseAtmo.addColorStop(0.45, mixRGB([19, 98, 198], [16, 28, 68], tSunset));
+        baseAtmo.addColorStop(0.85, mixRGB([9, 44, 110], [8, 16, 42], tSunset));
+        baseAtmo.addColorStop(1.0, 'rgba(4, 8, 18, 0)');
+        ctx.fillStyle = baseAtmo;
+        ctx.fillRect(0, 0, w, h);
+
+        // At sunset, add authentic warm orange-red horizon glow toward the Sun on the right
+        if (tSunset > 0.02) {
+          const sunsetGlow = ctx.createRadialGradient(
+            g.sunX, Math.min(g.groundY + 10, g.sunY + 25), 10,
+            g.sunX, g.sunY + 20, w * 0.72
+          );
+          sunsetGlow.addColorStop(0.0, `rgba(255, 96, 42, ${0.52 * tSunset})`);
+          sunsetGlow.addColorStop(0.32, `rgba(217, 74, 38, ${0.30 * tSunset})`);
+          sunsetGlow.addColorStop(0.65, `rgba(90, 42, 72, ${0.14 * tSunset})`);
+          sunsetGlow.addColorStop(1.0, 'rgba(10, 20, 48, 0)');
+          ctx.fillStyle = sunsetGlow;
+          ctx.fillRect(0, 0, w, h);
+        }
+        ctx.restore();
+
+        // Outer Atmosphere Dashed Boundary Arc + Label
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(g.cx, g.cy, g.atmoR, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.34)';
+        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Label "Outer Atmosphere Boundary"
+        const lblX = w * 0.62;
+        const lblY = g.cy - Math.sqrt(Math.max(1, g.atmoR * g.atmoR - (lblX - g.cx) * (lblX - g.cx))) - 8;
+        if (lblY > 30) {
+          ctx.font = '600 10.5px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+          ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+          ctx.textAlign = 'center';
+          ctx.fillText('Outer Atmosphere Boundary', lblX, lblY);
+        }
+        ctx.restore();
+
+        // 3. Atmospheric Path Length Indicator Line (Observer -> Outer Atmosphere along Sun direction)
+        const entryX = g.eyeX + g.sunDirX * g.tAtmoSun;
+        const entryY = g.eyeY + g.sunDirY * g.tAtmoSun;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(g.eyeX, g.eyeY);
+        ctx.lineTo(entryX, entryY);
+        ctx.strokeStyle = tSunset > 0.45 ? 'rgba(251, 146, 60, 0.45)' : 'rgba(148, 163, 184, 0.35)';
+        ctx.setLineDash([4, 5]);
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Entry point marker dot
+        ctx.beginPath();
+        ctx.arc(entryX, entryY, 3.8, 0, Math.PI * 2);
+        ctx.fillStyle = tSunset > 0.45 ? '#fb923c' : '#94a3b8';
+        ctx.fill();
+
+        // Midpoint Path Badge on canvas
+        const midPx = lerp(g.eyeX, Math.min(w - 60, entryX), 0.52);
+        const midPy = lerp(g.eyeY, Math.max(50, entryY), 0.52);
+        const badgeOffsetY = state.sunDeg < 22 ? 22 : 0;
+        const badgeOffsetX = state.sunDeg >= 22 ? 42 : 0;
+        drawCalloutPill(
+          midPx + badgeOffsetX,
+          midPy + badgeOffsetY,
+          `Path: ${spectrum.geomPathMult.toFixed(1)}×`,
+          tSunset > 0.45 ? 'rgba(251, 146, 60, 0.55)' : 'rgba(45, 212, 191, 0.45)',
+          tSunset > 0.45 ? '#fed7aa' : '#99f6e4'
+        );
+        ctx.restore();
+
+        // 4. Observer's Translucent Line-of-Sight (Gaze Cone)
+        const gx = Math.cos(g.gazeRad);
+        const gy = -Math.sin(g.gazeRad);
+        const coneDist = Math.min(rayCircleExit(g.eyeX, g.eyeY, gx, gy, g.cx, g.cy, g.atmoR) * 1.04, w * 0.78);
+        const halfRad = (state.coneHalfDeg * Math.PI) / 180;
+        const a1 = -g.gazeRad - halfRad;
+        const a2 = -g.gazeRad + halfRad;
+
+        ctx.save();
+        const coneGrad = ctx.createRadialGradient(g.eyeX, g.eyeY, 10, g.eyeX, g.eyeY, coneDist);
+        coneGrad.addColorStop(0, 'rgba(186, 230, 253, 0.24)');
+        coneGrad.addColorStop(0.65, 'rgba(56, 189, 248, 0.08)');
+        coneGrad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+        ctx.beginPath();
+        ctx.moveTo(g.eyeX, g.eyeY);
+        ctx.arc(g.eyeX, g.eyeY, coneDist, a1, a2);
+        ctx.closePath();
+        ctx.fillStyle = coneGrad;
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.46)';
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 1.25;
+        ctx.beginPath();
+        ctx.moveTo(g.eyeX, g.eyeY);
+        ctx.lineTo(g.eyeX + Math.cos(a1) * coneDist, g.eyeY + Math.sin(a1) * coneDist);
+        ctx.moveTo(g.eyeX, g.eyeY);
+        ctx.lineTo(g.eyeX + Math.cos(a2) * coneDist, g.eyeY + Math.sin(a2) * coneDist);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        // 5. Subtle Air Molecules (N2 / O2) inside atmosphere
+        for (const m of airMolecules) {
+          const ang = -Math.PI / 2 + m.angleOffset + Math.sin(state.simTime * 0.5 + m.phase) * 0.002;
+          const r = g.earthR + m.altFrac * g.atmoH;
+          const mx = g.cx + Math.cos(ang) * r;
+          const my = g.cy + Math.sin(ang) * r;
+          if (mx < 0 || mx > w || my < 0 || my > h) continue;
+          const inCone = isInGazeCone(mx, my, g);
+          ctx.beginPath();
+          ctx.arc(mx, my, inCone ? 2.6 : 1.9, 0, Math.PI * 2);
+          ctx.fillStyle = inCone ? 'rgba(186, 230, 253, 0.45)' : 'rgba(148, 163, 184, 0.24)';
+          ctx.fill();
+        }
+
+        // 6. Expanding Scattering Ripple Rings
+        for (const rp of ripples) {
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+          ctx.strokeStyle = rp.color;
+          ctx.globalAlpha = Math.max(0, rp.alpha);
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        // 7. Physical Wave Packets (Direct Sunlight, Upstream Scattered, and Eye-Bound Scattered)
+        // Draw background direct & ambient scattered first, then crisp eye-bound packets on top
+        for (const p of photons) {
+          if (p.mode === 'toEye') continue;
+          const ch = CHANNELS[p.chIdx];
+          if (p.mode === 'direct') {
+            drawWavePacket(p.x, p.y, p.vx, p.vy, ch.color, ch.freq, p.alpha * 0.78, 19, 2.0);
+          } else {
+            drawWavePacket(p.x, p.y, p.vx, p.vy, ch.color, ch.freq, p.life * 0.68, 14, 1.65);
+          }
+        }
+        for (const p of photons) {
+          if (p.mode !== 'toEye') continue;
+          const ch = CHANNELS[p.chIdx];
+          drawWavePacket(p.x, p.y, p.vx, p.vy, ch.color, ch.freq, 0.98, 22, 2.65);
+        }
+
+        // 8. Curved Earth Surface
+        const earthGrad = ctx.createLinearGradient(0, g.groundY - 10, 0, h);
+        earthGrad.addColorStop(0, mixRGB([22, 85, 58], [26, 36, 54], tSunset * 0.85));
+        earthGrad.addColorStop(1, '#070d19');
+        ctx.beginPath();
+        ctx.arc(g.cx, g.cy, g.earthR, Math.PI * 1.12, Math.PI * 1.88);
+        ctx.lineTo(w + 40, h + 40);
+        ctx.lineTo(-40, h + 40);
+        ctx.closePath();
+        ctx.fillStyle = earthGrad;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(g.cx, g.cy, g.earthR, Math.PI * 1.12, Math.PI * 1.88);
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // 9. Observer Silhouette & Eye
+        drawObserver(g);
+
+        // 10. Draggable Sun Disc (Color synced with real Beer-Lambert direct transmittance!)
+        const sunCoreR = Math.round(Math.min(255, 220 + spectrum.dirR * 0.35));
+        const sunCoreG = Math.round(Math.min(255, 70 + spectrum.dirG * 1.85));
+        const sunCoreB = Math.round(Math.min(255, 20 + spectrum.dirB * 2.15));
+        const sunCore = `rgb(${sunCoreR},${sunCoreG},${sunCoreB})`;
+        const sunHalo = `rgba(${sunCoreR},${Math.max(40, sunCoreG - 40)},${Math.max(10, sunCoreB - 60)},0.65)`;
+
+        const haloRad = state.hoverSun || state.dragMode === 'sun' ? 48 : 42;
+        const sunGrad = ctx.createRadialGradient(g.sunX, g.sunY, 6, g.sunX, g.sunY, haloRad);
+        sunGrad.addColorStop(0, sunCore);
+        sunGrad.addColorStop(0.4, sunHalo);
+        sunGrad.addColorStop(1, 'rgba(255, 110, 40, 0)');
+
+        ctx.beginPath();
+        ctx.arc(g.sunX, g.sunY, haloRad, 0, Math.PI * 2);
+        ctx.fillStyle = sunGrad;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(g.sunX, g.sunY, 16, 0, Math.PI * 2);
+        ctx.fillStyle = sunCore;
+        ctx.fill();
+
+        // Subtle drag handle ring around Sun
+        ctx.beginPath();
+        ctx.arc(g.sunX, g.sunY, 22, 0, Math.PI * 2);
+        ctx.strokeStyle = (state.hoverSun || state.dragMode === 'sun')
+          ? 'rgba(255, 255, 255, 0.75)'
+          : 'rgba(255, 255, 255, 0.25)';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 11. Contextual On-Canvas Pedagogical Callouts
+        if (state.sunDeg < 22) {
+          // Sunset Callout 1: Upstream Blue Scattering Region (far right)
+          const upX = Math.min(w - 135, g.obsX + (w - g.obsX) * 0.62);
+          const upY = Math.max(66, g.groundY - g.atmoH * 0.86);
+          drawCalloutPill(
+            upX, upY,
+            '1. Blue light scatters away here (upstream)',
+            'rgba(56, 189, 248, 0.6)',
+            '#7dd3fc'
+          );
+
+          // Sunset Callout 2: Near Observer (surviving red/orange)
+          const nearX = Math.max(150, g.obsX + (w - g.obsX) * 0.22);
+          const nearY = Math.min(g.groundY - 38, g.groundY - g.atmoH * 0.34);
+          drawCalloutPill(
+            nearX, nearY,
+            '2. Only Red & Orange survive to reach the eye',
+            'rgba(255, 100, 60, 0.6)',
+            '#fecaca'
+          );
+        } else if (state.sunDeg > 45) {
+          // Noon Callout near gaze cone
+          const callX = Math.max(w * 0.56, Math.min(w - 200, g.eyeX + gx * g.atmoH * 0.65 + 90));
+          const callY = Math.max(72, g.groundY - g.atmoH * 0.92);
+          drawCalloutPill(
+            callX, callY,
+            'Short path → abundant Blue scatters into eye from every direction',
+            'rgba(56, 189, 248, 0.55)',
+            '#bae6fd'
+          );
+        } else {
+          // Late afternoon transition callout
+          drawCalloutPill(
+            w * 0.64, Math.max(70, g.groundY - g.atmoH * 0.9),
+            'Longer air path → Blue starts depleting upstream; sunlight warms',
+            'rgba(129, 140, 248, 0.55)',
+            '#c7d2fe'
+          );
+        }
+      }
+
+      // =========================================================================
+      // 5. TAB 2: SPLIT-SCREEN COMPARISON — SKY SCATTERING VS. BLUE GLASS FILTER
+      // =========================================================================
+      const cmp = {
+        skyPhotons: [],
+        glassPhotons: [],
+        heatPulses: [],
+        skyRipples: [],
+        spawnTimer: 0
+      };
+
+      function stepCompareTab(dt) {
+        const speedScale = state.slowMo ? 0.4 : 1.0;
+        const effDt = dt * speedScale;
+        const w = state.width;
+        const h = state.height;
+        const stacked = w < 680;
+        const pw = stacked ? w : w * 0.5;
+        const ph = stacked ? h * 0.5 : h;
+
+        cmp.spawnTimer += effDt;
+        if (cmp.spawnTimer >= 0.22) {
+          cmp.spawnTimer = 0;
+          const beamY = ph * 0.46 + (Math.random() - 0.5) * ph * 0.26;
+          // Spawn white sunlight triplet on BOTH Left (Sky) and Right (Blue Glass)
+          for (let cIdx = 0; cIdx < 3; cIdx++) {
+            const offset = (cIdx - 1) * 5;
+            cmp.skyPhotons.push({
+              x: 24,
+              y: beamY + offset,
+              vx: pw * 0.34,
+              vy: 0,
+              chIdx: cIdx,
+              scattered: false,
+              life: 1.0
+            });
+            cmp.glassPhotons.push({
+              x: 24,
+              y: beamY + offset,
+              vx: pw * 0.34,
+              vy: 0,
+              chIdx: cIdx,
+              absorbed: false,
+              life: 1.0
+            });
+          }
+        }
+
+        // Left Panel: Atmospheric Scattering Medium Zone [0.30*pw .. 0.72*pw]
+        const atmoL = pw * 0.26;
+        const atmoR = pw * 0.74;
+        for (let i = cmp.skyPhotons.length - 1; i >= 0; i--) {
+          const p = cmp.skyPhotons[i];
+          p.x += p.vx * effDt;
+          p.y += p.vy * effDt;
+
+          if (!p.scattered && p.x > atmoL && p.x < atmoR) {
+            // Blue scatters strongly sideways/up/down; Red punches straight through!
+            const rate = p.chIdx === 2 ? 3.2 : (p.chIdx === 1 ? 0.65 : 0.12);
+            if (Math.random() < 1 - Math.exp(-rate * effDt)) {
+              p.scattered = true;
+              const ang = (Math.random() < 0.5 ? -1 : 1) * (0.65 + Math.random() * 1.45);
+              const spd = pw * 0.26;
+              p.vx = Math.cos(ang) * spd;
+              p.vy = Math.sin(ang) * spd;
+              p.life = 1.0;
+              cmp.skyRipples.push({ x: p.x, y: p.y, r: 2, color: CHANNELS[p.chIdx].color, alpha: 0.75 });
+            }
+          } else if (p.scattered) {
+            p.life -= effDt * 0.75;
+          }
+
+          if (p.life <= 0 || p.x > pw - 24 || p.x < 6 || p.y < 46 || p.y > ph - 52) {
+            cmp.skyPhotons.splice(i, 1);
+          }
+        }
+
+        // Right Panel: Blue Glass Filter Slab [0.43*pw .. 0.57*pw]
+        const glassL = pw * 0.43;
+        const glassR = pw * 0.57;
+        for (let i = cmp.glassPhotons.length - 1; i >= 0; i--) {
+          const p = cmp.glassPhotons[i];
+          p.x += p.vx * effDt;
+          p.y += p.vy * effDt;
+
+          if (!p.absorbed && p.x > glassL && p.x < glassR) {
+            // Blue Glass ABSORBS Red and Green as heat; lets Blue pass straight through!
+            if (p.chIdx === 0 || p.chIdx === 1) {
+              if (Math.random() < 1 - Math.exp(-9.5 * effDt)) {
+                cmp.heatPulses.push({
+                  x: p.x,
+                  y: p.y,
+                  r: 3,
+                  color: CHANNELS[p.chIdx].color,
+                  alpha: 0.9
+                });
+                cmp.glassPhotons.splice(i, 1);
+                continue;
+              }
+            }
+          }
+
+          if (p.x > pw - 24) {
+            cmp.glassPhotons.splice(i, 1);
+          }
+        }
+
+        for (let i = cmp.skyRipples.length - 1; i >= 0; i--) {
+          const rp = cmp.skyRipples[i];
+          rp.r += effDt * 28;
+          rp.alpha -= effDt * 1.3;
+          if (rp.alpha <= 0) cmp.skyRipples.splice(i, 1);
+        }
+
+        for (let i = cmp.heatPulses.length - 1; i >= 0; i--) {
+          const hp = cmp.heatPulses[i];
+          hp.r += effDt * 24;
+          hp.alpha -= effDt * 1.4;
+          if (hp.alpha <= 0) cmp.heatPulses.splice(i, 1);
+        }
+      }
+
+      function drawMiniEye(x, y, facingAngle, glowColor, label) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        // Glow ring
+        ctx.beginPath();
+        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+        ctx.fillStyle = glowColor;
+        ctx.globalAlpha = 0.22;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 10, 6.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = glowColor;
+        ctx.beginPath();
+        ctx.arc(Math.cos(facingAngle) * 3.2, Math.sin(facingAngle) * 2.5, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(Math.cos(facingAngle) * 3.5, Math.sin(facingAngle) * 2.7, 1.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = '700 10.5px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = glowColor;
+        ctx.textAlign = 'center';
+        ctx.fillText(label, 0, 21);
+        ctx.restore();
+      }
+
+      function renderCompareTab() {
+        const w = state.width;
+        const h = state.height;
+        const stacked = w < 680;
+        const pw = stacked ? w : w * 0.5;
+        const ph = stacked ? h * 0.5 : h;
+
+        ctx.fillStyle = '#060c1a';
+        ctx.fillRect(0, 0, w, h);
+
+        // ---- PANEL 1: ATMOSPHERIC SCATTERING (SKY) ----
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, pw, ph);
+        ctx.clip();
+
+        // Title header
+        ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#7dd3fc';
+        ctx.textAlign = 'left';
+        ctx.fillText('1. Earth\'s Atmosphere (Rayleigh Scattering)', 18, 28);
+        ctx.font = '500 11.5px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Redirects Blue sideways; lets Red pass straight through', 18, 46);
+
+        // Air Volume Box
+        const atmoL = pw * 0.26;
+        const atmoR = pw * 0.74;
+        const boxTop = ph * 0.22;
+        const boxH = ph * 0.50;
+        const airGrad = ctx.createLinearGradient(atmoL, 0, atmoR, 0);
+        airGrad.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
+        airGrad.addColorStop(0.65, 'rgba(56, 189, 248, 0.08)');
+        airGrad.addColorStop(1, 'rgba(255, 85, 51, 0.10)');
+        ctx.fillStyle = airGrad;
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.roundRect(atmoL, boxTop, atmoR - atmoL, boxH, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'center';
+        ctx.fillText('Air Molecules (N₂ / O₂)', (atmoL + atmoR) * 0.5, boxTop + 18);
+
+        // White light label on left
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText('White', 42, ph * 0.46 - 24);
+        ctx.fillText('Sunlight', 42, ph * 0.46 - 10);
+
+        // Ripples & Photons
+        for (const rp of cmp.skyRipples) {
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+          ctx.strokeStyle = rp.color;
+          ctx.globalAlpha = rp.alpha;
+          ctx.lineWidth = 1.3;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        for (const p of cmp.skyPhotons) {
+          const ch = CHANNELS[p.chIdx];
+          drawWavePacket(p.x, p.y, p.vx, p.vy, ch.color, ch.freq, p.life * 0.95, 17, 2.2);
+        }
+
+        // Sideways Observer (Sees Blue Sky!) & Straight-Through Observer (Sees Red Sunset!)
+        drawMiniEye((atmoL + atmoR) * 0.5, boxTop + boxH + 26, -Math.PI / 2, '#38bdf8', 'Sideways: Blue Sky');
+        drawMiniEye(pw - 52, ph * 0.46, Math.PI, '#ff6b4a', 'Direct: Red Sunset');
+
+        // Bottom verdict strip
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+        ctx.beginPath();
+        ctx.roundRect(16, ph - 38, pw - 32, 26, 7);
+        ctx.fill();
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#bae6fd';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scattering = Blue bounces everywhere, Red survives straight ahead', pw * 0.5, ph - 21);
+        ctx.restore();
+
+        // Divider Line
+        ctx.strokeStyle = '#263554';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (stacked) {
+          ctx.moveTo(0, ph);
+          ctx.lineTo(w, ph);
+        } else {
+          ctx.moveTo(pw, 0);
+          ctx.lineTo(pw, h);
+        }
+        ctx.stroke();
+
+        // ---- PANEL 2: BLUE GLASS FILTER (SELECTIVE ABSORPTION) ----
+        ctx.save();
+        ctx.translate(stacked ? 0 : pw, stacked ? ph : 0);
+        ctx.beginPath();
+        ctx.rect(0, 0, pw, ph);
+        ctx.clip();
+
+        ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#a5b4fc';
+        ctx.textAlign = 'left';
+        ctx.fillText('2. Blue Glass Filter (Selective Absorption)', 18, 28);
+        ctx.font = '500 11.5px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Absorbs Red & Green as heat; transmits ONLY Blue straight through', 18, 46);
+
+        // Blue Glass Slab
+        const glassL = pw * 0.43;
+        const glassR = pw * 0.57;
+        const glassGrad = ctx.createLinearGradient(glassL, 0, glassR, 0);
+        glassGrad.addColorStop(0, 'rgba(37, 99, 235, 0.48)');
+        glassGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.34)');
+        glassGrad.addColorStop(1, 'rgba(37, 99, 235, 0.48)');
+        ctx.fillStyle = glassGrad;
+        ctx.strokeStyle = 'rgba(125, 211, 252, 0.72)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.roundRect(glassL, boxTop, glassR - glassL, boxH, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#e0f2fe';
+        ctx.textAlign = 'center';
+        ctx.fillText('Blue Glass', (glassL + glassR) * 0.5, boxTop - 8);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText('R & G Absorbed', (glassL + glassR) * 0.5, boxTop + boxH + 16);
+
+        // White light label
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText('White', 42, ph * 0.46 - 24);
+        ctx.fillText('Sunlight', 42, ph * 0.46 - 10);
+
+        // Absorption Heat Pulses inside glass
+        for (const hp of cmp.heatPulses) {
+          ctx.beginPath();
+          ctx.arc(hp.x, hp.y, hp.r, 0, Math.PI * 2);
+          ctx.strokeStyle = hp.color;
+          ctx.globalAlpha = hp.alpha;
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(hp.x, hp.y, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#fde047';
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        for (const p of cmp.glassPhotons) {
+          const ch = CHANNELS[p.chIdx];
+          drawWavePacket(p.x, p.y, p.vx, p.vy, ch.color, ch.freq, 0.95, 17, 2.2);
+        }
+
+        // Observer looking straight through blue glass sees a BLUE Sun!
+        drawMiniEye(pw - 52, ph * 0.46, Math.PI, '#38bdf8', 'Direct: Blue Sun!');
+
+        // Bottom verdict strip
+        ctx.fillStyle = 'rgba(129, 140, 248, 0.14)';
+        ctx.beginPath();
+        ctx.roundRect(16, ph - 38, pw - 32, 26, 7);
+        ctx.fill();
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillStyle = '#c7d2fe';
+        ctx.textAlign = 'center';
+        ctx.fillText('Opposite of the sky! If sky were blue glass, sunsets would look BLUE', pw * 0.5, ph - 21);
+
+        ctx.restore();
+      }
+
+      // =========================================================================
+      // 6. HUD & UI UPDATES
+      // =========================================================================
+      function updateHUD(spectrum) {
+        // Smooth bar transitions
+        state.dispR += (spectrum.r - state.dispR) * 0.18;
+        state.dispG += (spectrum.g - state.dispG) * 0.18;
+        state.dispB += (spectrum.b - state.dispB) * 0.18;
+
+        const rPct = Math.round(state.dispR);
+        const gPct = Math.round(state.dispG);
+        const bPct = Math.round(state.dispB);
+
+        barR.style.width = `${rPct}%`;
+        barG.style.width = `${gPct}%`;
+        barB.style.width = `${bPct}%`;
+        pctR.textContent = `${rPct}%`;
+        pctG.textContent = `${gPct}%`;
+        pctB.textContent = `${bPct}%`;
+
+        pathReadout.textContent = `Path: ${spectrum.geomPathMult.toFixed(1)}×`;
+
+        // Sync retina circle background color directly to computed R, G, B
+        const rgbR = Math.round(clamp01(state.dispR / 100) * 255);
+        const rgbG = Math.round(clamp01(state.dispG / 100) * 255);
+        const rgbB = Math.round(clamp01(state.dispB / 100) * 255);
+        const bgOuter = `rgb(${Math.round(rgbR * 0.42)},${Math.round(rgbG * 0.42)},${Math.round(rgbB * 0.48)})`;
+        const bgInner = `rgb(${rgbR},${rgbG},${rgbB})`;
+        retinaCircle.style.background = `radial-gradient(circle, ${bgInner} 0%, ${bgOuter} 100%)`;
+
+        if (spectrum.directWeight > 0.25) {
+          const sr = Math.round(Math.min(255, 190 + spectrum.dirR * 0.65));
+          const sg = Math.round(Math.min(255, 50 + spectrum.dirG * 2.05));
+          const sb = Math.round(Math.min(255, 15 + spectrum.dirB * 2.25));
+          const sunCol = `rgb(${sr},${sg},${sb})`;
+          retinaSun.style.opacity = Math.min(1, spectrum.directWeight * 1.15).toFixed(2);
+          retinaSun.style.background = sunCol;
+          retinaSun.style.boxShadow = `0 0 18px 6px ${sunCol}`;
+        } else {
+          retinaSun.style.opacity = '0';
+        }
+
+        // Sharp 1-sentence verdict & physics explanation
+        const lookingAtSun = Math.abs(state.gazeDeg - state.sunDeg) <= 9;
+        const isSunset = state.sunDeg <= 20;
+
+        if (lookingAtSun && isSunset) {
+          hudVerdict.textContent = 'Fiery Red-Orange Sunset';
+          hudVerdict.style.color = '#fb923c';
+          hudNote.textContent = 'Almost all blue scattered away upstream; surviving red & orange stream straight into the eye.';
+        } else if (lookingAtSun) {
+          hudVerdict.textContent = 'Bright White-Yellow Sun';
+          hudVerdict.style.color = '#fde047';
+          hudNote.textContent = 'Short vertical path lets direct red, green, and over half of blue enter the eye together.';
+        } else if (isSunset) {
+          hudVerdict.textContent = 'Dim Deep-Twilight Blue';
+          hudVerdict.style.color = '#818cf8';
+          hudNote.textContent = 'Low air is depleted of blue; only sparse blue photons from the high upper edge reach the eye.';
+        } else if (state.sunDeg <= 42) {
+          hudVerdict.textContent = 'Softer Afternoon Sky';
+          hudVerdict.style.color = '#38bdf8';
+          hudNote.textContent = 'A longer slanted path scatters more blue upstream, softening the sky brightness.';
+        } else {
+          hudVerdict.textContent = 'Bright Azure Sky';
+          hudVerdict.style.color = '#38bdf8';
+          hudNote.textContent = 'Short path leaves abundant blue everywhere—air molecules along your gaze scatter it into your eye.';
+        }
+
+        const timeLabel = state.sunDeg <= 14 ? 'Sunset' : (state.sunDeg <= 42 ? 'Afternoon' : 'Noon');
+        sunVal.textContent = `${Math.round(state.sunDeg)}° (${timeLabel})`;
+      }
+
+      // =========================================================================
+      // 7. MAIN ANIMATION LOOP (DELTA-TIME CLAMPED)
+      // =========================================================================
+      let lastTs = 0;
+
+      function animate(ts) {
+        if (!lastTs) lastTs = ts;
+        const dt = Math.min((ts - lastTs) / 1000, 0.05);
+        lastTs = ts;
+
+        if (state.playing) {
+          state.simTime += dt * (state.slowMo ? 0.4 : 1.0);
+
+          if (state.tab === 'sky') {
+            if (state.autoSweep && !state.dragMode) {
+              state.gazeDeg += state.sweepDir * dt * 20;
+              if (state.gazeDeg <= 10) {
+                state.gazeDeg = 10;
+                state.sweepDir = 1;
+              } else if (state.gazeDeg >= 165) {
+                state.gazeDeg = 165;
+                state.sweepDir = -1;
+              }
+            }
+            const g = getGeom();
+            stepSkyPhysics(dt, g);
+          } else {
+            stepCompareTab(dt);
+          }
+        }
+
+        if (state.tab === 'sky') {
+          const g = getGeom();
+          const spectrum = computeAnalyticalEyeSpectrum(g);
+          updateHUD(spectrum);
+          renderSkyTab(g, spectrum);
+        } else {
+          renderCompareTab();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      // =========================================================================
+      // 8. DIRECT MANIPULATION (MOUSE + TOUCH) & CONTROLS
+      // =========================================================================
+      function getCanvasPoint(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches && e.touches.length ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches && e.touches.length ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function clearActivePreset() {
+        state.activePreset = null;
+        presetBtns.forEach(b => b.classList.remove('active'));
+      }
+
+      function handlePointerDown(e) {
+        if (state.tab !== 'sky') return;
+        const pt = getCanvasPoint(e);
+        const g = getGeom();
+
+        clearActivePreset();
+
+        if (Math.hypot(pt.x - g.sunX, pt.y - g.sunY) <= 52) {
+          state.dragMode = 'sun';
+          canvas.style.cursor = 'grabbing';
+          updateDrag(pt, g);
+        } else {
+          state.dragMode = 'gaze';
+          state.autoSweep = false;
+          chkAutoSweep.checked = false;
+          canvas.style.cursor = 'crosshair';
+          updateDrag(pt, g);
+        }
+      }
+
+      function updateDrag(pt, g) {
+        if (state.dragMode === 'sun') {
+          const dx = Math.max(4, pt.x - g.eyeX);
+          const dy = Math.max(2, g.eyeY - pt.y);
+          let deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+          deg = Math.max(3, Math.min(90, deg));
+          state.sunDeg = deg;
+          sunSlider.value = deg.toFixed(1);
+        } else if (state.dragMode === 'gaze') {
+          const dx = pt.x - g.eyeX;
+          const dy = Math.max(2, g.eyeY - pt.y);
+          let deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+          deg = Math.max(3, Math.min(174, deg));
+          state.gazeDeg = deg;
+        }
+      }
+
+      function handlePointerMove(e) {
+        if (state.tab !== 'sky') {
+          canvas.style.cursor = 'default';
+          return;
+        }
+        const pt = getCanvasPoint(e);
+        const g = getGeom();
+
+        if (state.dragMode) {
+          updateDrag(pt, g);
+        } else {
+          state.hoverSun = Math.hypot(pt.x - g.sunX, pt.y - g.sunY) <= 46;
+          canvas.style.cursor = state.hoverSun ? 'grab' : 'crosshair';
+        }
+      }
+
+      function handlePointerUp() {
+        state.dragMode = null;
+        canvas.style.cursor = state.hoverSun ? 'grab' : 'crosshair';
+      }
+
+      canvas.addEventListener('mousedown', handlePointerDown);
+      window.addEventListener('mousemove', handlePointerMove);
+      window.addEventListener('mouseup', handlePointerUp);
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (state.tab === 'sky') {
+          e.preventDefault();
+          handlePointerDown(e);
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        if (state.dragMode) {
+          e.preventDefault();
+          handlePointerMove(e);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', handlePointerUp);
+
+      // Tabs
+      function setTab(tab) {
+        state.tab = tab;
+        const isSky = tab === 'sky';
+        tabSky.classList.toggle('active', isSky);
+        tabSky.setAttribute('aria-selected', String(isSky));
+        tabCompare.classList.toggle('active', !isSky);
+        tabCompare.setAttribute('aria-selected', String(!isSky));
+
+        eyeHud.classList.toggle('hidden', !isSky);
+        canvasHint.style.display = isSky ? '' : 'none';
+        presetGroup.classList.toggle('hidden', !isSky);
+        sunSliderGroup.classList.toggle('hidden', !isSky);
+        autoSweepWrap.classList.toggle('hidden', !isSky);
+
+        if (isSky) {
+          prewarmSky();
+        }
+      }
+
+      tabSky.addEventListener('click', () => setTab('sky'));
+      tabCompare.addEventListener('click', () => setTab('compare'));
+
+      // Presets
+      presetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.preset;
+          const p = PRESETS[key];
+          if (!p) return;
+          state.activePreset = key;
+          presetBtns.forEach(b => b.classList.toggle('active', b === btn));
+
+          state.autoSweep = false;
+          chkAutoSweep.checked = false;
+          state.sunDeg = p.sunDeg;
+          state.gazeDeg = p.gazeDeg;
+          sunSlider.value = p.sunDeg;
+
+          // Immediately sync particles to new Beer-Lambert equilibrium
+          prewarmSky();
+        });
+      });
+
+      // Sun Slider
+      sunSlider.addEventListener('input', (e) => {
+        clearActivePreset();
+        state.sunDeg = parseFloat(e.target.value);
+      });
+
+      // Playback Controls
+      btnPlayPause.addEventListener('click', () => {
+        state.playing = !state.playing;
+        btnPlayPause.textContent = state.playing ? 'Pause' : 'Play';
+        btnPlayPause.classList.toggle('active', !state.playing);
+      });
+
+      btnSpeed.addEventListener('click', () => {
+        state.slowMo = !state.slowMo;
+        btnSpeed.textContent = state.slowMo ? '0.4× Slow-Mo' : '1.0× Normal';
+        btnSpeed.classList.toggle('active', state.slowMo);
+      });
+
+      chkAutoSweep.addEventListener('change', (e) => {
+        state.autoSweep = e.target.checked;
+        if (state.autoSweep) clearActivePreset();
+      });
+
+      // Responsive Resize & Mobile HUD Docking
+      function handleResize() {
+        const isMobile = window.innerWidth <= 720;
+        if (isMobile && eyeHud.parentElement !== mobileHudSlot) {
+          mobileHudSlot.appendChild(eyeHud);
+        } else if (!isMobile && eyeHud.parentElement !== stageContainer) {
+          stageContainer.appendChild(eyeHud);
+        }
+
+        const rect = stageContainer.getBoundingClientRect();
+        state.width = Math.max(300, rect.width);
+        state.height = Math.max(300, rect.height);
+        state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = Math.round(state.width * state.dpr);
+        canvas.height = Math.round(state.height * state.dpr);
+        ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+      }
+
+      window.addEventListener('resize', handleResize);
+
+      window.onload = () => {
+        handleResize();
+        prewarmSky();
+        requestAnimationFrame(animate);
+      };
+    })();
+  </script>
+</body>
+</html>
