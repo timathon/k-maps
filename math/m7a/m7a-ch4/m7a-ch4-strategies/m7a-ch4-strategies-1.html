@@ -130,8 +130,14 @@
                     </div>
 
                     <!-- Interactive Number Line SVG -->
-                    <div class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0 bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
-                        <svg id="nl-svg" viewBox="0 0 360 110" class="w-full h-28">
+                    <div id="nl-host" class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0">
+                        <div id="nl-card" class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-medium text-slate-600">数轴动点演示</span>
+                                <button onclick="openMagnify('nl')" title="放大演示"
+                                    class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
+                            </div>
+                            <svg id="nl-svg" viewBox="0 0 360 110" class="w-full h-28">
                             <!-- Axis -->
                             <line x1="15" y1="60" x2="345" y2="60" stroke="#334155" stroke-width="2" />
                             <polygon points="345,56 353,60 345,64" fill="#334155" />
@@ -171,6 +177,7 @@
                             <input id="nl-slider" type="range" min="0" max="6" step="0.1" value="0"
                                 oninput="updateNL(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
                         </div>
+                        </div>
                     </div>
                 </div>
 
@@ -184,14 +191,19 @@
                     </div>
 
                     <!-- Interactive Clock-Face SVG -->
-                    <div class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0 bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+                    <div id="clk-host" class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0">
+                        <div id="clk-card" class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
                         <div class="flex justify-between items-center text-xs gap-2">
                             <span class="font-medium text-slate-600">设 $OM = 0^\circ$（顺为正）</span>
-                            <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5">
-                                <button id="clk-tab-opp" onclick="setClkMode('opp')"
-                                    class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white text-indigo-700 shadow-sm transition">22.(1)(2) 反向</button>
-                                <button id="clk-tab-same" onclick="setClkMode('same')"
-                                    class="px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-800 transition">22.(3) 同向</button>
+                            <div class="flex items-center gap-1.5">
+                                <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5">
+                                    <button id="clk-tab-opp" onclick="setClkMode('opp')"
+                                        class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white text-indigo-700 shadow-sm transition">22.(1)(2) 反向</button>
+                                    <button id="clk-tab-same" onclick="setClkMode('same')"
+                                        class="px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-800 transition">22.(3) 同向</button>
+                                </div>
+                                <button onclick="openMagnify('clk')" title="放大演示"
+                                    class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
                             </div>
                         </div>
                         <svg id="clk-svg" viewBox="0 0 220 200" class="w-full h-44">
@@ -221,6 +233,7 @@
                                 oninput="updateClk(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
                         </div>
                         <div id="clk-keyframes" class="flex flex-wrap gap-1.5 pt-1"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -237,6 +250,19 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Magnify Modal (Full viewport on mobile, large area on desktop) -->
+    <div id="magnify-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeMagnify()"></div>
+        <div class="relative bg-white w-full h-full md:w-[90vw] md:max-w-4xl md:h-auto md:max-h-[90vh] md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-slate-50 flex-shrink-0">
+                <h3 id="magnify-title" class="text-base md:text-lg font-bold text-slate-800">动态演示</h3>
+                <button onclick="closeMagnify()"
+                    class="px-3 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium transition">✕ 关闭</button>
+            </div>
+            <div id="magnify-body" class="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center bg-slate-50/50"></div>
+        </div>
     </div>
 
     <!-- Strategy Detail Modal -->
@@ -687,6 +713,58 @@
                 modal.classList.add('hidden');
             }, 250);
         }
+
+        // --- Magnify Modal ---
+        let activeMagnify = null;
+
+        function openMagnify(which) {
+            if (activeMagnify) closeMagnify();
+            activeMagnify = which;
+            const card = document.getElementById(which === 'nl' ? 'nl-card' : 'clk-card');
+            const svg = document.getElementById(which === 'nl' ? 'nl-svg' : 'clk-svg');
+            const body = document.getElementById('magnify-body');
+            const title = document.getElementById('magnify-title');
+
+            title.textContent = which === 'nl' ? '第21题：数轴动点动态演示' : '第22题：钟面动角动态演示';
+            card.classList.add('w-full');
+            card.querySelector('.magnify-btn').classList.add('hidden');
+            if (which === 'nl') {
+                svg.classList.remove('h-28');
+                svg.classList.add('h-52', 'md:h-64');
+            } else {
+                svg.classList.remove('h-44');
+                svg.classList.add('h-72', 'md:h-96');
+            }
+
+            body.appendChild(card);
+            document.getElementById('magnify-modal').classList.remove('hidden');
+        }
+
+        function closeMagnify() {
+            if (!activeMagnify) return;
+            const which = activeMagnify;
+            activeMagnify = null;
+            const host = document.getElementById(which === 'nl' ? 'nl-host' : 'clk-host');
+            const card = document.getElementById(which === 'nl' ? 'nl-card' : 'clk-card');
+            const svg = document.getElementById(which === 'nl' ? 'nl-svg' : 'clk-svg');
+
+            card.classList.remove('w-full');
+            card.querySelector('.magnify-btn').classList.remove('hidden');
+            if (which === 'nl') {
+                svg.classList.remove('h-52', 'md:h-64');
+                svg.classList.add('h-28');
+            } else {
+                svg.classList.remove('h-72', 'md:h-96');
+                svg.classList.add('h-44');
+            }
+
+            host.appendChild(card);
+            document.getElementById('magnify-modal').classList.add('hidden');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && activeMagnify) closeMagnify();
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             updateNL(0);
