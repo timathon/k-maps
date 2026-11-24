@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七上数学第四章 - 动点与动角策略 - 原点与坐标差法</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: false
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-btn {
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+            border-color: #3b82f6;
+        }
+
+        .correct-ans {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        .wrong-ans {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+
+        /* MathJax Mobile Responsiveness */
+        #explanation-content mjx-container,
+        #question-area mjx-container {
+            display: inline-block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        #explanation-content mjx-container[display="true"],
+        #question-area mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        #explanation-content mjx-container::-webkit-scrollbar,
+        #question-area mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            #explanation-content mjx-container,
+            #question-area mjx-container {
+                font-size: 88% !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <!-- Header -->
+        <div class="text-center space-y-2 relative">
+            <a href="index.html"
+                class="absolute -top-10 left-0 md:top-0 md:left-4 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 text-lg opacity-50 hover:opacity-100 hover:bg-gray-50 hover:shadow transition-all hover:scale-105"
+                title="返回目录">
+                🏠
+            </a>
+            <h1 class="text-3xl font-bold text-slate-800">七上数学第四章 - 动点与动角策略 - 原点与坐标差法</h1>
+            <p class="text-slate-500">抛弃题海战术，用“设原点 + 算坐标差”统一破解数轴动点与钟面动角</p>
+        </div>
+
+        <!-- Original Problems Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-indigo-800">原题呈现与动态演示</h2>
+                <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">共性策略：原点与坐标差</span>
+            </div>
+
+            <div class="p-6 space-y-8">
+                <!-- Question 21 -->
+                <div class="md:flex gap-6 items-center pb-6 border-b border-slate-100">
+                    <div class="flex-1 space-y-3 text-slate-700 leading-relaxed text-sm md:text-base">
+                        <p><span class="font-bold text-indigo-700">21.</span> 如图，已知数轴上有 $A, B, C$ 三个点，它们表示的数分别是 $-20, -12, 8$.</p>
+                        <p class="font-medium text-slate-900">(1) 填空：$AB =$ ______，$BC =$ ______.</p>
+                        <p class="font-medium text-slate-900">(2) 若点 $A$ 以每秒 $1$ 个单位长度的速度向左运动，同时，点 $B$ 和点 $C$ 分别以每秒 $2$ 个单位长度和每秒 $5$ 个单位长度的速度向右运动。试探究：$BC - AB$ 的值是否随时间的变化而改变？请说明理由。</p>
+                    </div>
+
+                    <!-- Interactive Number Line SVG -->
+                    <div class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0 bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+                        <svg id="nl-svg" viewBox="0 0 360 110" class="w-full h-28">
+                            <!-- Axis -->
+                            <line x1="15" y1="60" x2="345" y2="60" stroke="#334155" stroke-width="2" />
+                            <polygon points="345,56 353,60 345,64" fill="#334155" />
+                            <!-- Origin 0 tick (mapped: x = 180 + val * 3.5) -->
+                            <line x1="180" y1="54" x2="180" y2="66" stroke="#64748b" stroke-width="1.5" />
+                            <text x="180" y="82" text-anchor="middle" class="fill-slate-500 text-xs">0</text>
+
+                            <!-- Dynamic segments -->
+                            <line id="nl-seg-ab" x1="110" y1="42" x2="138" y2="42" stroke="#3b82f6" stroke-width="2.5" />
+                            <line id="nl-seg-bc" x1="138" y1="30" x2="208" y2="30" stroke="#10b981" stroke-width="2.5" />
+
+                            <!-- Moving Points -->
+                            <g id="nl-pt-a" transform="translate(110, 60)">
+                                <circle r="4.5" fill="#ef4444" />
+                                <text y="-10" text-anchor="middle" class="fill-red-600 text-xs font-bold">A</text>
+                                <text id="nl-val-a" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">-20</text>
+                            </g>
+                            <g id="nl-pt-b" transform="translate(138, 60)">
+                                <circle r="4.5" fill="#3b82f6" />
+                                <text y="-10" text-anchor="middle" class="fill-blue-600 text-xs font-bold">B</text>
+                                <text id="nl-val-b" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">-12</text>
+                            </g>
+                            <g id="nl-pt-c" transform="translate(208, 60)">
+                                <circle r="4.5" fill="#10b981" />
+                                <text y="-10" text-anchor="middle" class="fill-emerald-600 text-xs font-bold">C</text>
+                                <text id="nl-val-c" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">8</text>
+                            </g>
+                        </svg>
+                        <div class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                            <span id="nl-readout">t=0s | AB=8, BC=20, BC-AB=12</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleNL()" id="nl-play-btn"
+                                class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶ 播放</button>
+                            <button onclick="resetNL()"
+                                class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
+                            <input id="nl-slider" type="range" min="0" max="6" step="0.1" value="0"
+                                oninput="updateNL(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 22 -->
+                <div class="md:flex gap-6 items-center">
+                    <div class="flex-1 space-y-3 text-slate-700 leading-relaxed text-sm md:text-base">
+                        <p><span class="font-bold text-indigo-700">22.</span> 七年级学生小聪和小明制作了一个模拟钟面，如图所示，点 $O$ 为模拟钟面的圆心，$M, O, N$ 在一条直线上，指针 $OA, OB$ 分别从 $OM, ON$ 出发绕点 $O$ 转动，$OA$ 每秒转动 $15^\circ$，$OB$ 每秒转动 $5^\circ$，当一根指针与起始位置重合时，两根指针运动停止，设转动的时间为 $t$ 秒（$t > 0$）。</p>
+                        <p class="font-medium text-slate-900">(1) 当 $OA$ 顺时针转动，$OB$ 逆时针转动，$t = 3$ 时，$\angle AOB =$ ______$^\circ$.</p>
+                        <p class="font-medium text-slate-900">(2) 若 $OA$ 顺时针转动，$OB$ 逆时针转动，$t$ 为何值时，$OA$ 与 $OB$ 的夹角为 $40^\circ$？</p>
+                        <p class="font-medium text-slate-900">(3) 若指针 $OA, OB$ 同时顺时针转动，当 $t$ 为 ______ 时，$ON$ 平分 $OA$ 与 $OB$ 的夹角；当 $t$ 为 ______ 时，$OA$ 平分 $OB$ 与 $ON$ 的夹角。</p>
+                    </div>
+
+                    <!-- Interactive Clock-Face SVG -->
+                    <div class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0 bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+                        <div class="flex justify-between items-center text-xs gap-2">
+                            <span class="font-medium text-slate-600">设 $OM = 0^\circ$（顺为正）</span>
+                            <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5">
+                                <button id="clk-tab-opp" onclick="setClkMode('opp')"
+                                    class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white text-indigo-700 shadow-sm transition">22.(1)(2) 反向</button>
+                                <button id="clk-tab-same" onclick="setClkMode('same')"
+                                    class="px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-800 transition">22.(3) 同向</button>
+                            </div>
+                        </div>
+                        <svg id="clk-svg" viewBox="0 0 220 200" class="w-full h-44">
+                            <circle cx="110" cy="100" r="76" fill="#ffffff" stroke="#334155" stroke-width="2" />
+                            <!-- Diameter MON -->
+                            <line x1="34" y1="100" x2="186" y2="100" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4" />
+                            <circle cx="110" cy="100" r="3" fill="#334155" />
+                            <text x="22" y="104" class="fill-slate-700 text-xs font-serif italic">M(0°)</text>
+                            <text x="190" y="104" class="fill-slate-700 text-xs font-serif italic">N(180°)</text>
+                            <text x="105" y="116" class="fill-slate-700 text-xs font-serif italic">O</text>
+
+                            <!-- Hands -->
+                            <line id="clk-oa" x1="110" y1="100" x2="34" y2="100" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" />
+                            <line id="clk-ob" x1="110" y1="100" x2="186" y2="100" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" />
+                            <text id="clk-lbl-a" x="30" y="90" class="fill-red-600 text-xs font-bold">A</text>
+                            <text id="clk-lbl-b" x="182" y="90" class="fill-blue-600 text-xs font-bold">B</text>
+                        </svg>
+                        <div class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                            <span id="clk-readout">t=0s | θA=0°, θB=180°, ∠AOB=180°</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleClk()" id="clk-play-btn"
+                                class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶ 播放</button>
+                            <button onclick="resetClk()"
+                                class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
+                            <input id="clk-slider" type="range" min="0" max="24" step="0.2" value="0"
+                                oninput="updateClk(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
+                        </div>
+                        <div id="clk-keyframes" class="flex flex-wrap gap-1.5 pt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container"
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative min-h-[400px]">
+            <div class="w-full bg-slate-100 h-1.5">
+                <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-500" style="width: 20%;">
+                </div>
+            </div>
+            <div class="p-6 md:p-8" id="question-area">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Strategy Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300"
+            onclick="closeModal()"></div>
+        <div id="modal-content-wrapper"
+            class="relative bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-800">策略对比：原点与坐标差法</h3>
+                <button onclick="closeModal()"
+                    class="text-slate-400 hover:text-slate-600 focus:outline-none text-2xl font-light">&times;</button>
+            </div>
+            <div class="p-6">
+                <div id="modal-body" class="text-slate-600 text-sm md:text-base leading-relaxed space-y-3">
+                    <p><strong>1. 设原点与正方向：</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>第21题（数轴）：原点 $0$，向右为正。</li>
+                        <li>第22题（钟面）：设起点 $OM = 0^\circ$，顺时针为正，则 $ON = 180^\circ$（全程角度均为非负数）。</li>
+                    </ul>
+                    <p><strong>2. 写坐标函数：</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>第21题：$A(-20-t),\ B(-12+2t),\ C(8+5t)$。</li>
+                        <li>第22题：$\theta_A = 15t$，$\theta_B = 180^\circ - 5t$（反向）或 $180^\circ + 5t$（同向）。</li>
+                    </ul>
+                    <p><strong>3. 坐标差求距离/夹角：</strong> 线段长 $= |x_1 - x_2|$，夹角 $= |\theta_1 - \theta_2|$。</p>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 text-right">
+                <button onclick="closeModal()"
+                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Interactive Number Line (Q21) ---
+        let nlTimer = null;
+        let nlT = 0;
+
+        function updateNL(t) {
+            nlT = t;
+            document.getElementById('nl-slider').value = t;
+            const a = -20 - t;
+            const b = -12 + 2 * t;
+            const c = 8 + 5 * t;
+            const mapX = (val) => 180 + val * 3.5;
+
+            const xa = mapX(a), xb = mapX(b), xc = mapX(c);
+            document.getElementById('nl-pt-a').setAttribute('transform', `translate(${xa}, 60)`);
+            document.getElementById('nl-pt-b').setAttribute('transform', `translate(${xb}, 60)`);
+            document.getElementById('nl-pt-c').setAttribute('transform', `translate(${xc}, 60)`);
+
+            document.getElementById('nl-val-a').textContent = a.toFixed(1);
+            document.getElementById('nl-val-b').textContent = b.toFixed(1);
+            document.getElementById('nl-val-c').textContent = c.toFixed(1);
+
+            document.getElementById('nl-seg-ab').setAttribute('x1', xa);
+            document.getElementById('nl-seg-ab').setAttribute('x2', xb);
+            document.getElementById('nl-seg-bc').setAttribute('x1', xb);
+            document.getElementById('nl-seg-bc').setAttribute('x2', xc);
+
+            const ab = (b - a).toFixed(1);
+            const bc = (c - b).toFixed(1);
+            document.getElementById('nl-readout').textContent =
+                `t=${t.toFixed(1)}s | AB=${ab}, BC=${bc}, BC-AB=12.0`;
+        }
+
+        function toggleNL() {
+            const btn = document.getElementById('nl-play-btn');
+            if (nlTimer) {
+                clearInterval(nlTimer);
+                nlTimer = null;
+                btn.textContent = '▶ 播放';
+            } else {
+                if (nlT >= 6) nlT = 0;
+                btn.textContent = '⏸ 暂停';
+                nlTimer = setInterval(() => {
+                    nlT += 0.1;
+                    if (nlT >= 6) {
+                        nlT = 6;
+                        updateNL(nlT);
+                        clearInterval(nlTimer);
+                        nlTimer = null;
+                        btn.textContent = '▶ 播放';
+                        return;
+                    }
+                    updateNL(nlT);
+                }, 60);
+            }
+        }
+
+        function resetNL() {
+            if (nlTimer) toggleNL();
+            updateNL(0);
+        }
+
+        // --- Interactive Clock Face (Q22) ---
+        let clkTimer = null;
+        let clkT = 0;
+        let clkPauseUntil = 0;
+        let clkMode = 'opp';
+
+        function setClkMode(mode) {
+            clkMode = mode;
+            const oppBtn = document.getElementById('clk-tab-opp');
+            const sameBtn = document.getElementById('clk-tab-same');
+            const activeCls = ['bg-white', 'text-indigo-700', 'shadow-sm'];
+            const inactiveCls = ['text-slate-600', 'hover:text-slate-800'];
+            if (mode === 'opp') {
+                oppBtn.classList.add(...activeCls);
+                oppBtn.classList.remove(...inactiveCls);
+                sameBtn.classList.remove(...activeCls);
+                sameBtn.classList.add(...inactiveCls);
+            } else {
+                sameBtn.classList.add(...activeCls);
+                sameBtn.classList.remove(...inactiveCls);
+                oppBtn.classList.remove(...activeCls);
+                oppBtn.classList.add(...inactiveCls);
+            }
+            resetClk();
+        }
+
+        const clkKeyframesMap = {
+            opp: [
+                { t: 3, label: 't=3s (120°)' },
+                { t: 7, label: 't=7s (40°前)' },
+                { t: 11, label: 't=11s (40°后)' }
+            ],
+            same: [
+                { t: 9, label: 't=9s (ON平分)' },
+                { t: 14.4, label: 't=14.4s (OA平分)' }
+            ]
+        };
+
+        function renderClkKeyframes() {
+            const container = document.getElementById('clk-keyframes');
+            const kfs = clkKeyframesMap[clkMode] || [];
+            container.innerHTML = kfs.map(kf => {
+                const active = Math.abs(clkT - kf.t) < 0.05;
+                const cls = active
+                    ? 'bg-amber-100 border-amber-400 text-amber-800 font-semibold'
+                    : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-400 hover:text-indigo-600';
+                return `<button onclick="jumpClk(${kf.t})" class="px-2 py-0.5 text-[11px] rounded border transition ${cls}">${kf.label}</button>`;
+            }).join('');
+        }
+
+        function jumpClk(t) {
+            clkPauseUntil = 0;
+            updateClk(t);
+        }
+
+        function updateClk(t) {
+            clkT = t;
+            document.getElementById('clk-slider').value = t;
+            const thetaA = 15 * t;
+            const thetaB = clkMode === 'opp' ? (180 - 5 * t) : (180 + 5 * t);
+
+            // OM = 0 deg is at (-1, 0) on unit circle; clockwise increases angle
+            const toXY = (deg, r) => {
+                const rad = (180 - deg) * Math.PI / 180;
+                return [110 + r * Math.cos(rad), 100 - r * Math.sin(rad)];
+            };
+
+            const [ax, ay] = toXY(thetaA, 68);
+            const [bx, by] = toXY(thetaB, 68);
+            const [lax, lay] = toXY(thetaA, 82);
+            const [lbx, lby] = toXY(thetaB, 82);
+
+            document.getElementById('clk-oa').setAttribute('x2', ax);
+            document.getElementById('clk-oa').setAttribute('y2', ay);
+            document.getElementById('clk-ob').setAttribute('x2', bx);
+            document.getElementById('clk-ob').setAttribute('y2', by);
+
+            document.getElementById('clk-lbl-a').setAttribute('x', lax - 4);
+            document.getElementById('clk-lbl-a').setAttribute('y', lay + 4);
+            document.getElementById('clk-lbl-b').setAttribute('x', lbx - 4);
+            document.getElementById('clk-lbl-b').setAttribute('y', lby + 4);
+
+            let diff = Math.abs(thetaA - thetaB) % 360;
+            if (diff > 180) diff = 360 - diff;
+
+            document.getElementById('clk-readout').textContent =
+                `t=${t.toFixed(1)}s | θA=${thetaA.toFixed(0)}°, θB=${thetaB.toFixed(0)}°, ∠AOB=${diff.toFixed(0)}°`;
+            renderClkKeyframes();
+        }
+
+        function toggleClk() {
+            const btn = document.getElementById('clk-play-btn');
+            if (clkTimer) {
+                clearInterval(clkTimer);
+                clkTimer = null;
+                clkPauseUntil = 0;
+                btn.textContent = '▶ 播放';
+            } else {
+                if (clkT >= 24) clkT = 0;
+                btn.textContent = '⏸ 暂停';
+                clkTimer = setInterval(() => {
+                    if (Date.now() < clkPauseUntil) return;
+                    const prevT = clkT;
+                    let nextT = clkT + 0.2;
+
+                    const kfs = clkKeyframesMap[clkMode] || [];
+                    const hit = kfs.find(kf => prevT < kf.t && nextT >= kf.t);
+                    if (hit) {
+                        nextT = hit.t;
+                        clkPauseUntil = Date.now() + 2000;
+                    }
+
+                    if (nextT >= 24) {
+                        updateClk(24);
+                        clearInterval(clkTimer);
+                        clkTimer = null;
+                        clkPauseUntil = 0;
+                        btn.textContent = '▶ 播放';
+                        return;
+                    }
+                    updateClk(nextT);
+                }, 60);
+            }
+        }
+
+        function resetClk() {
+            if (clkTimer) toggleClk();
+            clkPauseUntil = 0;
+            updateClk(0);
+        }
+
+        // --- Quiz Data ---
+        const quizData = [
+            {
+                step: "第一步：提炼共性策略——原点与坐标差法",
+                question: "第21题是“数轴动点”，第22题是“钟面动角”，看起来题型不同，但它们共享同一个核心破题策略。这个策略是什么？",
+                options: [
+                    { text: "分别死记硬背“相遇问题”和“追及问题”的十几种公式。", isCorrect: false },
+                    { text: "设定一个公共原点和正方向，用时间 $t$ 表示出每个点（或指针）的坐标，再用“坐标差”表示距离（或夹角）。", isCorrect: true },
+                    { text: "每次都把所有时刻的图形全部画出来，用尺子和量角器直接测量。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 无论是直线上的点，还是圆周上的指针，本质上都是<strong>一维运动</strong>！只要选定原点（数轴的 $0$，或钟面的 $OM = 0^\\circ$），所有动态位置都能写成关于 $t$ 的一次函数，距离和夹角就统一转化为“坐标差的绝对值”。"
+            },
+            {
+                step: "第二步：实战第21题——用坐标差表示线段长",
+                question: "在第21题中，初始时 $A(-20), B(-12), C(8)$。运动 $t$ 秒后，点 $A$ 向左（速度1），点 $B, C$ 向右（速度2和5），则 $BC - AB$ 的值是多少？",
+                options: [
+                    { text: "$BC - AB = (20 + 3t) - (8 + 3t) = 12$，结果是定值，不随时间 $t$ 改变。", isCorrect: true },
+                    { text: "$BC - AB = 12 + 6t$，会随着时间 $t$ 的增大而增大。", isCorrect: false },
+                    { text: "因为 $A$ 向左、$B$ 向右，$AB$ 一直在变，所以 $BC - AB$ 无法确定。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 运动 $t$ 秒后，三点坐标分别为：$A(-20-t)$，$B(-12+2t)$，$C(8+5t)$。<br>由于 $A$ 一直向左、$B$ 和 $C$ 向右且 $C$ 比 $B$ 快，始终有 $A < B < C$：<br>$AB = (-12+2t) - (-20-t) = 8 + 3t$<br>$BC = (8+5t) - (-12+2t) = 20 + 3t$<br>因此 $BC - AB = (20+3t) - (8+3t) = 12$，含 $t$ 项恰好抵消！"
+            },
+            {
+                step: "第三步：迁移到第22题——巧设原点避免负角",
+                question: "在第22题中，为了避免出现负数角度，我们可以把哪条射线设为 $0^\\circ$ 原点、哪个方向设为正方向？停止时间 $t$ 的范围是多少？",
+                options: [
+                    { text: "设 $OM = 0^\\circ$，顺时针为正方向，则 $ON = 180^\\circ$；$OA$ 转一圈需 $360 \\div 15 = 24$ 秒，故 $0 < t \\le 24$。", isCorrect: true },
+                    { text: "设 $ON = 0^\\circ$，逆时针为正方向，指针可以无限转动下去。", isCorrect: false },
+                    { text: "设 $OM = 0^\\circ$，因为 $OB$ 较慢，$t$ 的最大值由 $OB$ 决定，为 $360 \\div 5 = 72$ 秒。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 设 $OM = 0^\\circ$ 且顺时针为正方向时，$OA$ 的坐标就是 $\\theta_A = 15t$，$ON$ 在 $180^\\circ$，全程都不会出现负角度！<br>题目说“当一根指针与起始位置重合时停止”，$OA$ 更快，转完一圈只需 $360 \\div 15 = 24$ 秒，所以运动范围为 $0 < t \\le 24$。"
+            },
+            {
+                step: "第四步：第22题(1)(2)——反向转动时的坐标差",
+                question: "当 $OA$ 顺时针（$15^\\circ/\\text{s}$）、$OB$ 逆时针（$5^\\circ/\\text{s}$）转动时，它们的角度坐标分别为 $\\theta_A = 15t$ 和 $\\theta_B = 180^\\circ - 5t$。求 $t = 3$ 时的 $\\angle AOB$，以及 $\\angle AOB = 40^\\circ$ 时的 $t$ 值。",
+                options: [
+                    { text: "$t=3$ 时 $\\angle AOB = 120^\\circ$；夹角为 $40^\\circ$ 时，解 $|(180 - 5t) - 15t| = 40$ 得 $t = 7$ 或 $t = 11$。", isCorrect: true },
+                    { text: "$t=3$ 时 $\\angle AOB = 120^\\circ$；夹角为 $40^\\circ$ 时只有 $t = 7$ 这一种情况。", isCorrect: false },
+                    { text: "$t=3$ 时 $\\angle AOB = 60^\\circ$；夹角为 $40^\\circ$ 时 $t = 11$。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 用坐标差表示夹角：$|\\theta_B - \\theta_A| = |180 - 20t|$。<br>1. 当 $t=3$ 时，$|180 - 60| = 120^\\circ$。<br>2. 当 $|180 - 20t| = 40$ 时，有两种情况：相遇前 $180 - 20t = 40 \\Rightarrow t = 7$；相遇后 $20t - 180 = 40 \\Rightarrow t = 11$（均满足 $t \\le 24$）。"
+            },
+            {
+                step: "第五步：第22题(3)——同向顺时针与角平分线",
+                question: "若 $OA, OB$ 同时顺时针转动，此时 $\\theta_A = 15t$，$\\theta_B = 180^\\circ + 5t$（$0 < t \\le 24$）。利用“角平分线就是中点坐标”，$ON(180^\\circ)$ 平分 $\\angle AOB$ 以及 $OA$ 平分 $\\angle BON$ 时，$t$ 分别是多少？",
+                options: [
+                    { text: "$ON$ 平分 $\\angle AOB$ 时 $t = 9$；$OA$ 平分 $\\angle BON$ 时 $t = 14.4$（即 $\\frac{72}{5}$）。", isCorrect: true },
+                    { text: "$ON$ 平分 $\\angle AOB$ 时 $t = 12$；$OA$ 平分 $\\angle BON$ 时 $t = 18$。", isCorrect: false },
+                    { text: "$ON$ 平分 $\\angle AOB$ 时 $t = 9$；$OA$ 平分 $\\angle BON$ 时 $t = 10$。", isCorrect: false }
+                ],
+                explanation: "<strong>思维进阶：</strong> 在坐标法中，“平分角”等价于“中点坐标”！<br>1. $ON(180^\\circ)$ 平分 $\\angle AOB$：即 $180 - 15t = (180 + 5t) - 180 \\Rightarrow 180 - 15t = 5t \\Rightarrow t = 9$。<br>2. $OA(15t)$ 平分 $\\angle BON$：即 $15t$ 是 $180^\\circ$ 与 $180^\\circ + 5t$ 的中点，所以 $15t = \\frac{180 + (180 + 5t)}{2} = 180 + 2.5t \\Rightarrow 12.5t = 180 \\Rightarrow t = 14.4$。"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const qArea = document.getElementById('question-area');
+            const data = quizData[currentQuestion];
+
+            // Shuffle options in place
+            data.options.sort(() => Math.random() - 0.5);
+
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            let optionsHtml = '';
+            data.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button onclick="selectOption(${idx})" id="opt-${idx}"
+                        class="option-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 flex items-start gap-3">
+                        <span class="flex-shrink-0 w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center text-sm">${String.fromCharCode(65 + idx)}</span>
+                        <span class="text-slate-700 text-sm md:text-base pt-0.5">${opt.text}</span>
+                    </button>
+                `;
+            });
+
+            qArea.innerHTML = `
+                <div class="fade-in space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold tracking-wider uppercase text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">${data.step}</span>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openModal()" class="text-xs text-indigo-600 hover:underline font-medium">查看策略对比表</button>
+                            <span class="text-sm text-slate-400 font-medium">${currentQuestion + 1} / ${quizData.length}</span>
+                        </div>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-bold text-slate-800 leading-snug">${data.question}</h3>
+                    <div class="space-y-3" id="options-container">${optionsHtml}</div>
+
+                    <!-- Pre-rendered Explanation Box (CLS Prevention) -->
+                    <div id="explanation-box" class="rounded-xl bg-gray-50 border border-gray-100 p-5 mt-6 transition-all duration-300">
+                        <div id="explanation-content" class="text-sm md:text-base text-slate-400 leading-relaxed">
+                            请先选择上方的一个选项，查看策略解析...
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button id="next-btn" onclick="nextQuestion()" disabled
+                            class="px-6 py-2.5 bg-slate-200 text-slate-400 font-medium rounded-xl transition-all cursor-not-allowed">
+                            ${currentQuestion === quizData.length - 1 ? '完成挑战' : '下一步 →'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qArea]);
+            }
+        }
+
+        function selectOption(selectedIdx) {
+            const data = quizData[currentQuestion];
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+            const isCorrect = data.options[selectedIdx].isCorrect;
+
+            if (isCorrect) {
+                selectedBtn.classList.add('correct-ans');
+                score++;
+            } else {
+                selectedBtn.classList.add('wrong-ans');
+                data.options.forEach((opt, idx) => {
+                    if (opt.isCorrect) {
+                        document.getElementById(`opt-${idx}`).classList.add('correct-ans');
+                    }
+                });
+            }
+
+            const expBox = document.getElementById('explanation-box');
+            const expContent = document.getElementById('explanation-content');
+            expBox.classList.remove('bg-gray-50', 'border-gray-100');
+            expBox.classList.add('bg-blue-50', 'border-blue-100');
+            expContent.classList.remove('text-slate-400');
+            expContent.classList.add('text-slate-700');
+            expContent.innerHTML = data.explanation;
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+            nextBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'text-white', 'shadow-sm', 'cursor-pointer');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([expContent]);
+            }
+
+            // Smart Mobile Scrolling
+            if (window.innerWidth < 768) {
+                const quizContainer = document.getElementById('quiz-container');
+                if (quizContainer) {
+                    const rect = quizContainer.getBoundingClientRect();
+                    if (Math.abs(rect.top) > 5) {
+                        quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showSummary();
+            }
+        }
+
+        function showSummary() {
+            const qArea = document.getElementById('question-area');
+            qArea.innerHTML = `
+                <div class="fade-in text-center py-8 space-y-6">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">🎉</div>
+                    <h3 class="text-2xl font-bold text-slate-800">恭喜完成策略通关！</h3>
+                    <p class="text-slate-600">你答对了 <span class="font-bold text-indigo-600">${score} / ${quizData.length}</span> 步，已经掌握了“原点与坐标差法”的核心思维。</p>
+                    <div class="bg-slate-50 rounded-xl p-5 text-left max-w-lg mx-auto border border-slate-200 text-sm text-slate-700 space-y-2">
+                        <p class="font-bold text-slate-800">核心口诀回顾：</p>
+                        <p>1. <strong>设原点</strong>：数轴选 $0$，钟面选 $OM=0^\\circ$（顺时针为正，告别负角）。</p>
+                        <p>2. <strong>写坐标</strong>：位置 $= $ 起点 $\\pm$ 速度 $\\times t$。</p>
+                        <p>3. <strong>算差值</strong>：距离或夹角 $= |\\text{坐标}_1 - \\text{坐标}_2|$，角平分线即中点坐标。</p>
+                    </div>
+                    <button onclick="restartQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl shadow-sm transition">
+                        重新挑战
+                    </button>
+                </div>
+            `;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qArea]);
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function openModal() {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                wrapper.classList.remove('scale-95', 'opacity-0');
+                wrapper.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([wrapper]);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            wrapper.classList.remove('scale-100', 'opacity-100');
+            wrapper.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 250);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNL(0);
+            updateClk(0);
+            loadQuestion();
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        });
+    </script>
+</body>
+
+</html>

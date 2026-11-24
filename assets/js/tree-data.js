@@ -256,6 +256,41 @@ const COURSE_TREE_DATA = [
       },
       {
         "type": "folder",
+        "id": "node-m7a",
+        "name": "m7a",
+        "open": false,
+        "children": [
+          {
+            "type": "folder",
+            "id": "node-m7a-ch4",
+            "name": "m7a-ch4",
+            "open": false,
+            "children": [
+              {
+                "type": "folder",
+                "id": "node-m7a-ch4-strategies",
+                "name": "m7a-ch4-strategies",
+                "open": false,
+                "children": [
+                  {
+                    "type": "file",
+                    "dataTitle": "七上数学第四章 - 动点与动角策略 - 原点与坐标差法",
+                    "href": "math/m7a/m7a-ch4/m7a-ch4-strategies/m7a-ch4-strategies-1.html",
+                    "name": "m7a-ch4-strategies-1.html",
+                    "title": "七上数学第四章 - 动点与动角策略 - 原点与坐标差法",
+                    "badge": {
+                      "text": "Strategy",
+                      "class": "badge-strategy"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "folder",
         "id": "node-m7b",
         "name": "m7b",
         "open": false,
