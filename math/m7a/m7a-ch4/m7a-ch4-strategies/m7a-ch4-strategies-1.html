@@ -766,14 +766,20 @@
             if (e.key === 'Escape' && activeMagnify) closeMagnify();
         });
 
-        window.addEventListener('DOMContentLoaded', () => {
-            updateNL(0);
-            updateClk(0);
+        function initPage() {
+            try { updateNL(0); } catch (e) { console.error(e); }
+            try { updateClk(0); } catch (e) { console.error(e); }
             loadQuestion();
             if (window.MathJax && MathJax.typesetPromise) {
                 MathJax.typesetPromise();
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initPage);
+        } else {
+            initPage();
+        }
     </script>
 </body>
 
