@@ -671,54 +671,90 @@
         @media (max-width: 900px) {
             .dashboard {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
+                gap: 1rem;
+            }
+
+            .panel {
+                display: contents;
+            }
+
+            .search-container {
+                order: 1;
+            }
+
+            .controls {
+                order: 2;
+            }
+
+            .explorer {
+                order: 3;
+            }
+
+            .legend-widget {
+                order: 4;
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 1.25rem;
+            }
+
+            .stats-widget {
+                order: 5;
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 1.25rem;
             }
         }
 
         @media (max-width: 600px) {
             .container {
-                padding: 1.5rem 0.75rem;
+                padding: 1rem 0.75rem;
             }
 
             header {
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .logo-container {
+                margin-bottom: 0.5rem;
             }
 
             h1 {
-                font-size: 1.85rem;
+                font-size: 1.5rem;
                 letter-spacing: -0.01em;
+                margin-bottom: 0.35rem;
             }
 
             .subtitle {
-                font-size: 0.95rem;
-            }
-
-            .panel {
-                padding: 1.25rem 1rem;
-                gap: 1.25rem;
+                font-size: 0.85rem;
+                line-height: 1.45;
             }
 
             .controls {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 0.5rem;
             }
 
             .btn {
-                width: 100%;
-                padding: 0.55rem 1rem;
+                flex: 1;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
             }
 
             .explorer {
-                padding: 1.25rem 1rem;
+                padding: 1rem 0.85rem;
                 min-height: auto;
             }
 
             .explorer-header {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
                 gap: 0.5rem;
-                padding-bottom: 1rem;
-                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+                margin-bottom: 0.75rem;
             }
 
             .node-header {
