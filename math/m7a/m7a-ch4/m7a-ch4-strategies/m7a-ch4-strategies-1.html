@@ -95,6 +95,7 @@
         }
 
         @media (max-width: 600px) {
+
             #explanation-content mjx-container,
             #question-area mjx-container {
                 font-size: 88% !important;
@@ -114,7 +115,7 @@
                 title="返回目录">
                 🏠
             </a>
-            <h1 class="text-3xl font-bold text-slate-800">七上数学第四章 - 动点与动角策略 - 原点与坐标差法</h1>
+            <h1 class="text-3xl font-bold text-slate-800">七上数学第四章 - 动点与动角策略 - 原点与坐标差法 <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full align-middle">v2</span></h1>
             <p class="text-slate-500">抛弃题海战术，用“设原点 + 算坐标差”统一破解数轴动点与钟面动角</p>
         </div>
 
@@ -122,16 +123,19 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
                 <h2 class="text-lg font-semibold text-indigo-800">原题呈现与动态演示</h2>
-                <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">共性策略：原点与坐标差</span>
+                <span
+                    class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">共性策略：原点与坐标差</span>
             </div>
 
             <div class="p-6 space-y-8">
                 <!-- Question 21 -->
                 <div class="md:flex gap-6 items-center pb-6 border-b border-slate-100">
                     <div class="flex-1 space-y-3 text-slate-700 leading-relaxed text-sm md:text-base">
-                        <p><span class="font-bold text-indigo-700">21.</span> 如图，已知数轴上有 $A, B, C$ 三个点，它们表示的数分别是 $-20, -12, 8$.</p>
+                        <p><span class="font-bold text-indigo-700">21.</span> 如图，已知数轴上有 $A, B, C$ 三个点，它们表示的数分别是 $-20,
+                            -12, 8$.</p>
                         <p class="font-medium text-slate-900">(1) 填空：$AB =$ ______，$BC =$ ______.</p>
-                        <p class="font-medium text-slate-900">(2) 若点 $A$ 以每秒 $1$ 个单位长度的速度向左运动，同时，点 $B$ 和点 $C$ 分别以每秒 $2$ 个单位长度和每秒 $5$ 个单位长度的速度向右运动。试探究：$BC - AB$ 的值是否随时间的变化而改变？请说明理由。</p>
+                        <p class="font-medium text-slate-900">(2) 若点 $A$ 以每秒 $1$ 个单位长度的速度向左运动，同时，点 $B$ 和点 $C$ 分别以每秒 $2$
+                            个单位长度和每秒 $5$ 个单位长度的速度向右运动。试探究：$BC - AB$ 的值是否随时间的变化而改变？请说明理由。</p>
                     </div>
 
                     <!-- Interactive Number Line SVG -->
@@ -140,48 +144,57 @@
                             <div class="flex justify-between items-center text-xs">
                                 <span class="font-medium text-slate-600">数轴动点演示</span>
                                 <button onclick="openMagnify('nl')" title="放大演示"
-                                    class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
+                                    class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍
+                                    放大</button>
                             </div>
                             <svg id="nl-svg" viewBox="0 0 360 110" class="w-full h-28">
-                            <!-- Axis -->
-                            <line x1="15" y1="60" x2="345" y2="60" stroke="#334155" stroke-width="2" />
-                            <polygon points="345,56 353,60 345,64" fill="#334155" />
-                            <!-- Origin 0 tick (mapped: x = 180 + val * 3.5) -->
-                            <line x1="180" y1="54" x2="180" y2="66" stroke="#64748b" stroke-width="1.5" />
-                            <text x="180" y="82" text-anchor="middle" class="fill-slate-500 text-xs">0</text>
+                                <!-- Axis -->
+                                <line x1="15" y1="60" x2="345" y2="60" stroke="#334155" stroke-width="2" />
+                                <polygon points="345,56 353,60 345,64" fill="#334155" />
+                                <!-- Origin 0 tick (mapped: x = 180 + val * 3.5) -->
+                                <line x1="180" y1="54" x2="180" y2="66" stroke="#64748b" stroke-width="1.5" />
+                                <text x="180" y="82" text-anchor="middle" class="fill-slate-500 text-xs">0</text>
 
-                            <!-- Dynamic segments -->
-                            <line id="nl-seg-ab" x1="110" y1="42" x2="138" y2="42" stroke="#3b82f6" stroke-width="2.5" />
-                            <line id="nl-seg-bc" x1="138" y1="30" x2="208" y2="30" stroke="#10b981" stroke-width="2.5" />
+                                <!-- Dynamic segments -->
+                                <line id="nl-seg-ab" x1="110" y1="42" x2="138" y2="42" stroke="#3b82f6"
+                                    stroke-width="2.5" />
+                                <line id="nl-seg-bc" x1="138" y1="30" x2="208" y2="30" stroke="#10b981"
+                                    stroke-width="2.5" />
 
-                            <!-- Moving Points -->
-                            <g id="nl-pt-a" transform="translate(110, 60)">
-                                <circle r="4.5" fill="#ef4444" />
-                                <text y="-10" text-anchor="middle" class="fill-red-600 text-xs font-bold">A</text>
-                                <text id="nl-val-a" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">-20</text>
-                            </g>
-                            <g id="nl-pt-b" transform="translate(138, 60)">
-                                <circle r="4.5" fill="#3b82f6" />
-                                <text y="-10" text-anchor="middle" class="fill-blue-600 text-xs font-bold">B</text>
-                                <text id="nl-val-b" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">-12</text>
-                            </g>
-                            <g id="nl-pt-c" transform="translate(208, 60)">
-                                <circle r="4.5" fill="#10b981" />
-                                <text y="-10" text-anchor="middle" class="fill-emerald-600 text-xs font-bold">C</text>
-                                <text id="nl-val-c" y="22" text-anchor="middle" class="fill-slate-600 text-[10px]">8</text>
-                            </g>
-                        </svg>
-                        <div class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
-                            <span id="nl-readout">t=0s | AB=8, BC=20, BC-AB=12</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleNL()" id="nl-play-btn"
-                                class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶ 播放</button>
-                            <button onclick="resetNL()"
-                                class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
-                            <input id="nl-slider" type="range" min="0" max="6" step="0.1" value="0"
-                                oninput="updateNL(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
-                        </div>
+                                <!-- Moving Points -->
+                                <g id="nl-pt-a" transform="translate(110, 60)">
+                                    <circle r="4.5" fill="#ef4444" />
+                                    <text y="-10" text-anchor="middle" class="fill-red-600 text-xs font-bold">A</text>
+                                    <text id="nl-val-a" y="22" text-anchor="middle"
+                                        class="fill-slate-600 text-[10px]">-20</text>
+                                </g>
+                                <g id="nl-pt-b" transform="translate(138, 60)">
+                                    <circle r="4.5" fill="#3b82f6" />
+                                    <text y="-10" text-anchor="middle" class="fill-blue-600 text-xs font-bold">B</text>
+                                    <text id="nl-val-b" y="22" text-anchor="middle"
+                                        class="fill-slate-600 text-[10px]">-12</text>
+                                </g>
+                                <g id="nl-pt-c" transform="translate(208, 60)">
+                                    <circle r="4.5" fill="#10b981" />
+                                    <text y="-10" text-anchor="middle"
+                                        class="fill-emerald-600 text-xs font-bold">C</text>
+                                    <text id="nl-val-c" y="22" text-anchor="middle"
+                                        class="fill-slate-600 text-[10px]">8</text>
+                                </g>
+                            </svg>
+                            <div
+                                class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                                <span id="nl-readout">t=0s | AB=8, BC=20, BC-AB=12</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleNL()" id="nl-play-btn"
+                                    class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶
+                                    播放</button>
+                                <button onclick="resetNL()"
+                                    class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
+                                <input id="nl-slider" type="range" min="0" max="6" step="0.1" value="0"
+                                    oninput="updateNL(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,55 +202,68 @@
                 <!-- Question 22 -->
                 <div class="md:flex gap-6 items-center">
                     <div class="flex-1 space-y-3 text-slate-700 leading-relaxed text-sm md:text-base">
-                        <p><span class="font-bold text-indigo-700">22.</span> 七年级学生小聪和小明制作了一个模拟钟面，如图所示，点 $O$ 为模拟钟面的圆心，$M, O, N$ 在一条直线上，指针 $OA, OB$ 分别从 $OM, ON$ 出发绕点 $O$ 转动，$OA$ 每秒转动 $15^\circ$，$OB$ 每秒转动 $5^\circ$，当一根指针与起始位置重合时，两根指针运动停止，设转动的时间为 $t$ 秒（$t > 0$）。</p>
-                        <p class="font-medium text-slate-900">(1) 当 $OA$ 顺时针转动，$OB$ 逆时针转动，$t = 3$ 时，$\angle AOB =$ ______$^\circ$.</p>
-                        <p class="font-medium text-slate-900">(2) 若 $OA$ 顺时针转动，$OB$ 逆时针转动，$t$ 为何值时，$OA$ 与 $OB$ 的夹角为 $40^\circ$？</p>
-                        <p class="font-medium text-slate-900">(3) 若指针 $OA, OB$ 同时顺时针转动，当 $t$ 为 ______ 时，$ON$ 平分 $OA$ 与 $OB$ 的夹角；当 $t$ 为 ______ 时，$OA$ 平分 $OB$ 与 $ON$ 的夹角。</p>
+                        <p><span class="font-bold text-indigo-700">22.</span> 七年级学生小聪和小明制作了一个模拟钟面，如图所示，点 $O$
+                            为模拟钟面的圆心，$M, O, N$ 在一条直线上，指针 $OA, OB$ 分别从 $OM, ON$ 出发绕点 $O$ 转动，$OA$ 每秒转动 $15^\circ$，$OB$
+                            每秒转动 $5^\circ$，当一根指针与起始位置重合时，两根指针运动停止，设转动的时间为 $t$ 秒（$t > 0$）。</p>
+                        <p class="font-medium text-slate-900">(1) 当 $OA$ 顺时针转动，$OB$ 逆时针转动，$t = 3$ 时，$\angle AOB =$
+                            ______$^\circ$.</p>
+                        <p class="font-medium text-slate-900">(2) 若 $OA$ 顺时针转动，$OB$ 逆时针转动，$t$ 为何值时，$OA$ 与 $OB$ 的夹角为
+                            $40^\circ$？</p>
+                        <p class="font-medium text-slate-900">(3) 若指针 $OA, OB$ 同时顺时针转动，当 $t$ 为 ______ 时，$ON$ 平分 $OA$ 与
+                            $OB$ 的夹角；当 $t$ 为 ______ 时，$OA$ 平分 $OB$ 与 $ON$ 的夹角。</p>
                     </div>
 
                     <!-- Interactive Clock-Face SVG -->
                     <div id="clk-host" class="w-full md:w-80 flex-shrink-0 mt-4 md:mt-0">
                         <div id="clk-card" class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
-                        <div class="flex justify-between items-center text-xs gap-2">
-                            <span class="font-medium text-slate-600">设 $OM = 0^\circ$（顺为正）</span>
-                            <div class="flex items-center gap-1.5">
-                                <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5">
-                                    <button id="clk-tab-opp" onclick="setClkMode('opp')"
-                                        class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white text-indigo-700 shadow-sm transition">22.(1)(2) 反向</button>
-                                    <button id="clk-tab-same" onclick="setClkMode('same')"
-                                        class="px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-800 transition">22.(3) 同向</button>
+                            <div class="flex justify-between items-center text-xs gap-2">
+                                <span class="font-medium text-slate-600">设 $OM = 0^\circ$（顺为正）</span>
+                                <div class="flex items-center gap-1.5">
+                                    <div class="inline-flex rounded-lg bg-slate-200/80 p-0.5">
+                                        <button id="clk-tab-opp" onclick="setClkMode('opp')"
+                                            class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-white text-indigo-700 shadow-sm transition">22.(1)(2)
+                                            反向</button>
+                                        <button id="clk-tab-same" onclick="setClkMode('same')"
+                                            class="px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-800 transition">22.(3)
+                                            同向</button>
+                                    </div>
+                                    <button onclick="openMagnify('clk')" title="放大演示"
+                                        class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍
+                                        放大</button>
                                 </div>
-                                <button onclick="openMagnify('clk')" title="放大演示"
-                                    class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
                             </div>
-                        </div>
-                        <svg id="clk-svg" viewBox="0 0 220 200" class="w-full h-44">
-                            <circle cx="110" cy="100" r="76" fill="#ffffff" stroke="#334155" stroke-width="2" />
-                            <!-- Diameter MON -->
-                            <line x1="34" y1="100" x2="186" y2="100" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4" />
-                            <circle cx="110" cy="100" r="3" fill="#334155" />
-                            <text x="22" y="104" class="fill-slate-700 text-xs font-serif italic">M(0°)</text>
-                            <text x="190" y="104" class="fill-slate-700 text-xs font-serif italic">N(180°)</text>
-                            <text x="105" y="116" class="fill-slate-700 text-xs font-serif italic">O</text>
+                            <svg id="clk-svg" viewBox="0 0 220 200" class="w-full h-44">
+                                <circle cx="110" cy="100" r="76" fill="#ffffff" stroke="#334155" stroke-width="2" />
+                                <!-- Diameter MON -->
+                                <line x1="34" y1="100" x2="186" y2="100" stroke="#94a3b8" stroke-width="1.5"
+                                    stroke-dasharray="4" />
+                                <circle cx="110" cy="100" r="3" fill="#334155" />
+                                <text x="22" y="104" class="fill-slate-700 text-xs font-serif italic">M(0°)</text>
+                                <text x="190" y="104" class="fill-slate-700 text-xs font-serif italic">N(180°)</text>
+                                <text x="105" y="116" class="fill-slate-700 text-xs font-serif italic">O</text>
 
-                            <!-- Hands -->
-                            <line id="clk-oa" x1="110" y1="100" x2="34" y2="100" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" />
-                            <line id="clk-ob" x1="110" y1="100" x2="186" y2="100" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" />
-                            <text id="clk-lbl-a" x="30" y="90" class="fill-red-600 text-xs font-bold">A</text>
-                            <text id="clk-lbl-b" x="182" y="90" class="fill-blue-600 text-xs font-bold">B</text>
-                        </svg>
-                        <div class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
-                            <span id="clk-readout">t=0s | θA=0°, θB=180°, ∠AOB=180°</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleClk()" id="clk-play-btn"
-                                class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶ 播放</button>
-                            <button onclick="resetClk()"
-                                class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
-                            <input id="clk-slider" type="range" min="0" max="24" step="0.2" value="0"
-                                oninput="updateClk(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
-                        </div>
-                        <div id="clk-keyframes" class="flex flex-wrap gap-1.5 pt-1"></div>
+                                <!-- Hands -->
+                                <line id="clk-oa" x1="110" y1="100" x2="34" y2="100" stroke="#ef4444" stroke-width="2.5"
+                                    stroke-linecap="round" />
+                                <line id="clk-ob" x1="110" y1="100" x2="186" y2="100" stroke="#3b82f6"
+                                    stroke-width="2.5" stroke-linecap="round" />
+                                <text id="clk-lbl-a" x="30" y="90" class="fill-red-600 text-xs font-bold">A</text>
+                                <text id="clk-lbl-b" x="182" y="90" class="fill-blue-600 text-xs font-bold">B</text>
+                            </svg>
+                            <div
+                                class="flex items-center justify-between text-xs text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                                <span id="clk-readout">t=0s | θA=0°, θB=180°, ∠AOB=180°</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleClk()" id="clk-play-btn"
+                                    class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition">▶
+                                    播放</button>
+                                <button onclick="resetClk()"
+                                    class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
+                                <input id="clk-slider" type="range" min="0" max="24" step="0.2" value="0"
+                                    oninput="updateClk(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
+                            </div>
+                            <div id="clk-keyframes" class="flex flex-wrap gap-1.5 pt-1"></div>
                         </div>
                     </div>
                 </div>
@@ -245,8 +271,7 @@
         </div>
 
         <!-- Quiz Container -->
-        <div id="quiz-container"
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 relative min-h-[400px]">
+        <div id="quiz-container" class="bg-white rounded-2xl shadow-sm border border-slate-200 relative min-h-[400px]">
             <div class="w-full bg-slate-100 h-1.5 rounded-t-2xl overflow-hidden">
                 <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-500" style="width: 20%;">
                 </div>
@@ -260,13 +285,17 @@
     <!-- Magnify Modal (Full viewport on mobile, large area on desktop) -->
     <div id="magnify-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeMagnify()"></div>
-        <div class="relative bg-white w-full h-full md:w-[90vw] md:max-w-4xl md:h-auto md:max-h-[90vh] md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-slate-50 flex-shrink-0">
+        <div
+            class="relative bg-white w-full h-full md:w-[90vw] md:max-w-4xl md:h-auto md:max-h-[90vh] md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div
+                class="px-5 py-3.5 border-b border-slate-100 flex justify-between items-center bg-slate-50 flex-shrink-0">
                 <h3 id="magnify-title" class="text-base md:text-lg font-bold text-slate-800">动态演示</h3>
                 <button onclick="closeMagnify()"
-                    class="px-3 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium transition">✕ 关闭</button>
+                    class="px-3 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium transition">✕
+                    关闭</button>
             </div>
-            <div id="magnify-body" class="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center bg-slate-50/50"></div>
+            <div id="magnify-body"
+                class="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center bg-slate-50/50"></div>
         </div>
     </div>
 
