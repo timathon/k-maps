@@ -115,7 +115,7 @@
                 title="返回目录">
                 🏠
             </a>
-            <h1 class="text-3xl font-bold text-slate-800">七上数学第四章 - 动点与动角策略 - 原点与坐标差法 <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full align-middle">v2</span></h1>
+            <h1 class="text-3xl font-bold text-slate-800">七上数学第四章 - 动点与动角策略 - 原点与坐标差法 <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full align-middle">v3</span></h1>
             <p class="text-slate-500">抛弃题海战术，用“设原点 + 算坐标差”统一破解数轴动点与钟面动角</p>
         </div>
 
@@ -803,7 +803,12 @@
         function initPage() {
             try { updateNL(0); } catch (e) { console.error(e); }
             try { updateClk(0); } catch (e) { console.error(e); }
-            loadQuestion();
+            try {
+                loadQuestion();
+            } catch (e) {
+                const qArea = document.getElementById('question-area');
+                if (qArea) qArea.innerHTML = '<div class="text-red-600 p-4 text-sm">Error loading strategy: ' + e.message + '</div>';
+            }
             if (window.MathJax && MathJax.typesetPromise) {
                 MathJax.typesetPromise();
             }
