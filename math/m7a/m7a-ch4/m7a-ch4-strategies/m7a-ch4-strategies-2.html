@@ -11,9 +11,9 @@
         onclick="if(event.target===this) closeMagnify()">
         <div id="magnify-box" class="bg-white md:rounded-2xl md:max-w-4xl md:w-[90vw] p-3 md:p-5 shadow-2xl flex flex-col justify-center overflow-auto">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-slate-700">数轴动点折返演示（放大视图）</span>
+                <span class="text-base md:text-lg font-bold text-slate-800">数轴动点折返演示（放大视图）</span>
                 <button onclick="closeMagnify()"
-                    class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition">✕ 关闭</button>
+                    class="px-4 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm md:text-base font-semibold transition">✕ 关闭</button>
             </div>
             <div id="magnify-slot"></div>
         </div>
@@ -113,6 +113,21 @@
             display: none;
         }
 
+        @keyframes magnifyBreath {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.35);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 5px rgba(79, 70, 229, 0);
+                transform: scale(1.05);
+            }
+        }
+
+        .magnify-btn {
+            animation: magnifyBreath 2.8s ease-in-out infinite;
+        }
+
         @keyframes kfBlink {
             0%, 100% {
                 box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
@@ -159,16 +174,17 @@
                 position: fixed;
                 top: 50%;
                 left: 50%;
-                width: 100vh;
-                height: 100vw;
+                width: 96dvh;
+                height: 96dvw;
                 transform: translate(-50%, -50%) rotate(90deg);
                 transform-origin: center center;
                 max-width: none !important;
-                border-radius: 0 !important;
+                border-radius: 12px !important;
             }
 
             #magnify-modal.is-open #nl-svg {
-                height: 46vw;
+                height: 44dvw;
+                margin-top: 0 !important;
             }
         }
     </style>
@@ -220,7 +236,7 @@
                         <div class="flex items-center gap-2">
                             <span id="phase-badge" class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium">阶段 1：$Q$ 向左运动 ($0 \le t \le 13.5$)</span>
                             <button onclick="openMagnify()" title="放大演示"
-                                class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
+                                class="magnify-btn px-2.5 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition text-xs font-medium shadow-sm">🔍 放大</button>
                         </div>
                     </div>
 
@@ -327,9 +343,9 @@
         onclick="if(event.target===this) closeMagnify()">
         <div id="magnify-box" class="bg-white md:rounded-2xl md:max-w-4xl md:w-[90vw] p-3 md:p-5 shadow-2xl flex flex-col justify-center overflow-auto">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-slate-700">数轴动点折返演示（放大视图）</span>
+                <span class="text-base md:text-lg font-bold text-slate-800">数轴动点折返演示（放大视图）</span>
                 <button onclick="closeMagnify()"
-                    class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition">✕ 关闭</button>
+                    class="px-4 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm md:text-base font-semibold transition">✕ 关闭</button>
             </div>
             <div id="magnify-slot"></div>
         </div>
@@ -376,22 +392,35 @@
             const kfs = nlKeyframesMap[nlMode];
             let html = '<span class="text-[11px] text-slate-500 self-center mr-1">关键时刻：</span>';
             kfs.forEach((kf, idx) => {
+                html += `<span data-kf-arrow="${idx}" class="text-xs text-slate-400 self-center">→</span>`;
+                const baseCls = kf.amber
+                    ? 'px-2 py-0.5 text-[11px] bg-amber-50 border border-amber-200 text-amber-800 rounded hover:border-amber-400 transition'
+                    : 'px-2 py-0.5 text-[11px] bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition';
+                html += `<button data-kf-btn="${idx}" onclick="jumpTo(${kf.t})" class="${baseCls}">${kf.label}</button>`;
+            });
+            bar.innerHTML = html;
+            updateNLKeyframesState();
+        }
+
+        function updateNLKeyframesState() {
+            const kfs = nlKeyframesMap[nlMode];
+            kfs.forEach((kf, idx) => {
                 const prevT = idx === 0 ? 0 : kfs[idx - 1].t;
                 const isArrowActive = nlT > prevT + 0.05 && nlT < kf.t - 0.05;
                 const isKfActive = Math.abs(nlT - kf.t) <= 0.05;
 
-                const arrowCls = isArrowActive
-                    ? 'text-xs self-center px-1 rounded kf-arrow-active'
-                    : 'text-xs text-slate-400 self-center';
-                html += `<span class="${arrowCls}">→</span>`;
+                const arrowEl = document.querySelector(`[data-kf-arrow="${idx}"]`);
+                if (arrowEl) {
+                    arrowEl.classList.toggle('kf-arrow-active', isArrowActive);
+                    arrowEl.classList.toggle('px-1', isArrowActive);
+                    arrowEl.classList.toggle('text-slate-400', !isArrowActive);
+                }
 
-                const baseCls = kf.amber
-                    ? 'px-2 py-0.5 text-[11px] bg-amber-50 border border-amber-200 text-amber-800 rounded hover:border-amber-400 transition'
-                    : 'px-2 py-0.5 text-[11px] bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition';
-                const btnCls = isKfActive ? `${baseCls} kf-active` : baseCls;
-                html += `<button onclick="jumpTo(${kf.t})" class="${btnCls}">${kf.label}</button>`;
+                const btnEl = document.querySelector(`[data-kf-btn="${idx}"]`);
+                if (btnEl) {
+                    btnEl.classList.toggle('kf-active', isKfActive);
+                }
             });
-            bar.innerHTML = html;
         }
 
         function valToX(val) {
@@ -436,9 +465,10 @@
                 badge.className = 'px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium';
             }
 
+            const qExpr = t <= 13.5 ? '20-2t' : '2t-34';
             document.getElementById('nl-readout').textContent =
-                `PQ距离：t = ${t.toFixed(1)}s | P = ${xp.toFixed(1)}, Q = ${xq.toFixed(1)} | PQ = ${dist.toFixed(1)}`;
-            renderNLKeyframes();
+                `PQ距离（t = ${t.toFixed(1)}s）：|(-7+t) - (${qExpr})| = |${xp.toFixed(1)} - ${xq.toFixed(1)}| = ${dist.toFixed(1)}`;
+            updateNLKeyframesState();
         }
 
         function jumpTo(t) {
