@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七上数学第五章 一元一次方程 - 动点折返策略 - 先定坐标，再算距离</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Magnify Modal -->
+    <div id="magnify-modal" class="hidden fixed inset-0 z-50 bg-slate-900/75 flex items-center justify-center p-0 md:p-6"
+        onclick="if(event.target===this) closeMagnify()">
+        <div id="magnify-box" class="bg-white md:rounded-2xl md:max-w-4xl md:w-[90vw] p-3 md:p-5 shadow-2xl flex flex-col justify-center overflow-auto">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-slate-700">数轴动点折返演示（放大视图）</span>
+                <button onclick="closeMagnify()"
+                    class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition">✕ 关闭</button>
+            </div>
+            <div id="magnify-slot"></div>
+        </div>
+    </div>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js';"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-btn {
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+            border-color: #3b82f6;
+        }
+
+        .correct-ans {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        .wrong-ans {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+
+        /* MathJax Mobile Responsiveness */
+        #explanation-content mjx-container,
+        #question-area mjx-container {
+            display: inline-block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        #explanation-content mjx-container[display="true"],
+        #question-area mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        #explanation-content mjx-container::-webkit-scrollbar,
+        #question-area mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+
+            #explanation-content mjx-container,
+            #question-area mjx-container {
+                font-size: 88% !important;
+            }
+        }
+
+        /* Magnify Modal */
+        #magnify-modal.is-open .magnify-btn {
+            display: none;
+        }
+
+        @keyframes kfBlink {
+            0%, 100% {
+                box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+                transform: scale(1.04);
+            }
+            50% {
+                box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.15);
+                transform: scale(1);
+            }
+        }
+
+        .kf-active {
+            background-color: #4f46e5 !important;
+            color: #fff !important;
+            border-color: #4f46e5 !important;
+            font-weight: 600;
+            animation: kfBlink 0.9s ease-in-out infinite;
+        }
+
+        @keyframes kfArrowBlink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            50% {
+                opacity: 0.2;
+                transform: scale(0.95);
+            }
+        }
+
+        .kf-arrow-active {
+            color: #4f46e5 !important;
+            font-weight: 800;
+            display: inline-block;
+            animation: kfArrowBlink 0.7s ease-in-out infinite;
+        }
+
+        #magnify-modal.is-open #nl-svg {
+            height: 210px;
+        }
+
+        @media (max-width: 767px) {
+            #magnify-box {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 100vh;
+                height: 100vw;
+                transform: translate(-50%, -50%) rotate(90deg);
+                transform-origin: center center;
+                max-width: none !important;
+                border-radius: 0 !important;
+            }
+
+            #magnify-modal.is-open #nl-svg {
+                height: 46vw;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <!-- Header -->
+        <div class="text-center space-y-2 relative">
+            <a href="index.html"
+                class="absolute -top-10 left-0 md:top-0 md:left-4 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 text-lg opacity-50 hover:opacity-100 hover:bg-gray-50 hover:shadow transition-all hover:scale-105"
+                title="返回目录">
+                🏠
+            </a>
+            <h1 class="text-3xl font-bold text-slate-800">动点折返策略 - 先定坐标，再算距离</h1>
+            <p class="text-slate-500">在计算两点之间的距离时，先确定点的坐标，再用坐标差的绝对值统一破解折返问题</p>
+        </div>
+
+        <!-- Original Problem Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-indigo-800">原题呈现与动态演示</h2>
+                <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs rounded-full font-medium">核心策略：先定坐标，再算距离</span>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div class="space-y-3 text-slate-700 leading-relaxed text-sm md:text-base">
+                    <p><span class="font-bold text-indigo-700">22.</span>（2026 山东青岛期末）如图，在数轴上点 $A$ 表示的数为 $20$，点 $B$ 表示的数为 $-7$，点 $O$ 是数轴原点，点 $P$ 从点 $B$ 出发，以每秒 $1$ 个单位长度的速度，向数轴的正方向匀速运动，同时点 $Q$ 从点 $A$ 出发，以每秒 $2$ 个单位长度的速度，向点 $B$ 运动，到达点 $B$ 后立即按原速返回向数轴的正方向匀速运动，设运动时间为 $t$ 秒。根据以上情境，回答下列问题：</p>
+                    <p class="font-medium text-slate-900">(1) 线段 $AB$ 的长为 ______，$BP$ 的长为 ______，点 $P$ 所表示的数为 ______。（后两个空用含 $t$ 的式子表示）</p>
+                    <p class="font-medium text-slate-900">(2) 当 $t$ 为何值时，点 $P, Q$ 重合？</p>
+                    <p class="font-medium text-slate-900">(3) 当点 $P, Q$ 之间的距离是 $3$ 时，求出点 $Q$ 表示的数。</p>
+                </div>
+
+                <!-- Interactive Number Line SVG -->
+                <div id="nl-host">
+                <div id="nl-card" class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-3">
+                    <div class="flex flex-wrap justify-between items-center gap-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-slate-700">数轴动点折返演示</span>
+                            <div class="inline-flex rounded-lg bg-slate-200 p-0.5">
+                                <button id="mode-q2-btn" onclick="setNLMode('q2')"
+                                    class="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-indigo-700 shadow-sm transition">第(2)问：重合</button>
+                                <button id="mode-q3-btn" onclick="setNLMode('q3')"
+                                    class="px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-800 transition">第(3)问：PQ=3</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="phase-badge" class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium">阶段 1：$Q$ 向左运动 ($0 \le t \le 13.5$)</span>
+                            <button onclick="openMagnify()" title="放大演示"
+                                class="magnify-btn px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition text-[11px]">🔍 放大</button>
+                        </div>
+                    </div>
+
+                    <svg id="nl-svg" viewBox="0 0 640 130" class="w-full h-32">
+                        <!-- Axis: value range [-12, 30], mapped: x = 30 + (val + 12) * (580 / 42) -->
+                        <line x1="20" y1="72" x2="620" y2="72" stroke="#334155" stroke-width="2" />
+                        <polygon points="620,68 628,72 620,76" fill="#334155" />
+
+                        <!-- Fixed ticks: B(-7), O(0), A(20) -->
+                        <line id="tick-b" x1="99" y1="66" x2="99" y2="78" stroke="#64748b" stroke-width="1.5" />
+                        <text x="99" y="96" text-anchor="middle" class="fill-slate-600 text-sm font-medium">B(-7)</text>
+
+                        <line id="tick-o" x1="196" y1="66" x2="196" y2="78" stroke="#64748b" stroke-width="1.5" />
+                        <text x="196" y="96" text-anchor="middle" class="fill-slate-600 text-sm font-medium">O(0)</text>
+
+                        <line id="tick-a" x1="472" y1="66" x2="472" y2="78" stroke="#64748b" stroke-width="1.5" />
+                        <text x="472" y="96" text-anchor="middle" class="fill-slate-600 text-sm font-medium">A(20)</text>
+
+                        <!-- Distance bracket between P and Q -->
+                        <line id="pq-dist-line" x1="99" y1="44" x2="472" y2="44" stroke="#6366f1" stroke-width="2" stroke-dasharray="4 3" />
+                        <text id="pq-dist-label" x="285" y="34" text-anchor="middle" class="fill-indigo-600 text-sm font-bold">PQ = 27.0</text>
+
+                        <!-- Moving Point P -->
+                        <g id="pt-p" transform="translate(99, 72)">
+                            <circle r="5.5" fill="#2563eb" />
+                            <text y="-12" text-anchor="middle" class="fill-blue-600 text-base font-bold">P</text>
+                            <text id="val-p" y="42" text-anchor="middle" class="fill-blue-700 text-sm font-semibold">-7.0</text>
+                        </g>
+
+                        <!-- Moving Point Q -->
+                        <g id="pt-q" transform="translate(472, 72)">
+                            <circle r="5.5" fill="#dc2626" />
+                            <text y="-12" text-anchor="middle" class="fill-red-600 text-base font-bold">Q</text>
+                            <text id="val-q" y="58" text-anchor="middle" class="fill-red-700 text-sm font-semibold">20.0</text>
+                        </g>
+                    </svg>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-700 bg-white px-3 py-2 rounded-lg border border-slate-200">
+                        <span id="nl-readout" class="font-mono">t = 0.0s | x_P = -7.0, x_Q = 20.0 | |x_P - x_Q| = 27.0</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleNL()" id="nl-play-btn"
+                            class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700 transition font-medium">▶ 播放</button>
+                        <button onclick="resetNL()"
+                            class="px-2.5 py-1.5 bg-slate-200 text-slate-700 text-xs rounded-md hover:bg-slate-300 transition">重置</button>
+                        <input id="nl-slider" type="range" min="0" max="32" step="0.1" value="0"
+                            oninput="updateNL(parseFloat(this.value))" class="flex-1 accent-indigo-600 h-1.5">
+                    </div>
+
+                    <!-- Keyframe Jump Buttons -->
+                    <div id="nl-keyframes-bar" class="flex flex-wrap gap-1.5 pt-1"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-blue-800">策略通关挑战</h2>
+                <span id="progress-text" class="text-xs font-medium text-blue-700 bg-blue-100 px-3 py-1 rounded-full">第 1 / 4 步</span>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div id="question-area" class="space-y-4">
+                    <div id="step-badge" class="inline-block px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full"></div>
+                    <h3 id="question-text" class="text-base md:text-lg font-medium text-slate-800 leading-relaxed"></h3>
+                    <div id="options-container" class="space-y-3 pt-2"></div>
+                </div>
+
+                <!-- Pre-rendered Explanation Box (CLS-safe) -->
+                <div id="explanation-box" class="hidden rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2 fade-in">
+                    <div id="explanation-content" class="text-sm text-slate-700 leading-relaxed"></div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-end pt-2">
+                    <button id="next-btn" onclick="nextQuestion()"
+                        class="hidden px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition shadow-sm">
+                        下一步 →
+                    </button>
+                </div>
+
+                <!-- Completion Screen -->
+                <div id="completion-area" class="hidden text-center py-6 space-y-4 fade-in">
+                    <div class="text-4xl">🎉</div>
+                    <h3 class="text-xl font-bold text-slate-800">策略通关完成！</h3>
+                    <p class="text-sm text-slate-600 max-w-md mx-auto">
+                        记住核心口诀：<strong>“先定坐标，再算距离”</strong>。遇到折返先找临界时间写分段坐标，再用 $|x_P - x_Q| = d$ 求解并检验范围。
+                    </p>
+                    <button onclick="restartQuiz()"
+                        class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition">
+                        重新挑战
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Magnify Modal -->
+    <div id="magnify-modal" class="hidden fixed inset-0 z-50 bg-slate-900/75 flex items-center justify-center p-0 md:p-6"
+        onclick="if(event.target===this) closeMagnify()">
+        <div id="magnify-box" class="bg-white md:rounded-2xl md:max-w-4xl md:w-[90vw] p-3 md:p-5 shadow-2xl flex flex-col justify-center overflow-auto">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-slate-700">数轴动点折返演示（放大视图）</span>
+                <button onclick="closeMagnify()"
+                    class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition">✕ 关闭</button>
+            </div>
+            <div id="magnify-slot"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Number Line Animation ---
+        let nlT = 0;
+        let nlTimer = null;
+        let nlPauseUntil = 0;
+        let nlMode = 'q2';
+        const nlKeyframesMap = {
+            q2: [
+                { t: 9, label: 't=9 (第1次重合)' },
+                { t: 13.5, label: 't=13.5 (Q折返)', amber: true },
+                { t: 27, label: 't=27 (第2次重合)' }
+            ],
+            q3: [
+                { t: 8, label: 't=8 (PQ=3)' },
+                { t: 10, label: 't=10 (PQ=3)' },
+                { t: 13.5, label: 't=13.5 (Q折返)', amber: true },
+                { t: 24, label: 't=24 (PQ=3)' },
+                { t: 30, label: 't=30 (PQ=3)' }
+            ]
+        };
+
+        function setNLMode(mode) {
+            nlMode = mode;
+            const q2Btn = document.getElementById('mode-q2-btn');
+            const q3Btn = document.getElementById('mode-q3-btn');
+            if (mode === 'q2') {
+                q2Btn.className = 'px-2.5 py-1 rounded-md text-xs font-medium bg-white text-indigo-700 shadow-sm transition';
+                q3Btn.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-800 transition';
+            } else {
+                q3Btn.className = 'px-2.5 py-1 rounded-md text-xs font-medium bg-white text-indigo-700 shadow-sm transition';
+                q2Btn.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-800 transition';
+            }
+            renderNLKeyframes();
+            resetNL();
+        }
+
+        function renderNLKeyframes() {
+            const bar = document.getElementById('nl-keyframes-bar');
+            const kfs = nlKeyframesMap[nlMode];
+            let html = '<span class="text-[11px] text-slate-500 self-center mr-1">关键时刻：</span>';
+            kfs.forEach((kf, idx) => {
+                const prevT = idx === 0 ? 0 : kfs[idx - 1].t;
+                const isArrowActive = nlT > prevT + 0.05 && nlT < kf.t - 0.05;
+                const isKfActive = Math.abs(nlT - kf.t) <= 0.05;
+
+                const arrowCls = isArrowActive
+                    ? 'text-xs self-center px-1 rounded kf-arrow-active'
+                    : 'text-xs text-slate-400 self-center';
+                html += `<span class="${arrowCls}">→</span>`;
+
+                const baseCls = kf.amber
+                    ? 'px-2 py-0.5 text-[11px] bg-amber-50 border border-amber-200 text-amber-800 rounded hover:border-amber-400 transition'
+                    : 'px-2 py-0.5 text-[11px] bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition';
+                const btnCls = isKfActive ? `${baseCls} kf-active` : baseCls;
+                html += `<button onclick="jumpTo(${kf.t})" class="${btnCls}">${kf.label}</button>`;
+            });
+            bar.innerHTML = html;
+        }
+
+        function valToX(val) {
+            return 30 + (val + 12) * (580 / 42);
+        }
+
+        function getCoords(t) {
+            const xp = -7 + t;
+            const xq = t <= 13.5 ? (20 - 2 * t) : (-7 + 2 * (t - 13.5));
+            return { xp, xq };
+        }
+
+        function updateNL(t) {
+            nlT = t;
+            document.getElementById('nl-slider').value = t;
+            const { xp, xq } = getCoords(t);
+            const dist = Math.abs(xp - xq);
+
+            const px = valToX(xp);
+            const qx = valToX(xq);
+
+            document.getElementById('pt-p').setAttribute('transform', `translate(${px}, 72)`);
+            document.getElementById('pt-q').setAttribute('transform', `translate(${qx}, 72)`);
+            document.getElementById('val-p').textContent = `-7+t = ${xp.toFixed(1)}`;
+            document.getElementById('val-q').textContent = t <= 13.5
+                ? `20-2t = ${xq.toFixed(1)}`
+                : `2t-34 = ${xq.toFixed(1)}`;
+
+            const distLine = document.getElementById('pq-dist-line');
+            distLine.setAttribute('x1', Math.min(px, qx));
+            distLine.setAttribute('x2', Math.max(px, qx));
+            const distLabel = document.getElementById('pq-dist-label');
+            distLabel.setAttribute('x', (px + qx) / 2);
+            distLabel.textContent = `PQ = ${dist.toFixed(1)}`;
+
+            const badge = document.getElementById('phase-badge');
+            if (t <= 13.5) {
+                badge.textContent = '阶段 1：Q 向左运动 (0 ≤ t ≤ 13.5)';
+                badge.className = 'px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium';
+            } else {
+                badge.textContent = '阶段 2：Q 折返向右运动 (t > 13.5)';
+                badge.className = 'px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium';
+            }
+
+            document.getElementById('nl-readout').textContent =
+                `PQ距离：t = ${t.toFixed(1)}s | P = ${xp.toFixed(1)}, Q = ${xq.toFixed(1)} | PQ = ${dist.toFixed(1)}`;
+            renderNLKeyframes();
+        }
+
+        function jumpTo(t) {
+            if (nlTimer) toggleNL();
+            nlPauseUntil = 0;
+            updateNL(t);
+        }
+
+        function toggleNL() {
+            const btn = document.getElementById('nl-play-btn');
+            const kfs = nlKeyframesMap[nlMode].map(k => k.t);
+            const lastKf = kfs[kfs.length - 1];
+            if (nlTimer) {
+                clearInterval(nlTimer);
+                nlTimer = null;
+                nlPauseUntil = 0;
+                btn.textContent = '▶ 播放';
+            } else {
+                if (nlT >= lastKf) nlT = 0;
+                nlPauseUntil = 0;
+                btn.textContent = '⏸ 暂停';
+                nlTimer = setInterval(() => {
+                    if (Date.now() < nlPauseUntil) return;
+                    const prevT = nlT;
+                    let nextT = nlT + 0.1;
+
+                    const hit = kfs.find(kf => prevT < kf - 1e-6 && nextT >= kf - 1e-6);
+                    if (hit !== undefined) {
+                        nextT = hit;
+                        if (hit >= lastKf) {
+                            updateNL(lastKf);
+                            clearInterval(nlTimer);
+                            nlTimer = null;
+                            nlPauseUntil = 0;
+                            btn.textContent = '▶ 播放';
+                            return;
+                        }
+                        nlPauseUntil = Date.now() + 2000;
+                    }
+
+                    if (nextT >= lastKf) {
+                        updateNL(lastKf);
+                        clearInterval(nlTimer);
+                        nlTimer = null;
+                        nlPauseUntil = 0;
+                        btn.textContent = '▶ 播放';
+                        return;
+                    }
+                    updateNL(nextT);
+                }, 40);
+            }
+        }
+
+        function resetNL() {
+            if (nlTimer) toggleNL();
+            nlPauseUntil = 0;
+            updateNL(0);
+        }
+
+        // --- Quiz Data ---
+        const quizData = [
+            {
+                step: "第一步：提炼核心策略——先定坐标，再算距离",
+                question: "面对数轴上的折返动点问题（如第22题），为什么不建议直接用“路程 = 速度 × 时间”去凑相对位置，而要采用“先定坐标，再算距离”？",
+                options: [
+                    { text: "因为只要确定了每个阶段两点的坐标表达式 $x_P, x_Q$，方向与折返就被坐标自动吸收，重合就是 $x_P = x_Q$，距离就是 $|x_P - x_Q|$。", isCorrect: true },
+                    { text: "因为数轴上的点不能用速度乘以时间来计算路程。", isCorrect: false },
+                    { text: "因为只有先求出所有时间点，才能画出数轴。", isCorrect: false }
+                ],
+                explanation: "<strong>策略核心：</strong> 在计算两点之间的距离时，<strong>先确定点的坐标</strong>。一旦写出 $x_P$ 和 $x_Q$（含分段），就不需要再纠结“谁在左、谁在右”，所有位置关系都能统一转化为代数方程。"
+            },
+            {
+                step: "第二步：确定折返临界时间与分段坐标",
+                question: "点 $P$ 从 $B(-7)$ 向右（速度 $1$），点 $Q$ 从 $A(20)$ 向左（速度 $2$），到达 $B$ 后立即原速返回。下列关于坐标的表达式正确的是？",
+                options: [
+                    { text: "$Q$ 到达 $B$ 用时 $13.5$ 秒；$x_P = -7 + t$；当 $0 \\le t \\le 13.5$ 时 $x_Q = 20 - 2t$，当 $t > 13.5$ 时 $x_Q = -7 + 2(t - 13.5) = 2t - 34$。", isCorrect: true },
+                    { text: "$Q$ 到达 $B$ 用时 $13.5$ 秒；当 $t > 13.5$ 时，$x_Q = -7 + 2t$。", isCorrect: false },
+                    { text: "$Q$ 到达 $B$ 用时 $10$ 秒；$x_P = -7 + t$，$x_Q = 20 - 2t$。", isCorrect: false }
+                ],
+                explanation: "<strong>易错点提醒：</strong> $AB = 20 - (-7) = 27$，所以 $Q$ 到达 $B$ 的临界时间是 $27 \\div 2 = 13.5$ 秒。第 2 阶段 $Q$ 从 $B(-7)$ 重新出发，运动时间是 $(t - 13.5)$ 秒，因此 $x_Q = -7 + 2(t - 13.5) = 2t - 34$。"
+            },
+            {
+                step: "第三步：用“坐标相等”求重合",
+                question: "第 (2) 问：当 $t$ 为何值时，点 $P, Q$ 重合？",
+                options: [
+                    { text: "$t = 9$ 或 $t = 27$（第 1 阶段相遇一次，第 2 阶段 $Q$ 折返后追上 $P$ 一次）。", isCorrect: true },
+                    { text: "只有 $t = 9$（两车相遇一次后就不会再重合）。", isCorrect: false },
+                    { text: "$t = 9$ 或 $t = 18$。", isCorrect: false }
+                ],
+                explanation: "<strong>分段求解 $x_P = x_Q$：</strong><br>1. 当 $0 \\le t \\le 13.5$ 时：$-7 + t = 20 - 2t \\implies 3t = 27 \\implies t = 9$（符合范围）。<br>2. 当 $t > 13.5$ 时：$-7 + t = 2t - 34 \\implies t = 27$（符合范围）。"
+            },
+            {
+                step: "第四步：用“坐标差的绝对值”求距离为 3",
+                question: "第 (3) 问：当点 $P, Q$ 之间的距离是 $3$ 时，点 $Q$ 表示的数是多少？（注意题目问的是 $Q$ 的坐标，不是 $t$！）",
+                options: [
+                    { text: "先由 $|x_P - x_Q| = 3$ 解得 $t = 8, 10, 24, 30$，再代入 $x_Q$ 得 $4, 0, 14, 26$。", isCorrect: true },
+                    { text: "直接由 $|x_P - x_Q| = 3$ 解得 $t = 8, 10, 24, 30$，答案就是 $8, 10, 24, 30$。", isCorrect: false },
+                    { text: "只有 $t = 8$ 和 $t = 24$，对应 $Q$ 为 $4$ 和 $14$。", isCorrect: false }
+                ],
+                explanation: "<strong>完整解答：</strong><br>• 阶段 1 ($0 \\le t \\le 13.5$)：$|(-7+t)-(20-2t)| = |3t - 27| = 3 \\implies t = 8$ 或 $10$，代入 $x_Q = 20 - 2t$ 得 $4$ 或 $0$。<br>• 阶段 2 ($t > 13.5$)：$|(-7+t)-(2t-34)| = |27 - t| = 3 \\implies t = 24$ 或 $30$，代入 $x_Q = 2t - 34$ 得 $14$ 或 $26$。"
+            }
+        ];
+
+        let currentIdx = 0;
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentIdx];
+            document.getElementById('progress-text').textContent = `第 ${currentIdx + 1} / ${quizData.length} 步`;
+            document.getElementById('step-badge').textContent = q.step;
+            document.getElementById('question-text').innerHTML = q.question;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const shuffled = shuffleArray(q.options);
+            const labels = ['A', 'B', 'C'];
+
+            shuffled.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm md:text-base text-slate-700 flex items-start gap-3';
+                btn.innerHTML = `<span class="font-bold text-indigo-600 shrink-0">${labels[idx]}.</span><span>${opt.text}</span>`;
+                btn.onclick = () => selectOption(btn, opt.isCorrect, shuffled);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-area')]);
+            }
+        }
+
+        function selectOption(clickedBtn, isCorrect, shuffled) {
+            const buttons = document.querySelectorAll('#options-container button');
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (shuffled[idx].isCorrect) {
+                    btn.classList.add('correct-ans');
+                } else if (btn === clickedBtn && !isCorrect) {
+                    btn.classList.add('wrong-ans');
+                }
+            });
+
+            const expBox = document.getElementById('explanation-box');
+            const expContent = document.getElementById('explanation-content');
+            expContent.innerHTML = quizData[currentIdx].explanation;
+            expBox.classList.remove('hidden');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.textContent = currentIdx === quizData.length - 1 ? '完成挑战 ✓' : '下一步 →';
+            nextBtn.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([expContent]);
+            }
+
+            if (window.innerWidth < 768) {
+                setTimeout(() => {
+                    expBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizData.length) {
+                renderQuestion();
+            } else {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('explanation-box').classList.add('hidden');
+                document.getElementById('next-btn').classList.add('hidden');
+                document.getElementById('completion-area').classList.remove('hidden');
+            }
+        }
+
+        function restartQuiz() {
+            currentIdx = 0;
+            document.getElementById('question-area').classList.remove('hidden');
+            document.getElementById('completion-area').classList.add('hidden');
+            renderQuestion();
+        }
+
+        // --- Magnify Modal ---
+        function openMagnify() {
+            const modal = document.getElementById('magnify-modal');
+            const slot = document.getElementById('magnify-slot');
+            const card = document.getElementById('nl-card');
+            slot.appendChild(card);
+            modal.classList.remove('hidden');
+            modal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMagnify() {
+            const modal = document.getElementById('magnify-modal');
+            const host = document.getElementById('nl-host');
+            const card = document.getElementById('nl-card');
+            host.appendChild(card);
+            modal.classList.add('hidden');
+            modal.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        // Init
+        setNLMode('q2');
+        renderQuestion();
+    </script>
+</body>
+
+</html>

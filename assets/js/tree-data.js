@@ -282,6 +282,17 @@ const COURSE_TREE_DATA = [
                       "text": "Strategy",
                       "class": "badge-strategy"
                     }
+                  },
+                  {
+                    "type": "file",
+                    "dataTitle": "七上数学第五章 一元一次方程 - 动点折返策略 - 先定坐标，再算距离",
+                    "href": "math/m7a/m7a-ch4/m7a-ch4-strategies/m7a-ch4-strategies-2.html",
+                    "name": "m7a-ch4-strategies-2.html",
+                    "title": "七上数学第五章 一元一次方程 - 动点折返策略 - 先定坐标，再算距离",
+                    "badge": {
+                      "text": "Strategy",
+                      "class": "badge-strategy"
+                    }
                   }
                 ]
               }
